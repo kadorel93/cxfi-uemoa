@@ -13,7 +13,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
-  --muted:#8A8478;--accent:#1A3FFF;--green:#1A7A4A;--amber:#C47A1A;
+  --muted:#6B6560;--accent:#1A3FFF;--green:#1A7A4A;--amber:#C47A1A;
   --red:#C8352A;--gold:#C8952A;--border:rgba(15,14,12,0.1);
   --card:#FFFFFF;--r:12px;--r-lg:16px;
 }
@@ -86,7 +86,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes stepIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .sec-anim{animation:secIn .55s cubic-bezier(0.16,1,0.3,1) both;}
+/* Respect prefers-reduced-motion */
+@media(prefers-reduced-motion:reduce){
+  .t-track{animation:none!important;overflow-x:auto;}
+  .sec-anim,.dot{animation:none;}
+  *{transition-duration:.01ms!important;}
+}
 
 /* ── LAYOUT ─────────────────────────────────────────────── */
 .wrap{max-width:1200px;margin:0 auto;padding:0 40px;}
@@ -300,8 +307,8 @@ h1 .hollow{-webkit-text-stroke:2px var(--ink);color:transparent;}
 /* ── MÉTHODE ─────────────────────────────────────────────── */
 .meth-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:14px;}
 .meth-table th{text-align:left;padding:9px 12px;background:var(--cream);
-  border-bottom:1px solid var(--border);font-size:10px;font-weight:700;
-  letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);}
+  border-bottom:1px solid var(--border);font-size:11px;font-weight:700;
+  letter-spacing:0.6px;text-transform:uppercase;color:var(--muted);}
 .meth-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
 .meth-table td:first-child{font-weight:600;color:var(--ink);}
 .formula{background:var(--ink);color:var(--paper);border-radius:10px;
@@ -496,6 +503,25 @@ footer a{color:var(--muted);}
 footer a:hover{color:var(--accent);}
 .footer-admin{color:rgba(15,14,12,0.2);font-size:10px;}
 
+/* ── SCREEN READER ONLY ──────────────────────────────────── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.fb-field-err{display:block;font-size:11px;color:var(--red);margin-top:3px;font-weight:500;}
+.fb-inp.invalid{border-color:var(--red)!important;background:#FEF2F2;}
+
+/* ── SKIP LINK ───────────────────────────────────────────── */
+.skip-link{position:absolute;top:-999px;left:0;z-index:9999;padding:10px 20px;
+  background:var(--accent);color:white;font-weight:700;font-size:13px;border-radius:0 0 8px 8px;
+  text-decoration:none;transition:top .1s;}
+.skip-link:focus{top:0;}
+
+/* ── RETOUR EN HAUT ──────────────────────────────────────── */
+.back-top{position:fixed;bottom:28px;right:28px;z-index:150;width:40px;height:40px;
+  background:var(--ink);color:var(--paper);border:none;border-radius:50%;font-size:18px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .2s;box-shadow:0 4px 14px rgba(15,14,12,0.2);}
+.back-top.visible{opacity:1;pointer-events:auto;}
+.back-top:hover{background:var(--accent);transform:translateY(-2px);}
+
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media(max-width:900px){
   .wrap{padding:0 20px;}
@@ -536,29 +562,31 @@ footer a:hover{color:var(--accent);}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Aller au contenu principal</a>
+<button class="back-top" id="backTop" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Retour en haut de page" title="Retour en haut">↑</button>
 
 <!-- NAV -->
-<nav>
-  <div class="logo" onclick="showSec('home')">
-    <div class="logo-box">CX</div>
+<nav role="navigation" aria-label="Navigation principale">
+  <div class="logo" onclick="showSec('home')" role="button" tabindex="0" aria-label="CXFI — Retour à l'accueil" onkeydown="if(event.key==='Enter')showSec('home')">
+    <div class="logo-box" aria-hidden="true">CX</div>
     <span class="logo-text">CX<em>FI</em></span>
   </div>
-  <div class="nav-links">
-    <span class="nav-link on" id="nl-home" onclick="showSec('home')" data-i18n="nav.home">Accueil</span>
-    <span class="nav-link" id="nl-classement" onclick="showSec('classement')" data-i18n="nav.classement">Classement</span>
-    <span class="nav-link" id="nl-regulatoire" onclick="showSec('regulatoire')" data-i18n="nav.reglementaire">Réglementaire</span>
-    <span class="nav-link" id="nl-intelligence" onclick="showSec('intelligence')" data-i18n="nav.intelligence">Intelligence</span>
-    <span class="nav-link" id="nl-methode" onclick="showSec('methode')" data-i18n="nav.methode">Méthode</span>
-    <span class="nav-link" id="nl-apropos" onclick="showSec('apropos')" data-i18n="nav.apropos">À propos</span>
+  <div class="nav-links" role="list">
+    <span class="nav-link on" id="nl-home" onclick="showSec('home')" data-i18n="nav.home" role="listitem button" tabindex="0" aria-current="page" onkeydown="if(event.key==='Enter')showSec('home')">Accueil</span>
+    <span class="nav-link" id="nl-classement" onclick="showSec('classement')" data-i18n="nav.classement" role="listitem button" tabindex="0" onkeydown="if(event.key==='Enter')showSec('classement')">Classement</span>
+    <span class="nav-link" id="nl-regulatoire" onclick="showSec('regulatoire')" data-i18n="nav.reglementaire" role="listitem button" tabindex="0" onkeydown="if(event.key==='Enter')showSec('regulatoire')">Réglementaire</span>
+    <span class="nav-link" id="nl-intelligence" onclick="showSec('intelligence')" data-i18n="nav.intelligence" role="listitem button" tabindex="0" onkeydown="if(event.key==='Enter')showSec('intelligence')">Intelligence</span>
+    <span class="nav-link" id="nl-methode" onclick="showSec('methode')" data-i18n="nav.methode" role="listitem button" tabindex="0" onkeydown="if(event.key==='Enter')showSec('methode')">Méthode</span>
+    <span class="nav-link" id="nl-apropos" onclick="showSec('apropos')" data-i18n="nav.apropos" role="listitem button" tabindex="0" onkeydown="if(event.key==='Enter')showSec('apropos')">À propos</span>
   </div>
   <div class="nav-right">
-    <div class="lang-sw">
-      <button class="lang-btn on" id="lFR" onclick="setLang('fr')">FR</button>
-      <button class="lang-btn" id="lEN" onclick="setLang('en')">EN</button>
+    <div class="lang-sw" role="group" aria-label="Sélection de la langue">
+      <button class="lang-btn on" id="lFR" onclick="setLang('fr')" aria-label="Passer en français" aria-pressed="true">FR</button>
+      <button class="lang-btn" id="lEN" onclick="setLang('en')" aria-label="Switch to English" aria-pressed="false">EN</button>
     </div>
-    <button class="btn-nav" onclick="openForm()" data-i18n="nav.partager">Partager →</button>
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
+    <button class="btn-nav" onclick="openForm()" data-i18n="nav.partager" aria-label="Partager mon expérience client">Partager →</button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Ouvrir le menu de navigation" aria-expanded="false" aria-controls="mobMenu">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
   </div>
 </nav>
@@ -580,7 +608,7 @@ footer a:hover{color:var(--accent);}
 
 
 <!-- ══ HOME ══ -->
-<div id="sec-home">
+<div id="sec-home" role="main" id="main-content">
   <div class="wrap">
     <div class="hero">
       <div>
@@ -591,7 +619,7 @@ footer a:hover{color:var(--accent);}
         <div class="hero-btns">
           <button class="btn-p" onclick="openForm()" data-i18n="hero.btn.share">✦ Partager mon expérience</button>
           <button class="btn-s" onclick="showSec('classement')" data-i18n="hero.btn.rank">Voir le classement →</button>
-          <button class="btn-s" onclick="window.open('mailto:mrkpatinde@gmail.com')" data-i18n="hero.btn.contact">Contacter Naxari</button>
+          <button class="btn-s" onclick="window.open('mailto:mrkpatinde@gmail.com')" data-i18n="hero.btn.contact" aria-label="Contacter Naxari par email — ouvre votre client mail" title="Envoyer un email à contact@naxari.co">✉ Contacter Naxari</button>
         </div>
       </div>
       <div class="kpi-card">
@@ -642,45 +670,47 @@ footer a:hover{color:var(--accent);}
       <div class="sec-top">
         <div><div class="sec-h" data-i18n="rank.h">Classement CXFI 2026</div><div class="sec-sub" data-i18n="rank.sub">Trié par FCR. Score publié après 30 avis vérifiés. ✓ EDP = agrément BCEAO officiel.</div></div>
       </div>
-      <div class="search-wrap">
-        <span class="search-ico">🔍</span>
-        <input class="search-inp" type="text" id="lbSearch" placeholder="Rechercher une institution..." oninput="onSearch(this.value)">
+      <div class="search-wrap" role="search">
+        <span class="search-ico" aria-hidden="true">🔍</span>
+        <input class="search-inp" type="search" id="lbSearch" placeholder="Rechercher une institution..."
+          aria-label="Rechercher une institution dans le classement"
+          oninput="onSearch(this.value)" autocomplete="off">
       </div>
       <div id="searchEmpty" class="search-empty">
         <p data-i18n="rank.empty.p">Aucune institution trouvée. Elle n'est peut-être pas encore référencée.</p>
         <button class="btn-p" style="font-size:13px;padding:9px 18px" onclick="openSug()" data-i18n="rank.empty.btn">Suggérer cette institution →</button>
       </div>
-      <div class="fbar">
-        <div class="frow"><span class="fl" data-i18n="f.pays">Pays</span><div class="pills" id="pPills">
-          <button class="pill on" onclick="setFilter('pays','tous',this)" data-i18n="f.tous">Tous</button>
-          <button class="pill" onclick="setFilter('pays','BJ',this)">🇧🇯 Bénin</button>
-          <button class="pill" onclick="setFilter('pays','TG',this)">🇹🇬 Togo</button>
-          <button class="pill" onclick="setFilter('pays','CI',this)">🇨🇮 Côte d'Ivoire</button>
-          <button class="pill" onclick="setFilter('pays','SN',this)">🇸🇳 Sénégal</button>
-          <button class="pill" onclick="setFilter('pays','ML',this)">🇲🇱 Mali</button>
-          <button class="pill" onclick="setFilter('pays','BF',this)">🇧🇫 Burkina</button>
-          <button class="pill" onclick="setFilter('pays','NE',this)">🇳🇪 Niger</button>
-          <button class="pill" onclick="setFilter('pays','GW',this)">🇬🇼 G.-Bissau</button>
+      <div class="fbar" role="group" aria-label="Filtres du classement">
+        <div class="frow"><span class="fl" id="lbl-pays" data-i18n="f.pays">Pays</span><div class="pills" id="pPills" role="group" aria-labelledby="lbl-pays">
+          <button class="pill on" onclick="setFilter('pays','tous',this)" data-i18n="f.tous" aria-pressed="true" aria-label="Afficher tous les pays">Tous</button>
+          <button class="pill" onclick="setFilter('pays','BJ',this)" aria-pressed="false" aria-label="Filtrer : Bénin">🇧🇯 Bénin</button>
+          <button class="pill" onclick="setFilter('pays','TG',this)" aria-pressed="false" aria-label="Filtrer : Togo">🇹🇬 Togo</button>
+          <button class="pill" onclick="setFilter('pays','CI',this)" aria-pressed="false" aria-label="Filtrer : Côte d'Ivoire">🇨🇮 Côte d'Ivoire</button>
+          <button class="pill" onclick="setFilter('pays','SN',this)" aria-pressed="false" aria-label="Filtrer : Sénégal">🇸🇳 Sénégal</button>
+          <button class="pill" onclick="setFilter('pays','ML',this)" aria-pressed="false" aria-label="Filtrer : Mali">🇲🇱 Mali</button>
+          <button class="pill" onclick="setFilter('pays','BF',this)" aria-pressed="false" aria-label="Filtrer : Burkina Faso">🇧🇫 Burkina</button>
+          <button class="pill" onclick="setFilter('pays','NE',this)" aria-pressed="false" aria-label="Filtrer : Niger">🇳🇪 Niger</button>
+          <button class="pill" onclick="setFilter('pays','GW',this)" aria-pressed="false" aria-label="Filtrer : Guinée-Bissau">🇬🇼 G.-Bissau</button>
         </div></div>
-        <div class="frow"><span class="fl" data-i18n="f.cat">Catégorie</span><div class="pills" id="cPills">
-          <button class="pill on" onclick="setFilter('cat','tous',this)" data-i18n="f.toutes">Toutes</button>
-          <button class="pill" onclick="setFilter('cat','fintech',this)">Fintech</button>
-          <button class="pill" onclick="setFilter('cat','mobile',this)">Mobile Money</button>
-          <button class="pill" onclick="setFilter('cat','banque',this)">Banque</button>
-          <button class="pill" onclick="setFilter('cat','imf',this)">IMF</button>
-          <button class="pill" onclick="setFilter('cat','crypto',this)" data-i18n="f.crypto">Crypto & Prépayé</button>
-          <button class="pill" onclick="setFilter('cat','telco',this)">Telco</button>
+        <div class="frow"><span class="fl" id="lbl-cat" data-i18n="f.cat">Catégorie</span><div class="pills" id="cPills" role="group" aria-labelledby="lbl-cat">
+          <button class="pill on" onclick="setFilter('cat','tous',this)" data-i18n="f.toutes" aria-pressed="true" aria-label="Afficher toutes les catégories">Toutes</button>
+          <button class="pill" onclick="setFilter('cat','fintech',this)" aria-pressed="false" aria-label="Filtrer : Fintech">Fintech</button>
+          <button class="pill" onclick="setFilter('cat','mobile',this)" aria-pressed="false" aria-label="Filtrer : Mobile Money">Mobile Money</button>
+          <button class="pill" onclick="setFilter('cat','banque',this)" aria-pressed="false" aria-label="Filtrer : Banque">Banque</button>
+          <button class="pill" onclick="setFilter('cat','imf',this)" aria-pressed="false" aria-label="Filtrer : IMF — Institution de Microfinance">IMF</button>
+          <button class="pill" onclick="setFilter('cat','crypto',this)" data-i18n="f.crypto" aria-pressed="false" aria-label="Filtrer : Crypto et Prépayé">Crypto & Prépayé</button>
+          <button class="pill" onclick="setFilter('cat','telco',this)" aria-pressed="false" aria-label="Filtrer : Telco — Opérateur télécom">Telco</button>
         </div></div>
       </div>
       <div class="lb-wrap">
-        <div class="lb-head">
-          <span style="text-align:center">#</span>
-          <span>Institution</span>
-          <span style="text-align:center">Pays</span>
-          <span>FCR</span>
-          <span style="text-align:center">Avis</span>
-          <span>Statut</span>
-          <span style="text-align:center">Score</span>
+        <div class="lb-head" role="row">
+          <span role="columnheader" aria-sort="none" style="text-align:center">#</span>
+          <span role="columnheader">Institution</span>
+          <span role="columnheader" style="text-align:center">Pays</span>
+          <span role="columnheader" aria-sort="descending" title="First Contact Resolution — % d'opérations réussies sans friction au premier essai"><abbr title="First Contact Resolution">FCR</abbr> ↓</span>
+          <span role="columnheader" style="text-align:center" aria-sort="none">Avis</span>
+          <span role="columnheader">Statut</span>
+          <span role="columnheader" aria-sort="none" style="text-align:center">Score</span>
         </div>
         <div id="lbBody"></div>
       </div>
@@ -744,8 +774,8 @@ footer a:hover{color:var(--accent);}
         <div class="fb-form">
           <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px" data-i18n="intel.form.h">Votre retour</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:16px" data-i18n="intel.form.sub">Amélioration, bug, idée, suggestion — tout est utile.</div>
-          <label class="fb-label" data-i18n="intel.type.lbl">Type de retour *</label>
-          <select class="fb-inp" id="fbType" onchange="onFbTypeChange(this.value)" style="cursor:pointer">
+          <label class="fb-label" for="fbType" data-i18n="intel.type.lbl">Type de retour <span aria-hidden="true">*</span><span class="sr-only">(obligatoire)</span></label>
+          <select class="fb-inp" id="fbType" onchange="onFbTypeChange(this.value)" style="cursor:pointer" required aria-required="true" aria-describedby="fbTypeErr">
             <option value="">Choisir...</option>
             <option value="amelioration">Amélioration / Idée</option>
             <option value="bug">Bug / Problème technique</option>
@@ -753,11 +783,13 @@ footer a:hover{color:var(--accent);}
             <option value="methode">Question sur la méthodologie</option>
             <option value="autre">Autre</option>
           </select>
+          <span id="fbTypeErr" class="fb-field-err" role="alert" aria-live="polite" style="display:none;font-size:11px;color:var(--red);margin-top:3px;">Veuillez choisir un type de retour.</span>
           <div class="fb-inst-fields" id="fbInstFields">
-            <label class="fb-label" data-i18n="intel.inst.lbl">Nom de l'institution *</label>
-            <input class="fb-inp" type="text" id="fbInstNom" placeholder="Ex: FedaPay, Wave...">
-            <label class="fb-label">Catégorie *</label>
-            <select class="fb-inp" id="fbInstCat" style="cursor:pointer">
+            <label class="fb-label" for="fbInstNom" data-i18n="intel.inst.lbl">Nom de l'institution <span aria-hidden="true">*</span></label>
+            <input class="fb-inp" type="text" id="fbInstNom" placeholder="Ex: FedaPay, Wave..." aria-required="true" aria-describedby="fbInstErr">
+            <span id="fbInstErr" class="fb-field-err" role="alert" aria-live="polite" style="display:none;font-size:11px;color:var(--red);margin-top:3px;">Veuillez indiquer le nom de l'institution.</span>
+            <label class="fb-label" for="fbInstCat">Catégorie <span aria-hidden="true">*</span></label>
+            <select class="fb-inp" id="fbInstCat" style="cursor:pointer" aria-required="true">
               <option value="">Choisir...</option>
               <option value="fintech">Fintech</option>
               <option value="ep">Établissement de paiement</option>
@@ -767,8 +799,8 @@ footer a:hover{color:var(--accent);}
               <option value="crypto">Crypto & Carte prépayée</option>
               <option value="telco">Telco</option>
             </select>
-            <label class="fb-label">Pays principal *</label>
-            <select class="fb-inp" id="fbInstPays" style="cursor:pointer">
+            <label class="fb-label" for="fbInstPays">Pays principal <span aria-hidden="true">*</span></label>
+            <select class="fb-inp" id="fbInstPays" style="cursor:pointer" aria-required="true">
               <option value="">Sélectionner...</option>
               <option value="BJ">🇧🇯 Bénin</option><option value="TG">🇹🇬 Togo</option>
               <option value="CI">🇨🇮 Côte d'Ivoire</option><option value="SN">🇸🇳 Sénégal</option>
@@ -776,11 +808,12 @@ footer a:hover{color:var(--accent);}
               <option value="NE">🇳🇪 Niger</option><option value="GW">🇬🇼 Guinée-Bissau</option>
             </select>
           </div>
-          <label class="fb-label" data-i18n="intel.msg.lbl">Message *</label>
-          <textarea class="fb-inp fb-ta" id="fbMsg" placeholder="Décrivez votre retour..."></textarea>
-          <label class="fb-label" data-i18n="intel.contact.lbl">Votre contact (optionnel)</label>
-          <input class="fb-inp" type="text" id="fbContact" placeholder="Email ou WhatsApp">
-          <button class="fb-submit" id="fbSubmit" onclick="sendFeedback()" data-i18n="intel.submit">Envoyer →</button>
+          <label class="fb-label" for="fbMsg" data-i18n="intel.msg.lbl">Message <span aria-hidden="true">*</span><span class="sr-only">(obligatoire)</span></label>
+          <textarea class="fb-inp fb-ta" id="fbMsg" placeholder="Décrivez votre retour..." required aria-required="true" aria-describedby="fbMsgErr"></textarea>
+          <span id="fbMsgErr" class="fb-field-err" role="alert" aria-live="polite" style="display:none;font-size:11px;color:var(--red);margin-top:3px;">Veuillez écrire un message.</span>
+          <label class="fb-label" for="fbContact" data-i18n="intel.contact.lbl">Votre contact <span style="font-weight:400;text-transform:none;letter-spacing:0">(optionnel)</span></label>
+          <input class="fb-inp" type="text" id="fbContact" placeholder="Email ou WhatsApp" autocomplete="email">
+          <button class="fb-submit" id="fbSubmit" onclick="sendFeedbackValidated()" data-i18n="intel.submit" aria-label="Envoyer votre retour">Envoyer →</button>
           <div class="fb-done" id="fbDone">
             <div style="font-size:24px;margin-bottom:6px">✅</div>
             <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--green)" data-i18n="intel.done">Reçu ! Merci pour votre contribution.</div>
@@ -810,19 +843,23 @@ footer a:hover{color:var(--accent);}
       <div class="sec-top"><div><div class="sec-h" data-i18n="meth.h">Méthodologie CXFI</div><div class="sec-sub" data-i18n="meth.sub">Transparence totale. Les institutions ne peuvent pas acheter leur score.</div></div></div>
       <table class="meth-table">
         <tr><th>Ce que CXFI mesure</th><th>Pourquoi</th><th data-i18n="meth.col3">Ce que les autres font</th></tr>
-        <tr><td data-i18n="meth.r1c1">FCR — Résolu au 1er contact ?</td><td data-i18n="meth.r1c2">Prédicteur #1 de fidélité</td><td data-i18n="meth.r1c3">Note globale ⭐</td></tr>
+        <tr><td data-i18n="meth.r1c1"><abbr title="First Contact Resolution — % d'opérations réussies sans friction au premier essai">FCR</abbr> — Résolu au 1er contact ?</td><td data-i18n="meth.r1c2">Prédicteur #1 de fidélité</td><td data-i18n="meth.r1c3">Note globale ⭐</td></tr>
         <tr><td>Type d'opération</td><td data-i18n="meth.r2c2">Contextualise l'incident</td><td data-i18n="meth.r2c3">"Êtes-vous satisfait ?"</td></tr>
-        <tr><td data-i18n="meth.r3c1">Canal (USSD / App / Agence / API)</td><td data-i18n="meth.r3c2">La friction varie par canal</td><td data-i18n="meth.r3c3">Commentaire non contextualisé</td></tr>
+        <tr><td data-i18n="meth.r3c1">Canal (<abbr title="Unstructured Supplementary Service Data — menu téléphonique par codes *">USSD</abbr> / App / Agence / <abbr title="Application Programming Interface">API</abbr>)</td><td data-i18n="meth.r3c2">La friction varie par canal</td><td data-i18n="meth.r3c3">Commentaire non contextualisé</td></tr>
         <tr><td data-i18n="meth.r4c1">Cause d'échec précise</td><td data-i18n="meth.r4c2">Diagnostic actionnable</td><td>—</td></tr>
       </table>
       <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin:24px 0 8px" data-i18n="meth.score.h">Score CXFI pondéré</div>
       <table class="meth-table">
-        <tr><th>Métrique</th><th>Poids</th><th>Ce qu'elle mesure</th></tr>
-        <tr><td>FCR</td><td>40%</td><td>% résolu au 1er contact</td></tr>
-        <tr><td>CES</td><td>35%</td><td>Facilité perçue</td></tr>
-        <tr><td>CSAT</td><td>25%</td><td>5 critères qualitatifs</td></tr>
+        <thead>
+          <tr><th scope="col">Métrique</th><th scope="col">Poids</th><th scope="col">Ce qu'elle mesure</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><abbr title="First Contact Resolution — % d'opérations réussies sans friction au premier essai">FCR</abbr></td><td>40%</td><td>% résolu au 1er contact</td></tr>
+          <tr><td><abbr title="Customer Effort Score — facilité perçue de l'interaction">CES</abbr></td><td>35%</td><td>Facilité perçue</td></tr>
+          <tr><td><abbr title="Customer Satisfaction Score — score de satisfaction sur 5 critères qualitatifs">CSAT</abbr></td><td>25%</td><td>5 critères qualitatifs</td></tr>
+        </tbody>
       </table>
-      <div class="formula">Score CXFI = (FCR × 0.40) + (CES_normalisé × 0.35) + (CSAT_normalisé × 0.25)</div>
+      <div class="formula" role="math" aria-label="Score CXFI égal FCR multiplié par 0,40 plus CES normalisé multiplié par 0,35 plus CSAT normalisé multiplié par 0,25">Score CXFI = (<abbr title="First Contact Resolution">FCR</abbr> × 0.40) + (<abbr title="Customer Effort Score">CES</abbr>_normalisé × 0.35) + (<abbr title="Customer Satisfaction Score">CSAT</abbr>_normalisé × 0.25)</div>
       <div style="margin-top:16px;font-size:12px;color:var(--muted);padding:12px 16px;background:var(--cream);border-radius:8px;line-height:1.7" data-i18n="meth.note">
         Seuil : aucun score publié avant 30 avis vérifiés par institution et par pays.
         Limite anti-abus : 1 avis par institution, par pays, par utilisateur tous les 90 jours (contrôle côté Apps Script).
@@ -910,10 +947,10 @@ footer a:hover{color:var(--accent);}
 
 
 <!-- ══ MODAL FORMULAIRE ══ -->
-<div class="ov" id="formOv" onclick="if(event.target===this)closeForm()">
+<div class="ov" id="formOv" onclick="if(event.target===this)closeForm()" role="dialog" aria-modal="true" aria-labelledby="formModalTitle">
 <div class="modal">
-  <button class="modal-x" onclick="closeForm()">×</button>
-  <div class="prog-b"><div class="prog-f" id="progF" style="width:20%"></div></div>
+  <button class="modal-x" onclick="closeForm()" aria-label="Fermer le formulaire">×</button>
+  <div class="prog-b" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" aria-label="Progression du formulaire"><div class="prog-f" id="progF" style="width:20%"></div></div>
   <div class="prog-m"><span id="progStep">Étape 1 / 5</span><span id="progName">Votre situation</span></div>
 
   <!-- Étape 1 : Profil + Pays -->
@@ -1624,7 +1661,10 @@ function showSec(id) {
   });
   SECTIONS.forEach(s => {
     const nl = document.getElementById('nl-' + s);
-    if (nl) nl.classList.toggle('on', s === id);
+    if (nl) {
+      nl.classList.toggle('on', s === id);
+      nl.setAttribute('aria-current', s === id ? 'page' : 'false');
+    }
   });
   window.scrollTo({top:0, behavior:'smooth'});
   if (id === 'regulatoire') { renderPISPI(); pingBCEAO(); }
@@ -1632,19 +1672,37 @@ function showSec(id) {
 }
 
 function toggleMenu() {
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('mobMenu').classList.toggle('open');
+  const hb = document.getElementById('hamburger');
+  const mm = document.getElementById('mobMenu');
+  const isOpen = mm.classList.toggle('open');
+  hb.classList.toggle('open', isOpen);
+  hb.setAttribute('aria-expanded', String(isOpen));
+  hb.setAttribute('aria-label', isOpen ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation');
 }
 function closeMenu() {
-  document.getElementById('hamburger').classList.remove('open');
+  const hb = document.getElementById('hamburger');
+  hb.classList.remove('open');
+  hb.setAttribute('aria-expanded', 'false');
+  hb.setAttribute('aria-label', 'Ouvrir le menu de navigation');
   document.getElementById('mobMenu').classList.remove('open');
 }
+
+/* ── RETOUR EN HAUT ─────────────────────────────────────────── */
+(function(){
+  const btn = document.getElementById('backTop');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }, {passive: true});
+})();
 
 /* ── LANGUE ─────────────────────────────────────────────────── */
 function setLang(l) {
   lang = l;
   document.getElementById('lFR').classList.toggle('on', l === 'fr');
   document.getElementById('lEN').classList.toggle('on', l === 'en');
+  document.getElementById('lFR').setAttribute('aria-pressed', l === 'fr' ? 'true' : 'false');
+  document.getElementById('lEN').setAttribute('aria-pressed', l === 'en' ? 'true' : 'false');
   applyLang();
   buildTicker();
   renderLB();
@@ -1730,9 +1788,13 @@ function setFilter(type, val, btn) {
   const si = document.getElementById('lbSearch');
   if (si) si.value = '';
   document.getElementById('searchEmpty').style.display = 'none';
-  document.getElementById(type === 'pays' ? 'pPills' : 'cPills')
-    .querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  btn.classList.add('active');
+  const container = document.getElementById(type === 'pays' ? 'pPills' : 'cPills');
+  container.querySelectorAll('.pill').forEach(p => {
+    p.classList.remove('on');
+    p.setAttribute('aria-pressed', 'false');
+  });
+  btn.classList.add('on');
+  btn.setAttribute('aria-pressed', 'true');
   filters[type] = val;
   renderLB();
 }
@@ -2129,6 +2191,72 @@ async function sendFeedback() {
   ['fbType','fbMsg','fbContact'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('fbInstFields').style.display = 'none';
   btn.disabled = false;
+}
+
+/* Version avec validation inline (appelée par le bouton amélioré) */
+function showFieldErr(fieldId, errId, msg) {
+  const field = document.getElementById(fieldId);
+  const err   = document.getElementById(errId);
+  if (field)  field.classList.add('invalid');
+  if (err)  { err.textContent = msg; err.style.display = 'block'; }
+}
+function clearFieldErr(fieldId, errId) {
+  const field = document.getElementById(fieldId);
+  const err   = document.getElementById(errId);
+  if (field)  field.classList.remove('invalid');
+  if (err)    err.style.display = 'none';
+}
+async function sendFeedbackValidated() {
+  let valid = true;
+  const fbType = document.getElementById('fbType').value;
+  const fbMsg  = document.getElementById('fbMsg').value.trim();
+  const isInst = fbType === 'institution';
+  // Reset errors
+  clearFieldErr('fbType', 'fbTypeErr');
+  clearFieldErr('fbMsg',  'fbMsgErr');
+  if (isInst) clearFieldErr('fbInstNom', 'fbInstErr');
+  // Validate
+  if (!fbType) { showFieldErr('fbType', 'fbTypeErr', 'Veuillez choisir un type de retour.'); valid = false; }
+  if (!fbMsg)  { showFieldErr('fbMsg',  'fbMsgErr',  'Veuillez écrire un message.'); valid = false; }
+  if (isInst && !document.getElementById('fbInstNom').value.trim()) {
+    showFieldErr('fbInstNom', 'fbInstErr', 'Veuillez indiquer le nom de l\'institution.'); valid = false;
+  }
+  if (!valid) {
+    // Focus on first invalid field
+    const first = document.querySelector('.fb-inp.invalid');
+    if (first) first.focus();
+    return;
+  }
+  const btn = document.getElementById('fbSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+  try {
+    await sbFetch('feedback', {
+      method: 'POST',
+      body: JSON.stringify({
+        timestamp: new Date().toISOString(),
+        fb_type:   fbType,
+        inst_nom:  document.getElementById('fbInstNom').value.trim(),
+        inst_cat:  document.getElementById('fbInstCat').value,
+        inst_pays: document.getElementById('fbInstPays').value,
+        message:   fbMsg,
+        contact:   document.getElementById('fbContact').value.trim(),
+        lang
+      })
+    });
+  } catch(e) { /* fail silently, show success anyway */ }
+  // Show success
+  const done = document.getElementById('fbDone');
+  done.style.display = 'block';
+  done.setAttribute('role', 'status');
+  done.setAttribute('aria-live', 'polite');
+  // Reset form
+  ['fbType','fbMsg','fbContact'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('fbInstFields').style.display = 'none';
+  btn.disabled = false;
+  btn.textContent = 'Envoyer →';
+  // Scroll to confirmation
+  done.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* ── PARTAGE ────────────────────────────────────────────────── */

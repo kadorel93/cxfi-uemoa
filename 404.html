@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page introuvable · CXFI UEMOA 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;--muted:#6B6560;--accent:#1A3FFF;--border:rgba(15,14,12,0.1);}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;}
+nav{position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;
+  padding:0 32px;background:rgba(247,244,238,0.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;}
+.logo-box{width:30px;height:30px;background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:800;border-radius:6px;}
+.logo-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.logo-text em{color:var(--accent);font-style:normal;}
+main{flex:1;display:flex;align-items:center;justify-content:center;
+  padding:100px 40px 60px;text-align:center;}
+.inner{max-width:480px;}
+.code{font-family:'Syne',sans-serif;font-size:96px;font-weight:800;
+  line-height:1;letter-spacing:-4px;color:var(--cream);margin-bottom:0;
+  -webkit-text-stroke:2px var(--ink);}
+.title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin:12px 0 10px;}
+.desc{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:28px;}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-p{padding:12px 24px;background:var(--ink);color:var(--paper);border:none;
+  border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;
+  transition:background .2s;}
+.btn-p:hover{background:var(--accent);}
+.btn-s{padding:11px 18px;background:transparent;color:var(--ink);
+  border:1.5px solid var(--sand);border-radius:10px;font-size:14px;font-weight:500;
+  text-decoration:none;transition:border-color .2s;}
+.btn-s:hover{border-color:var(--ink);}
+footer{border-top:1px solid var(--border);padding:20px 40px;
+  text-align:center;font-size:12px;color:var(--muted);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo" aria-label="CXFI — Retour à l'accueil">
+    <div class="logo-box" aria-hidden="true">CX</div>
+    <span class="logo-text">CX<em>FI</em></span>
+  </a>
+</nav>
+<main id="main-content">
+  <div class="inner">
+    <p class="code" aria-hidden="true">404</p>
+    <h1 class="title">Page introuvable</h1>
+    <p class="desc">L'adresse que vous avez demandée n'existe pas ou a été déplacée.<br>Retournez à l'accueil pour explorer le Baromètre CXFI 2026.</p>
+    <div class="btns">
+      <a href="/" class="btn-p">← Retour à l'accueil</a>
+      <a href="/#classement" class="btn-s">Voir le classement</a>
+    </div>
+  </div>
+</main>
+<footer>
+  <span>© 2026 Naxari · Intelligence terrain UEMOA</span>
+</footer>
+</body>
+</html>
