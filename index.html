@@ -1471,7 +1471,11 @@ const COUNTRY_NAMES = {BJ:'Bénin',BF:'Burkina',CI:"Côte d'Ivoire",GW:'Guinée-
 const TAG_LABELS = {fintech:'Fintech',banque:'Banque',mobile:'Mobile Money',imf:'IMF',telco:'Telco',ep:'Étab. Paiement',crypto:'Crypto & Prépayé'};
 const TAG_CSS = {fintech:'tag-ft',banque:'tag-bn',mobile:'tag-mm',imf:'tag-imf',telco:'tag-tl',ep:'tag-ep',crypto:'tag-cr'};
 const SECTIONS = ['home','classement','regulatoire','intelligence','methode','apropos'];
-const STEP_NAMES = ['','Votre situation','Institution & canal','L\'expérience','Qualité perçue','Votre ressenti'];
+const STEP_NAMES_I18N = {
+  fr: ['','Votre situation','Institution & canal','L\'expérience','Qualité perçue','Votre ressenti'],
+  en: ['','Your situation','Institution & channel','The experience','Perceived quality','Your feedback']
+};
+function getStepNames() { return STEP_NAMES_I18N[lang] || STEP_NAMES_I18N.fr; }
 const STAR_COLORS = ['','#EF4444','#F97316','#EAB308','#84CC16','#22C55E'];
 const CRITERIA = ['rapidite','facilite','frais','support','confiance'];
 
@@ -1586,6 +1590,8 @@ function resetFd() {
 
 /* ── TICKER ─────────────────────────────────────────────────── */
 const TICKER = {raf:null,pos:0,allSeen:false,paused:false,totalW:0,speed:0.85};
+// Arrêter si onglet caché — ajouté une seule fois (buildTicker est rappelé à chaque changement de langue)
+document.addEventListener('visibilitychange', () => { TICKER.paused = document.hidden; });
 
 function buildTicker() {
   const countryOrder = ['BJ','BF','CI','GW','ML','NE','SN','TG'];
@@ -1636,11 +1642,6 @@ function buildTicker() {
     trackEl.style.transform = `translateX(-${TICKER.pos}px)`;
     TICKER.raf = requestAnimationFrame(runTicker);
   }
-  // Arrêter si onglet caché
-  document.addEventListener('visibilitychange', () => {
-    TICKER.paused = document.hidden;
-  }, {once:false});
-
   measureAndStart();
 }
 
@@ -1686,6 +1687,15 @@ function closeMenu() {
   hb.setAttribute('aria-label', 'Ouvrir le menu de navigation');
   document.getElementById('mobMenu').classList.remove('open');
 }
+
+/* ── FERMER MENU MOBILE EN CLIQUANT À L'EXTÉRIEUR ───────────── */
+document.addEventListener('click', function(e) {
+  const mm = document.getElementById('mobMenu');
+  const hb = document.getElementById('hamburger');
+  if (mm && mm.classList.contains('open') && !mm.contains(e.target) && !hb.contains(e.target)) {
+    closeMenu();
+  }
+});
 
 /* ── RETOUR EN HAUT ─────────────────────────────────────────── */
 (function(){
@@ -1754,16 +1764,13 @@ function updateStaticSections() {
   const si = document.getElementById('lbSearch');
   if (si) si.placeholder = t('rank.search');
 
-  // Step names (formulaire)
-  const stepNames = ['', t('s1.h'), t('s2.h'), t('s3.h'), t('s4.h'), t('s5.h')];
+  // Step names (formulaire) — utilise les noms courts traduits
   const pn = document.getElementById('progName');
   if (pn && pn.textContent) {
-    // Mettre à jour si on est sur une étape active
     const activeStep = document.querySelector('.step.active');
     if (activeStep) {
-      const stepId = activeStep.id;
-      const stepNum = parseInt(stepId.replace('s',''));
-      if (stepNum >= 1 && stepNum <= 5) pn.textContent = stepNames[stepNum];
+      const stepNum = parseInt(activeStep.id.replace('s',''));
+      if (stepNum >= 1 && stepNum <= 5) pn.textContent = getStepNames()[stepNum] || '';
     }
   }
 }
@@ -1969,8 +1976,8 @@ function goStep(n) {
   document.querySelector('.prog-m').style.display = isFormStep ? '' : 'none';
   if (isFormStep) {
     document.getElementById('progF').style.width = (n * 20) + '%';
-    document.getElementById('progStep').textContent = `Étape ${n} / 5`;
-    document.getElementById('progName').textContent = STEP_NAMES[n] || '';
+    document.getElementById('progStep').textContent = lang === 'fr' ? `Étape ${n} / 5` : `Step ${n} / 5`;
+    document.getElementById('progName').textContent = getStepNames()[n] || '';
   }
   // Initialiser les étoiles et NPS à l'étape 4
   if (n === 4) initRatingUI();
@@ -2084,7 +2091,7 @@ async function sendForm() {
   goStep('Send');
 
   const frictions = Array.from(
-    document.getElementById('frictionGrid').querySelectorAll('.fr-item.on')
+    document.getElementById('frictionGrid').querySelectorAll('.fr-item.active')
   ).map(el => el.textContent.trim());
 
   const payload = {
