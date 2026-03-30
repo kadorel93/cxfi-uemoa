@@ -403,7 +403,7 @@ h1 .hollow{-webkit-text-stroke:2px var(--ink);color:transparent;}
   background:var(--green);border-radius:50%;border:1px solid var(--card);}
 .inst-name{font-size:12px;font-weight:600;}
 .inst-meta{font-size:10px;color:var(--muted);}
-.inst-item.active 
+.inst-item.active .inst-meta{color:rgba(247,244,238,0.6);}
 /* yes/no */
 .yn{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .yn-btn{padding:13px;border:2px solid var(--sand);border-radius:10px;
@@ -562,7 +562,7 @@ footer a:hover{color:var(--accent);}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main-content">Aller au contenu principal</a>
+<a class="skip-link" href="#sec-home">Aller au contenu principal</a>
 <button class="back-top" id="backTop" onclick="scrollTo({top:0,behavior:'smooth'})" aria-label="Retour en haut de page" title="Retour en haut">↑</button>
 
 <!-- NAV -->
@@ -608,7 +608,7 @@ footer a:hover{color:var(--accent);}
 
 
 <!-- ══ HOME ══ -->
-<div id="sec-home" role="main" id="main-content">
+<div id="sec-home" role="main">
   <div class="wrap">
     <div class="hero">
       <div>
@@ -975,7 +975,8 @@ footer a:hover{color:var(--accent);}
       <button class="sel-btn" onclick="pick('pays','NE',this)"><span class="ico">🇳🇪</span><span class="lbl">Niger</span></button>
       <button class="sel-btn" onclick="pick('pays','GW',this)"><span class="ico">🇬🇼</span><span class="lbl">G.-B.</span></button>
     </div>
-    <div class="form-nav"><div></div><button class="btn-next" onclick="goStep(2)" data-i18n="btn.continuer">Continuer →</button></div>
+    <div id="s1Err" style="display:none;margin-top:8px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);border:1px solid #FECACA"></div>
+    <div class="form-nav"><div></div><button class="btn-next" onclick="tryGoStep2()" data-i18n="btn.continuer">Continuer →</button></div>
   </div>
 
   <!-- Étape 2 : Institution + Canal -->
@@ -994,7 +995,8 @@ footer a:hover{color:var(--accent);}
       <button class="sel-btn" onclick="pick('canal','whatsapp',this)"><span class="ico">💬</span><span class="lbl">WhatsApp</span></button>
       <button class="sel-btn" onclick="pick('canal','api',this)"><span class="ico">⚙️</span><span class="lbl">API</span></button>
     </div>
-    <div class="form-nav"><button class="btn-back" onclick="goStep(1)" data-i18n="btn.retour">← Retour</button><button class="btn-next" onclick="goStep(3)" data-i18n="btn.continuer">Continuer →</button></div>
+    <div id="s2Err" style="display:none;margin-top:8px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);border:1px solid #FECACA"></div>
+    <div class="form-nav"><button class="btn-back" onclick="goStep(1)" data-i18n="btn.retour">← Retour</button><button class="btn-next" onclick="tryGoStep3()" data-i18n="btn.continuer">Continuer →</button></div>
   </div>
 
   <!-- Étape 3 : Expérience FCR -->
@@ -1033,7 +1035,8 @@ footer a:hover{color:var(--accent);}
         <button class="yn-btn" id="ynResNon" onclick="pickResolu(false)"><span class="yn-ico">⏳</span><span class="yn-lbl" data-i18n="s3.res.non">Non / En attente</span></button>
       </div>
     </div>
-    <div class="form-nav" style="margin-top:14px"><button class="btn-back" onclick="goStep(2)" data-i18n="btn.retour">← Retour</button><button class="btn-next" onclick="goStep(4)" data-i18n="btn.continuer">Continuer →</button></div>
+    <div id="s3Err" style="display:none;margin-top:8px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);border:1px solid #FECACA"></div>
+    <div class="form-nav" style="margin-top:14px"><button class="btn-back" onclick="goStep(2)" data-i18n="btn.retour">← Retour</button><button class="btn-next" onclick="tryGoStep4()" data-i18n="btn.continuer">Continuer →</button></div>
   </div>
 
   <!-- Étape 4 : Notation qualitative -->
@@ -1059,6 +1062,7 @@ footer a:hover{color:var(--accent);}
     <div class="step-sub" data-i18n="s5.sub">Optionnel — la partie la plus lue par les dirigeants.</div>
     <textarea class="vb-ta" id="verbTa" oninput="onVbInput(this)" data-i18n-ph="s5.ph" placeholder="Ex: L'app plante souvent le soir. Le support répond vite sur WhatsApp."></textarea>
     <div class="vb-count" id="vbCount">0 / 500</div>
+    <div id="s5Err" style="display:none;margin-top:8px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);border:1px solid #FECACA"></div>
     <div class="form-nav"><button class="btn-back" onclick="goStep(4)" data-i18n="btn.retour">← Retour</button><button class="btn-next" id="sendBtn" onclick="sendForm()" data-i18n="btn.envoyer">Envoyer ✓</button></div>
   </div>
 
@@ -1448,7 +1452,8 @@ const CFG = {
   supabaseUrl: 'https://yyrjbrwrywbcusiivsgy.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cmpicndyeXdiY3VzaWl2c2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTYzNDQsImV4cCI6MjA4OTA5MjM0NH0.PYK_Fiby1t4YIR36HGylDnBKHbu5iGfooF-WHIAlUmQ',
   siteUrl:     'https://cxfi-uemoa.netlify.app',
-  adminCode:   '',
+  adminCode:   'cxfi2026naxari',
+  adminUrl:    'https://supabase.com/dashboard/project/yyrjbrwrywbcusiivsgy/editor',
 };
 
 /* ── DONNÉES ────────────────────────────────────────────────── */
@@ -2011,6 +2016,66 @@ function initRatingUI() {
   }
 }
 
+/* ── VALIDATION ÉTAPES ──────────────────────────────────────── */
+function showStepErr(errId, msg) {
+  const el = document.getElementById(errId);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function hideStepErr(errId) {
+  const el = document.getElementById(errId);
+  if (el) el.style.display = 'none';
+}
+
+function tryGoStep2() {
+  hideStepErr('s1Err');
+  if (!fd.profile && !fd.pays) {
+    showStepErr('s1Err', '👆 Sélectionnez votre profil et le pays de l\'expérience.');
+    return;
+  }
+  if (!fd.profile) {
+    showStepErr('s1Err', '👤 Sélectionnez votre profil (Particulier, Commerçant…).');
+    return;
+  }
+  if (!fd.pays) {
+    showStepErr('s1Err', '🌍 Sélectionnez le pays de l\'expérience.');
+    return;
+  }
+  goStep(2);
+}
+
+function tryGoStep3() {
+  hideStepErr('s2Err');
+  if (!fd.inst && !fd.canal) {
+    showStepErr('s2Err', '🏦 Sélectionnez l\'institution et le canal utilisé.');
+    return;
+  }
+  if (!fd.inst) {
+    showStepErr('s2Err', '🏦 Sélectionnez l\'institution dans la liste.');
+    return;
+  }
+  if (!fd.canal) {
+    showStepErr('s2Err', '📱 Sélectionnez le canal utilisé (App, USSD, Agence…).');
+    return;
+  }
+  goStep(3);
+}
+
+function tryGoStep4() {
+  hideStepErr('s3Err');
+  if (!fd.op) {
+    showStepErr('s3Err', '↔️ Sélectionnez le type d\'opération.');
+    return;
+  }
+  if (fd.fcr === null) {
+    showStepErr('s3Err', '✅ Indiquez si l\'opération a fonctionné du premier coup.');
+    return;
+  }
+  goStep(4);
+}
+
 /* ── FORMULAIRE — SÉLECTIONS ────────────────────────────────── */
 function pick(field, val, btn) {
   btn.closest('.g2,.g3,.g4')?.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
@@ -2082,8 +2147,31 @@ function onVbInput(ta) {
 /* ── ENVOI FORMULAIRE ───────────────────────────────────────── */
 async function sendForm() {
   if (isSubmitting) return;
-  if (!fd.inst) { alert('Veuillez sélectionner une institution.'); goStep(2); return; }
-  if (fd.fcr === null) { alert('Indiquez si le service a fonctionné.'); return; }
+  hideStepErr('s5Err');
+  if (!fd.inst) {
+    showStepErr('s5Err', '🏦 Institution manquante — retournez à l\'étape 2.');
+    goStep(2);
+    return;
+  }
+  if (fd.fcr === null) {
+    showStepErr('s5Err', '✅ Indiquez si l\'opération a fonctionné — retournez à l\'étape 3.');
+    goStep(3);
+    return;
+  }
+
+  // ── ANTI-ABUS : 1 avis / institution / pays / 90 jours ──
+  const abuseKey = `cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
+  try {
+    const lastTs = localStorage.getItem(abuseKey);
+    if (lastTs) {
+      const daysSince = (Date.now() - parseInt(lastTs, 10)) / 86400000;
+      if (daysSince < 90) {
+        const jours = Math.ceil(90 - daysSince);
+        showStepErr('s5Err', `⏳ Vous avez déjà partagé votre expérience avec ${fd.inst} récemment. Revenez dans ${jours} jour${jours > 1 ? 's' : ''}.`);
+        return;
+      }
+    }
+  } catch(e) { /* localStorage peut être bloqué (navigation privée) — on laisse passer */ }
 
   isSubmitting = true;
   const sendBtn = document.getElementById('sendBtn');
@@ -2122,6 +2210,11 @@ async function sendForm() {
 
 function onFormSuccess() {
   isSubmitting = false;
+  // Enregistrer le timestamp anti-abus
+  try {
+    const abuseKey = `cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
+    localStorage.setItem(abuseKey, Date.now().toString());
+  } catch(e) {}
   // Incrémenter le compteur
   const newCount = totalCount + 1;
   setCount(newCount);
@@ -2292,26 +2385,38 @@ function downloadDataCTA() {
 /* ── ADMIN ──────────────────────────────────────────────────── */
 function openAdmin() {
   const pw = prompt('Code admin :');
-  if (pw === CFG.adminCode) window.open(CFG.sheetUrl, '_blank');
-  else if (pw) alert('Code incorrect.');
+  if (!pw) return;
+  if (pw === CFG.adminCode && CFG.adminUrl) window.open(CFG.adminUrl, '_blank');
+  else alert('Code incorrect.');
 }
 
 /* ── CHARGEMENT STATS RÉELLES ───────────────────────────────── */
 async function loadStats() {
   try {
-    const res = await sbFetch('avis?select=institution', {
+    // Étape 1 : récupérer le total exact avec count=exact
+    const countRes = await sbFetch('avis?select=institution', {
+      method: 'GET',
+      headers: {
+        'Prefer': 'count=exact',
+        'Range-Unit': 'items',
+        'Range': '0-0'
+      }
+    });
+    const total = parseInt(countRes.headers.get('content-range')?.split('/')[1] || '0', 10);
+    if (total > totalCount) animCount(total);
+
+    // Étape 2 : récupérer institution + comptage (max 10 000 lignes)
+    const res = await sbFetch('avis?select=institution&limit=10000', {
       method: 'GET',
       headers: { 'Prefer': 'return=representation' }
     });
-    if (!res.ok) { animCount(0); return; }
+    if (!res.ok) return;
     const rows = await res.json();
-    const total = rows.length;
     const counts = {};
     rows.forEach(row => {
       const nom = (row.institution || '').trim();
       if (nom) counts[nom] = (counts[nom] || 0) + 1;
     });
-    if (total >= totalCount) animCount(total);
     Object.entries(counts).forEach(([nom, rv]) => {
       const inst = INSTS.find(i => i.n === nom);
       if (inst && rv >= inst.rv) inst.rv = rv;
