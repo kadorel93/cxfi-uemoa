@@ -94,6 +94,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;
 .h1-line-1 .h1-line-inner{animation:h1LineIn .55s .05s cubic-bezier(0.16,1,0.3,1) both;}
 .h1-line-2 .h1-line-inner{animation:h1LineIn .55s .18s cubic-bezier(0.16,1,0.3,1) both;}
 .h1-line-3 .h1-line-inner{animation:h1LineIn .55s .32s cubic-bezier(0.16,1,0.3,1) both;}
+/* Ligne 3 : overflow-y clip pour l'animation, overflow-x visible pour ne jamais couper */
+.h1-line-3{overflow-y:clip!important;overflow-x:visible!important;}
 /* ── "FINANCE" — REVEAL CINÉMATIQUE ─────────────────────────── */
 @keyframes h1LetterDrop{
   0%  {opacity:0;transform:translateY(14px) scale(.94);filter:blur(6px);}
@@ -2479,7 +2481,7 @@ function buildHeroH1() {
       `<span class="h1-line-inner">${line1}</span></span>` +
     `<span class="h1-line h1-line-2" style="display:block;overflow:hidden">` +
       `<span class="h1-line-inner">${line2}</span></span>` +
-    `<span class="h1-line h1-line-3" style="display:block;overflow:hidden">` +
+    `<span class="h1-line h1-line-3" style="display:block;">` +
       `<span class="h1-line-inner">${line3p}${financeHtml}</span></span>`;
 }
 
