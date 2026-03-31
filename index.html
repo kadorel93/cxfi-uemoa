@@ -90,19 +90,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;
 .sec-anim{animation:secIn .55s cubic-bezier(0.16,1,0.3,1) both;}
 /* ── HERO H1 ANIMATION ──────────────────────────────────────── */
 @keyframes h1LineIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-@keyframes h1SlotIn{from{opacity:0;transform:translateY(40%) scale(0.92)}to{opacity:1;transform:none}}
-@keyframes h1SlotOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-40%) scale(0.92)}}
 .h1-line-inner{display:block;will-change:transform;}
 .h1-line-1 .h1-line-inner{animation:h1LineIn .55s .05s cubic-bezier(0.16,1,0.3,1) both;}
 .h1-line-2 .h1-line-inner{animation:h1LineIn .55s .18s cubic-bezier(0.16,1,0.3,1) both;}
 .h1-line-3 .h1-line-inner{animation:h1LineIn .55s .32s cubic-bezier(0.16,1,0.3,1) both;}
-.h1-slot{display:inline-block;will-change:transform,opacity;}
-.h1-slot.slot-in{animation:h1SlotIn .4s cubic-bezier(0.16,1,0.3,1) both;}
-.h1-slot.slot-out{animation:h1SlotOut .25s ease-in forwards;}
 /* Respect prefers-reduced-motion */
 @media(prefers-reduced-motion:reduce){
   .t-track{animation:none!important;overflow-x:auto;}
-  .sec-anim,.dot,.h1-line-inner,.h1-slot{animation:none;}
+  .sec-anim,.dot,.h1-line-inner{animation:none;}
   *{transition-duration:.01ms!important;}
 }
 
@@ -1730,7 +1725,7 @@ function setLang(l) {
   document.getElementById('lFR').setAttribute('aria-pressed', l === 'fr' ? 'true' : 'false');
   document.getElementById('lEN').setAttribute('aria-pressed', l === 'en' ? 'true' : 'false');
   applyLang();
-  startH1Animation(); // Relancer l'animation dans la nouvelle langue
+  buildHeroH1(); // Reconstruire le h1 dans la nouvelle langue
   buildTicker();
   renderLB();
 }
@@ -2437,55 +2432,21 @@ async function loadStats() {
   }
 }
 
-/* ── HERO H1 — ANIMATION MOT TOURNANT ───────────────────────── */
-const H1_SLOT_WORDS = {
-  fr: ['Wave', 'Kkiapay', 'FedaPay', "l'USSD", 'votre appli', 'finance'],
-  en: ['Wave', 'Kkiapay', 'FedaPay', 'USSD', 'your app', 'finance']
-};
-let _h1Idx   = 0;
-let _h1Timer = null;
-
+/* ── HERO H1 — ANIMATION ENTRÉE ─────────────────────────────── */
 function buildHeroH1() {
   const h1 = document.querySelector('#sec-home h1');
   if (!h1) return;
-  const isEn   = lang === 'en';
-  const line1  = isEn ? 'What customers'  : 'Ce que les clients';
-  const line2  = isEn ? 'really think'    : 'pensent vraiment';
-  const line3p = isEn ? 'about '          : 'de la ';
-  const word   = H1_SLOT_WORDS[lang][_h1Idx % H1_SLOT_WORDS[lang].length];
+  const isEn  = lang === 'en';
+  const line1 = isEn ? 'What customers'       : 'Ce que les clients';
+  const line2 = isEn ? 'really think'         : 'pensent vraiment';
+  const line3 = isEn ? 'about finance'        : 'de la finance';
   h1.innerHTML =
     `<span class="h1-line h1-line-1" style="display:block;overflow:hidden">` +
       `<span class="h1-line-inner">${line1}</span></span>` +
     `<span class="h1-line h1-line-2" style="display:block;overflow:hidden">` +
       `<span class="h1-line-inner">${line2}</span></span>` +
     `<span class="h1-line h1-line-3" style="display:block;overflow:hidden">` +
-      `<span class="h1-line-inner">${line3p}` +
-        `<span class="h1-slot hollow slot-in" id="h1SlotWord">${word}</span>` +
-      `</span></span>`;
-}
-
-function _cycleH1() {
-  const el = document.getElementById('h1SlotWord');
-  if (!el) return;
-  const words = H1_SLOT_WORDS[lang];
-  el.classList.replace('slot-in', 'slot-out');
-  setTimeout(() => {
-    _h1Idx = (_h1Idx + 1) % words.length;
-    el.textContent = words[_h1Idx];
-    el.classList.replace('slot-out', 'slot-in');
-    // Pause plus longue sur "finance" (le mot final)
-    const isLast = _h1Idx === words.length - 1;
-    if (_h1Timer) clearTimeout(_h1Timer);
-    _h1Timer = setTimeout(_cycleH1, isLast ? 4500 : 1100);
-  }, 260);
-}
-
-function startH1Animation() {
-  if (_h1Timer) { clearTimeout(_h1Timer); _h1Timer = null; }
-  _h1Idx = 0;
-  buildHeroH1();
-  // Déclencher le cycle après l'animation d'entrée
-  _h1Timer = setTimeout(_cycleH1, 2200);
+      `<span class="h1-line-inner">${line3}</span></span>`;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -2494,7 +2455,7 @@ function startH1Animation() {
 buildTicker();
 renderLB();
 applyLang();      // Appliquer la langue initiale (FR par défaut) — appelle buildHeroH1()
-startH1Animation(); // Démarrer l'animation de la phrase d'accueil
+buildHeroH1(); // Construire le h1 avec animation d'entrée
 loadStats();      // Charger les vrais chiffres depuis Supabase
 
 </script>
