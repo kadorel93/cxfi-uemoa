@@ -1071,7 +1071,7 @@ footer a:hover{color:var(--accent);}
   <!-- Étape 1 : Profil + Pays -->
   <div class="step active" id="s1">
     <div class="step-h" data-i18n="s1.h">D'abord, qui êtes-vous ?</div>
-    <div class="step-sub" data-i18n="s1.sub">Votre profil contextualise votre expérience.</div>
+    <div class="step-sub" data-i18n="s1.sub">Votre profil donne du poids à votre avis.</div>
     <div class="step-lbl" data-i18n="s1.lbl.profil">Vous êtes</div>
     <div class="g2">
       <button class="sel-btn" onclick="pick('profile','particulier',this)"><span class="ico">👤</span><span class="lbl" data-i18n="s1.particulier">Particulier</span></button>
@@ -1097,7 +1097,7 @@ footer a:hover{color:var(--accent);}
   <!-- Étape 2 : Institution + Canal -->
   <div class="step" id="s2">
     <div class="step-h" data-i18n="s2.h">Quelle institution ?</div>
-    <div class="step-sub" data-i18n="s2.sub">Sélectionnez l'institution utilisée, puis le canal.</div>
+    <div class="step-sub" data-i18n="s2.sub">Votre avis va peser dans son classement.</div>
     <div class="srch-wrap"><span class="srch-ico">🔍</span><input class="srch-inp" type="text" id="instQ" data-i18n-ph="s2.search" placeholder="Rechercher..." oninput="filterInst(this.value)"></div>
     <div class="inst-list" id="instList"></div>
     <div style="margin-top:6px;font-size:10px;color:var(--muted)"><span data-i18n="s2.missing">Introuvable ?</span> <a href="#" onclick="openSugFromForm(event)" style="color:var(--accent);font-weight:600" data-i18n="s2.suggest">Suggérer →</a></div>
@@ -1157,7 +1157,7 @@ footer a:hover{color:var(--accent);}
   <!-- Étape 4 : Notation qualitative -->
   <div class="step" id="s4">
     <div class="step-h" data-i18n="s4.h">Notez la qualité</div>
-    <div class="step-sub" data-i18n="s4.sub">5 critères — 1 clic par ligne. La couleur évolue du rouge au vert.</div>
+    <div class="step-sub" data-i18n="s4.sub">Presque fini — 5 critères, 1 clic par ligne.</div>
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px">
       <div class="stars-row"><span class="stars-lbl" data-i18n="s4.rapidite">⚡ Rapidité</span><div class="stars-btns" id="st-rapidite"></div></div>
       <div class="stars-row"><span class="stars-lbl" data-i18n="s4.facilite">🎯 Facilité</span><div class="stars-btns" id="st-facilite"></div></div>
@@ -1449,7 +1449,7 @@ const T = {
   'form.step': {fr:'Étape', en:'Step'},
   'form.of': {fr:'/', en:'/'},
   's1.h': {fr:'D\'abord, qui êtes-vous ?', en:'First, who are you?'},
-  's1.sub': {fr:'Votre profil contextualise votre expérience.', en:'Your profile contextualises your experience.'},
+  's1.sub': {fr:'Votre profil donne du poids à votre avis.', en:'Your profile gives weight to your review.'},
   's1.lbl.profil': {fr:'Vous êtes', en:'You are'},
   's1.particulier': {fr:'Particulier', en:'Individual'},
   's1.commercant': {fr:'Commerçant', en:'Merchant'},
@@ -1457,7 +1457,7 @@ const T = {
   's1.entreprise': {fr:'Entreprise', en:'Corporate'},
   's1.lbl.pays': {fr:'Pays de l\'expérience', en:'Country of experience'},
   's2.h': {fr:'Quelle institution ?', en:'Which institution?'},
-  's2.sub': {fr:'Sélectionnez l\'institution utilisée, puis le canal.', en:'Select the institution used, then the channel.'},
+  's2.sub': {fr:'Votre avis va peser dans son classement.', en:'Your review will count in its ranking.'},
   's2.search': {fr:'Rechercher...', en:'Search...'},
   's2.missing': {fr:'Introuvable ?', en:'Not found?'},
   's2.suggest': {fr:'Suggérer →', en:'Suggest →'},
@@ -1480,7 +1480,7 @@ const T = {
   's3.res.oui': {fr:'Oui, résolu', en:'Yes, resolved'},
   's3.res.non': {fr:'Non / En attente', en:'No / Pending'},
   's4.h': {fr:'Notez la qualité', en:'Rate the quality'},
-  's4.sub': {fr:'5 critères — 1 clic par ligne. La couleur évolue du rouge au vert.', en:'5 criteria — 1 click per line. Colour changes from red to green.'},
+  's4.sub': {fr:'Presque fini — 5 critères, 1 clic par ligne.', en:'Almost done — 5 criteria, 1 click per line.'},
   's4.rapidite': {fr:'⚡ Rapidité', en:'⚡ Speed'},
   's4.facilite': {fr:'🎯 Facilité', en:'🎯 Ease'},
   's4.frais': {fr:'💰 Frais', en:'💰 Fees'},
@@ -2217,7 +2217,12 @@ function goStep(n) {
   document.querySelector('.prog-m').style.display = isFormStep ? '' : 'none';
   if (isFormStep) {
     document.getElementById('progF').style.width = (n * 20) + '%';
-    document.getElementById('progStep').textContent = lang === 'fr' ? `Étape ${n} / 5` : `Step ${n} / 5`;
+    const stepLabel = (() => {
+      if (n === 4) return lang === 'fr' ? '✦ Plus qu\'une étape !' : '✦ Almost there!';
+      if (n === 5) return lang === 'fr' ? '✦ Dernière étape !' : '✦ Last step!';
+      return lang === 'fr' ? `Étape ${n} / 5` : `Step ${n} / 5`;
+    })();
+    document.getElementById('progStep').textContent = stepLabel;
     document.getElementById('progName').textContent = getStepNames()[n] || '';
   }
   // Initialiser les étoiles et NPS à l'étape 4
