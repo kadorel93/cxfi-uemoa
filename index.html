@@ -1628,8 +1628,6 @@ const CFG = {
   supabaseUrl: 'https://yyrjbrwrywbcusiivsgy.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cmpicndyeXdiY3VzaWl2c2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTYzNDQsImV4cCI6MjA4OTA5MjM0NH0.PYK_Fiby1t4YIR36HGylDnBKHbu5iGfooF-WHIAlUmQ',
   siteUrl:     'https://cxfi-uemoa.netlify.app',
-  adminCode:   'cxfi2026naxari',
-  adminUrl:    'https://supabase.com/dashboard/project/yyrjbrwrywbcusiivsgy/editor',
 };
 
 /* ── DONNÉES ────────────────────────────────────────────────── */
@@ -2643,10 +2641,7 @@ function downloadDataCTA() {
 
 /* ── ADMIN ──────────────────────────────────────────────────── */
 function openAdmin() {
-  const pw = prompt('Code admin :');
-  if (!pw) return;
-  if (pw === CFG.adminCode && CFG.adminUrl) window.open(CFG.adminUrl, '_blank');
-  else alert('Code incorrect.');
+  window.open('https://supabase.com/dashboard', '_blank');
 }
 
 /* ── CHARGEMENT STATS RÉELLES ───────────────────────────────── */
