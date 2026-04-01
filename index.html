@@ -2504,7 +2504,7 @@ function downloadDataCTA() {
   const count = totalCount;
   const subject = encodeURIComponent('CXFI 2026 — Demande d\'accès aux données · [Institution]');
   const body = encodeURIComponent(
-    `Bonjour,\n\nJe représente [NOM DE L'INSTITUTION] et je souhaite accéder aux données CXFI nous concernant.\n\nCe qui m'intéresse :\n— Score FCR réel et son évolution\n— Verbatims clients collectés\n— Points de friction par canal\n— Notre position dans le benchmark sectoriel\n\nÀ ce jour, ${count} expériences ont été collectées sur notre institution via le baromètre CXFI UEMOA.\n\nPouvez-vous m'indiquer les modalités d'accès ?\n\nCordialement,\n[Nom · Poste · Institution]`
+    `Bonjour,\n\nJe représente [NOM DE L'INSTITUTION] et je souhaite accéder aux données CXFI nous concernant.\n\nCe qui m'intéresse :\n— Score FCR réel et son évolution\n— Verbatims clients collectés\n— Points de friction par canal\n— Notre position dans le benchmark sectoriel\n\nLe baromètre CXFI totalise à ce jour ${count} expériences collectées auprès des clients de la zone UEMOA.\n\nPouvez-vous m'indiquer les modalités d'accès ?\n\nCordialement,\n[Nom · Poste · Institution]`
   );
   window.open(`mailto:mrkpatinde@gmail.com?subject=${subject}&body=${body}`, '_blank');
 }
