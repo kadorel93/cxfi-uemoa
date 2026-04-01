@@ -369,6 +369,25 @@ h1 .hollow{-webkit-text-stroke:2px var(--ink);color:transparent;}
 .st-ok{background:#ECFDF5;color:#065F46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
 .st-pt{background:#FFFBEB;color:#78350F;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
 .st-cl{background:#EEF2FF;color:#3730A3;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+/* FAQ accordion */
+.faq{margin-top:36px;border-top:1px solid var(--border);}
+.faq-h{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:-0.3px;
+  color:var(--ink);margin-bottom:16px;padding-top:28px;}
+.faq-item{border-bottom:1px solid var(--border);overflow:hidden;}
+.faq-q{width:100%;background:none;border:none;cursor:pointer;padding:16px 0;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:600;
+  color:var(--ink);text-align:left;transition:color .2s;}
+.faq-q:hover{color:var(--accent);}
+.faq-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;
+  background:var(--cream);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:400;color:var(--muted);
+  transition:transform .3s cubic-bezier(0.16,1,0.3,1),background .2s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--ink);color:var(--paper);}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(0.16,1,0.3,1);}
+.faq-item.open .faq-a{grid-template-rows:1fr;}
+.faq-a-inner{overflow:hidden;font-size:13px;color:var(--muted);line-height:1.8;padding-bottom:16px;}
 /* data CTA */
 .data-cta{background:var(--ink);border-radius:16px;padding:32px;
   display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:40px;}
@@ -939,6 +958,68 @@ footer a:hover{color:var(--accent);}
         <tr><td>Avis CXFI</td><td data-i18n="src.row4.c2">Expériences collectées auprès des clients</td><td><span class="st-cl" data-i18n="src.collecting">En collecte</span></td></tr>
       </table>
       <div style="margin-top:12px;font-size:12px;color:var(--muted);padding:12px 16px;background:var(--cream);border-radius:8px;line-height:1.7" data-i18n="src.note">CXFI n'est pas affilié à la BCEAO. En cas de doute, consultez directement bceao.int.</div>
+
+      <!-- FAQ accordion -->
+      <div class="faq">
+        <div class="faq-h" data-i18n="faq.h">Questions fréquentes</div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q1">Mon avis est-il vraiment anonyme ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a1">Oui. CXFI ne collecte aucune donnée personnelle identifiable — ni nom, ni email, ni numéro de téléphone. Seule la catégorie d'institution, le pays et les scores sont enregistrés. Un verrou anti-fraude technique est posé sur votre navigateur pour 90 jours, mais il ne permet pas de vous identifier.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q2">Pourquoi faut-il 30 avis minimum pour afficher un score ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a2">En dessous de 30 avis, un score peut être fortement biaisé par quelques expériences atypiques. Le seuil de 30 garantit une représentativité statistique minimale et évite les classements trompeurs.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q3">Puis-je modifier ou supprimer mon avis ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a3">Non — les avis soumis sont définitifs pour garantir l'intégrité du baromètre. Vous pouvez en revanche soumettre un nouvel avis après 90 jours pour la même institution.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q4">Comment mon institution apparaît-elle dans le classement ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a4">Chaque institution est classée par son score CXFI composite (FCR 40% + CES 35% + CSAT 25%), calculé uniquement sur les avis validés. Le classement est mis à jour en temps réel dès qu'un avis est soumis.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q5">Le score peut-il être manipulé ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a5">CXFI intègre plusieurs couches de protection : verrou navigateur 90 jours, validation côté serveur, et détection des patterns de vote anormaux. Aucun système n'est infaillible, mais ces mesures rendent la manipulation coûteuse et difficile.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q6">Comment accéder aux données complètes de mon institution ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a6">Les données brutes (verbatims, friction par canal, évolution mensuelle) sont réservées aux dirigeants des institutions concernées. Utilisez le bouton "Demander un accès complet" ci-dessous pour envoyer une demande à l'équipe CXFI.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">
+            <span data-i18n="faq.q7">CXFI est-il affilié à la BCEAO ou à une institution officielle ?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a" role="region"><div class="faq-a-inner" data-i18n="faq.a7">Non. CXFI est un projet indépendant porté par Naxari. Les données de référence (listes d'agréments, participants au système de paiement) proviennent de sources officielles publiques, mais CXFI n'a aucun lien institutionnel avec la BCEAO ou la Commission Bancaire de l'UEMOA.</div></div>
+        </div>
+      </div><!-- /faq -->
+
       <div class="data-cta">
         <div>
           <div class="data-cta-ey" data-i18n="cta.ey">ACCÈS DONNÉES · DIRIGEANTS</div>
@@ -1340,6 +1421,21 @@ const T = {
   'src.row4.c2': {fr:'Expériences collectées auprès des clients', en:'Experiences collected from clients'},
   'src.row4.c3': {fr:'En collecte', en:'Collecting'},
   'src.note': {fr:'CXFI n\'est pas affilié à la BCEAO. En cas de doute, consultez directement bceao.int.', en:'CXFI is not affiliated with the BCEAO. In case of doubt, consult bceao.int directly.'},
+  'faq.h': {fr:'Questions fréquentes', en:'Frequently asked questions'},
+  'faq.q1': {fr:'Mon avis est-il vraiment anonyme ?', en:'Is my review truly anonymous?'},
+  'faq.a1': {fr:'Oui. CXFI ne collecte aucune donnée personnelle identifiable — ni nom, ni email, ni numéro de téléphone. Seule la catégorie d\'institution, le pays et les scores sont enregistrés. Un verrou anti-fraude technique est posé sur votre navigateur pour 90 jours, mais il ne permet pas de vous identifier.', en:'Yes. CXFI does not collect any personally identifiable data — no name, email, or phone number. Only the institution category, country, and scores are recorded. A technical anti-fraud lock is placed on your browser for 90 days, but it cannot identify you.'},
+  'faq.q2': {fr:'Pourquoi faut-il 30 avis minimum pour afficher un score ?', en:'Why are 30 reviews required before a score is displayed?'},
+  'faq.a2': {fr:'En dessous de 30 avis, un score peut être fortement biaisé par quelques expériences atypiques. Le seuil de 30 garantit une représentativité statistique minimale et évite les classements trompeurs.', en:'Below 30 reviews, a score can be heavily skewed by a few atypical experiences. The 30-review threshold ensures minimal statistical representativeness and prevents misleading rankings.'},
+  'faq.q3': {fr:'Puis-je modifier ou supprimer mon avis ?', en:'Can I modify or delete my review?'},
+  'faq.a3': {fr:'Non — les avis soumis sont définitifs pour garantir l\'intégrité du baromètre. Vous pouvez en revanche soumettre un nouvel avis après 90 jours pour la même institution.', en:'No — submitted reviews are final to ensure the integrity of the barometer. You can however submit a new review after 90 days for the same institution.'},
+  'faq.q4': {fr:'Comment mon institution apparaît-elle dans le classement ?', en:'How does my institution appear in the rankings?'},
+  'faq.a4': {fr:'Chaque institution est classée par son score CXFI composite (FCR 40% + CES 35% + CSAT 25%), calculé uniquement sur les avis validés. Le classement est mis à jour en temps réel dès qu\'un avis est soumis.', en:'Each institution is ranked by its composite CXFI score (FCR 40% + CES 35% + CSAT 25%), calculated only on validated reviews. The ranking is updated in real time as soon as a review is submitted.'},
+  'faq.q5': {fr:'Le score peut-il être manipulé ?', en:'Can the score be manipulated?'},
+  'faq.a5': {fr:'CXFI intègre plusieurs couches de protection : verrou navigateur 90 jours, validation côté serveur, et détection des patterns de vote anormaux. Aucun système n\'est infaillible, mais ces mesures rendent la manipulation coûteuse et difficile.', en:'CXFI incorporates several layers of protection: 90-day browser lock, server-side validation, and detection of abnormal voting patterns. No system is foolproof, but these measures make manipulation costly and difficult.'},
+  'faq.q6': {fr:'Comment accéder aux données complètes de mon institution ?', en:'How can I access my institution\'s full data?'},
+  'faq.a6': {fr:'Les données brutes (verbatims, friction par canal, évolution mensuelle) sont réservées aux dirigeants des institutions concernées. Utilisez le bouton "Demander un accès complet" ci-dessous pour envoyer une demande à l\'équipe CXFI.', en:'Raw data (verbatims, friction by channel, monthly trends) is reserved for executives of the institutions concerned. Use the "Request full access" button below to send a request to the CXFI team.'},
+  'faq.q7': {fr:'CXFI est-il affilié à la BCEAO ou à une institution officielle ?', en:'Is CXFI affiliated with the BCEAO or any official institution?'},
+  'faq.a7': {fr:'Non. CXFI est un projet indépendant porté par Naxari. Les données de référence (listes d\'agréments, participants au système de paiement) proviennent de sources officielles publiques, mais CXFI n\'a aucun lien institutionnel avec la BCEAO ou la Commission Bancaire de l\'UEMOA.', en:'No. CXFI is an independent project run by Naxari. Reference data (license lists, payment system participants) comes from public official sources, but CXFI has no institutional link with the BCEAO or the WAEMU Banking Commission.'},
   'cta.ey': {fr:'ACCÈS DONNÉES · DIRIGEANTS', en:'DATA ACCESS · EXECUTIVES'},
   'cta.h': {fr:'Votre institution figure dans le Baromètre. Accédez à vos données brutes.', en:'Your institution is in the Barometer. Access your raw data.'},
   'cta.p': {fr:'FCR réel, verbatims clients, friction par canal, évolution mensuelle. Des données que votre équipe CX peut exploiter dès demain.', en:'Real FCR, client verbatims, friction by channel, monthly trends. Data your CX team can act on tomorrow.'},
@@ -1466,6 +1562,21 @@ const T = {
   'src.row3.c2': {fr:'Agréments bancaires — partiel', en:'Banking licences — partial'},
   'src.row4.c2': {fr:'Expériences collectées auprès des clients', en:'Experiences collected from clients'},
   'src.note': {fr:"CXFI n\'est pas affilié à la BCEAO. En cas de doute, consultez directement bceao.int.", en:'CXFI is not affiliated with the BCEAO. In case of doubt, consult bceao.int directly.'},
+  'faq.h': {fr:'Questions fréquentes', en:'Frequently asked questions'},
+  'faq.q1': {fr:'Mon avis est-il vraiment anonyme ?', en:'Is my review truly anonymous?'},
+  'faq.a1': {fr:'Oui. CXFI ne collecte aucune donnée personnelle identifiable — ni nom, ni email, ni numéro de téléphone. Seule la catégorie d\'institution, le pays et les scores sont enregistrés. Un verrou anti-fraude technique est posé sur votre navigateur pour 90 jours, mais il ne permet pas de vous identifier.', en:'Yes. CXFI does not collect any personally identifiable data — no name, email, or phone number. Only the institution category, country, and scores are recorded. A technical anti-fraud lock is placed on your browser for 90 days, but it cannot identify you.'},
+  'faq.q2': {fr:'Pourquoi faut-il 30 avis minimum pour afficher un score ?', en:'Why are 30 reviews required before a score is displayed?'},
+  'faq.a2': {fr:'En dessous de 30 avis, un score peut être fortement biaisé par quelques expériences atypiques. Le seuil de 30 garantit une représentativité statistique minimale et évite les classements trompeurs.', en:'Below 30 reviews, a score can be heavily skewed by a few atypical experiences. The 30-review threshold ensures minimal statistical representativeness and prevents misleading rankings.'},
+  'faq.q3': {fr:'Puis-je modifier ou supprimer mon avis ?', en:'Can I modify or delete my review?'},
+  'faq.a3': {fr:'Non — les avis soumis sont définitifs pour garantir l\'intégrité du baromètre. Vous pouvez en revanche soumettre un nouvel avis après 90 jours pour la même institution.', en:'No — submitted reviews are final to ensure the integrity of the barometer. You can however submit a new review after 90 days for the same institution.'},
+  'faq.q4': {fr:'Comment mon institution apparaît-elle dans le classement ?', en:'How does my institution appear in the rankings?'},
+  'faq.a4': {fr:'Chaque institution est classée par son score CXFI composite (FCR 40% + CES 35% + CSAT 25%), calculé uniquement sur les avis validés. Le classement est mis à jour en temps réel dès qu\'un avis est soumis.', en:'Each institution is ranked by its composite CXFI score (FCR 40% + CES 35% + CSAT 25%), calculated only on validated reviews. The ranking is updated in real time as soon as a review is submitted.'},
+  'faq.q5': {fr:'Le score peut-il être manipulé ?', en:'Can the score be manipulated?'},
+  'faq.a5': {fr:'CXFI intègre plusieurs couches de protection : verrou navigateur 90 jours, validation côté serveur, et détection des patterns de vote anormaux. Aucun système n\'est infaillible, mais ces mesures rendent la manipulation coûteuse et difficile.', en:'CXFI incorporates several layers of protection: 90-day browser lock, server-side validation, and detection of abnormal voting patterns. No system is foolproof, but these measures make manipulation costly and difficult.'},
+  'faq.q6': {fr:'Comment accéder aux données complètes de mon institution ?', en:'How can I access my institution\'s full data?'},
+  'faq.a6': {fr:'Les données brutes (verbatims, friction par canal, évolution mensuelle) sont réservées aux dirigeants des institutions concernées. Utilisez le bouton "Demander un accès complet" ci-dessous pour envoyer une demande à l\'équipe CXFI.', en:'Raw data (verbatims, friction by channel, monthly trends) is reserved for executives of the institutions concerned. Use the "Request full access" button below to send a request to the CXFI team.'},
+  'faq.q7': {fr:'CXFI est-il affilié à la BCEAO ou à une institution officielle ?', en:'Is CXFI affiliated with the BCEAO or any official institution?'},
+  'faq.a7': {fr:'Non. CXFI est un projet indépendant porté par Naxari. Les données de référence (listes d\'agréments, participants au système de paiement) proviennent de sources officielles publiques, mais CXFI n\'a aucun lien institutionnel avec la BCEAO ou la Commission Bancaire de l\'UEMOA.', en:'No. CXFI is an independent project run by Naxari. Reference data (license lists, payment system participants) comes from public official sources, but CXFI has no institutional link with the BCEAO or the WAEMU Banking Commission.'},
   'cta.h': {fr:'Votre institution figure dans le Baromètre. Accédez à vos données brutes.', en:'Your institution is in the Barometer. Access your raw data.'},
   'cta.p': {fr:'FCR réel, verbatims clients, friction par canal, évolution mensuelle. Des données que votre équipe CX peut exploiter dès demain.', en:'Real FCR, client verbatims, friction by channel, monthly trends. Data your CX team can act on tomorrow.'},
   's3.paiement': {fr:'Paiement', en:'Payment'},
@@ -2497,6 +2608,22 @@ function shareLI() {
 function shareToUnlock() {
   const t = `Je contribue au Baromètre CXFI 2026 — le premier classement de l'expérience client dans la finance UEMOA. Certains scores ne sont pas encore débloqués — il faut 30 avis. Ton avis compte 👉 ${CFG.siteUrl}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
+}
+
+/* ── FAQ ACCORDION ──────────────────────────────────────────── */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-q').setAttribute('aria-expanded','false');
+  });
+  // Open this one if it was closed
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.setAttribute('aria-expanded','true');
+  }
 }
 
 /* ── DATA CTA ───────────────────────────────────────────────── */
