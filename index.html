@@ -1966,8 +1966,8 @@ function renderLB() {
   const dimBanner = !anyScored
     ? `<div class="dim-banner">
         <span style="font-size:16px;flex-shrink:0">🔒</span>
-        <span class="dim-banner-txt">Toutes les institutions ci-dessous attendent au moins 30 avis pour afficher leur score. Votre avis contribue à débloquer le classement pour tous.</span>
-        <button class="dim-banner-btn" onclick="openForm()">Donner mon avis</button>
+        <span class="dim-banner-txt" data-i18n="lb.dim.txt">Toutes les institutions ci-dessous attendent au moins 30 avis pour afficher leur score. Votre avis contribue à débloquer le classement pour tous.</span>
+        <button class="dim-banner-btn" onclick="openForm()" data-i18n="lb.dim.btn">Donner mon avis</button>
        </div>`
     : '';
 
@@ -2039,10 +2039,12 @@ async function pingBCEAO() {
     const t0 = Date.now();
     await fetch('https://www.bceao.int', {mode:'no-cors', cache:'no-cache'});
     const ms = Date.now() - t0;
-    el.textContent = `✓ bceao.int · ${ms}ms · Données au 28/02/2026`;
+    el.textContent = lang === 'en'
+      ? `✓ bceao.int · ${ms}ms · Data as of 28/02/2026`
+      : `✓ bceao.int · ${ms}ms · Données au 28/02/2026`;
     el.style.color = 'var(--green)';
   } catch(e) {
-    el.textContent = '⚠ Vérifiez sur bceao.int';
+    el.textContent = lang === 'en' ? '⚠ Check bceao.int' : '⚠ Vérifiez sur bceao.int';
     el.style.color = 'var(--amber)';
   }
 }
