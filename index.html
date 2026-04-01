@@ -2301,6 +2301,22 @@ function tryGoStep3() {
     showStepErr('s2Err', '📱 Sélectionnez le canal utilisé (App, USSD, Agence…).');
     return;
   }
+  // ── Vérification anti-abus dès l'étape 2 ──
+  try {
+    const abuseKey = `cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
+    const lastTs = localStorage.getItem(abuseKey);
+    if (lastTs) {
+      const daysSince = (Date.now() - parseInt(lastTs, 10)) / 86400000;
+      if (daysSince < 90) {
+        const jours = Math.ceil(90 - daysSince);
+        const msg = lang === 'fr'
+          ? `⏳ Vous avez déjà partagé votre expérience avec ${fd.inst}. Revenez dans ${jours} jour${jours > 1 ? 's' : ''} — ou choisissez une autre institution.`
+          : `⏳ You already reviewed ${fd.inst} recently. Come back in ${jours} day${jours > 1 ? 's' : ''} — or choose another institution.`;
+        showStepErr('s2Err', msg);
+        return;
+      }
+    }
+  } catch(e) {}
   goStep(3);
 }
 
@@ -2399,20 +2415,6 @@ async function sendForm() {
     goStep(3);
     return;
   }
-
-  // ── ANTI-ABUS : 1 avis / institution / pays / 90 jours ──
-  const abuseKey = `cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
-  try {
-    const lastTs = localStorage.getItem(abuseKey);
-    if (lastTs) {
-      const daysSince = (Date.now() - parseInt(lastTs, 10)) / 86400000;
-      if (daysSince < 90) {
-        const jours = Math.ceil(90 - daysSince);
-        showStepErr('s5Err', `⏳ Vous avez déjà partagé votre expérience avec ${fd.inst} récemment. Revenez dans ${jours} jour${jours > 1 ? 's' : ''}.`);
-        return;
-      }
-    }
-  } catch(e) { /* localStorage peut être bloqué (navigation privée) — on laisse passer */ }
 
   isSubmitting = true;
   const sendBtn = document.getElementById('sendBtn');
