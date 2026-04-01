@@ -583,7 +583,8 @@ footer a:hover{color:var(--accent);}
   .stats{grid-template-columns:repeat(2,1fr);}
   .grid3{grid-template-columns:1fr;}
   .about-grid{grid-template-columns:1fr;}
-  .data-cta{grid-template-columns:1fr;}
+  .data-cta{grid-template-columns:1fr;padding:24px 20px;}
+  .data-cta-box{min-width:unset;width:100%;max-width:220px;}
   .reg-grid{grid-template-columns:1fr;gap:12px;}
   .fb-grid{grid-template-columns:1fr;}
   .pispi-grid{grid-template-columns:1fr;}
@@ -601,12 +602,33 @@ footer a:hover{color:var(--accent);}
   .lb-rv{font-size:12px;font-weight:600;}
   footer{padding:22px 20px;}
   .footer-links{gap:12px;}
+  /* Modal sur mobile */
+  .modal{padding:22px 18px;border-radius:14px;}
+  /* Sources table — scroll horizontal si besoin */
+  .sources-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .sources-table{min-width:420px;}
+  /* data-cta */
+  .data-cta{padding:20px;border-radius:12px;}
+  .data-cta-h{font-size:17px;}
 }
 @media(max-width:480px){
   .stats{grid-template-columns:1fr 1fr;}
   h1{font-size:32px;letter-spacing:-1.5px;}
   .hero-btns{flex-direction:column;}
   .hero-btns .btn-s,.hero-btns .btn-p{width:100%;text-align:center;}
+  /* Formulaire : profil en 2×2 au lieu de 4 */
+  .g4{grid-template-columns:1fr 1fr;}
+  .sel-btn{padding:10px 6px;}
+  /* Modal serré */
+  .modal{padding:18px 14px;}
+  /* data-cta compact */
+  .data-cta{padding:16px;}
+  .data-cta-box{padding:14px;}
+  .data-cta-num{font-size:28px;}
+  .data-cta-p{font-size:12px;}
+  /* Form navigation buttons */
+  .form-nav{gap:8px;}
+  .btn-next,.btn-back{font-size:13px;padding:10px 14px;}
 }
 @media(min-width:700px){
   footer{flex-direction:row;justify-content:space-between;text-align:left;}
@@ -950,13 +972,13 @@ footer a:hover{color:var(--accent);}
         </div>
       </div>
       <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:14px">Sources</div>
-      <table class="sources-table">
+      <div class="sources-table-wrap"><table class="sources-table">
         <tr><th>Source</th><th data-i18n="src.th2">Contenu</th><th data-i18n="src.th3">Statut</th></tr>
         <tr><td>BCEAO — Liste EDP</td><td data-i18n="src.row1.c2">31 EDP agréés au 28/02/2026</td><td><span class="st-ok" data-i18n="src.official">Officiel</span></td></tr>
         <tr><td>BCEAO — PI-SPI</td><td data-i18n="src.row2.c2">74 participants au 24/02/2026</td><td><span class="st-ok" data-i18n="src.official">Officiel</span></td></tr>
         <tr><td>Commission Bancaire</td><td data-i18n="src.row3.c2">Agréments bancaires — partiel</td><td><span class="st-pt" data-i18n="src.partial">Partiel</span></td></tr>
         <tr><td>Avis CXFI</td><td data-i18n="src.row4.c2">Expériences collectées auprès des clients</td><td><span class="st-cl" data-i18n="src.collecting">En collecte</span></td></tr>
-      </table>
+      </table></div><!-- /sources-table-wrap -->
       <div style="margin-top:12px;font-size:12px;color:var(--muted);padding:12px 16px;background:var(--cream);border-radius:8px;line-height:1.7" data-i18n="src.note">CXFI n'est pas affilié à la BCEAO. En cas de doute, consultez directement bceao.int.</div>
 
       <!-- FAQ accordion -->
