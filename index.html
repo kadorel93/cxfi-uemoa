@@ -616,9 +616,13 @@ footer a:hover{color:var(--accent);}
 }
 @media(max-width:480px){
   .stats{grid-template-columns:1fr 1fr;}
-  h1{font-size:32px;letter-spacing:-1.5px;}
+  h1{font-size:30px;letter-spacing:-1.5px;}
   .hero-btns{flex-direction:column;}
   .hero-btns .btn-s,.hero-btns .btn-p{width:100%;text-align:center;}
+  /* "finance africaine" : autoriser le retour à la ligne sur mobile
+     pour éviter le débordement qui casse toute la mise en page */
+  .h1-finance{white-space:normal;}
+  .h1-line-3{overflow-y:clip!important;overflow-x:hidden!important;}
   /* Formulaire : profil en 2×2 au lieu de 4 */
   .g4{grid-template-columns:1fr 1fr;}
   .sel-btn{padding:10px 6px;}
