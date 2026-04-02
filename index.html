@@ -128,6 +128,41 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;
   .t-track{animation:none!important;overflow-x:auto;}
   .sec-anim,.dot,.h1-line-inner,.h1-fl,.h1-finance{animation:none;}
   *{transition-duration:.01ms!important;}
+  .reveal{opacity:1!important;}
+  .pb-fill{transition:none!important;}
+}
+
+/* ── SCROLL-REVEAL (C) ───────────────────────────────────────── */
+@keyframes revealUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;will-change:transform,opacity;}
+.reveal.vis{animation:revealUp .65s cubic-bezier(0.16,1,0.3,1) both;}
+.reveal.vis.rd1{animation-delay:.07s!important}
+.reveal.vis.rd2{animation-delay:.14s!important}
+.reveal.vis.rd3{animation-delay:.22s!important}
+.reveal.vis.rd4{animation-delay:.30s!important}
+
+/* ── SCORE PREVIEW (B) ───────────────────────────────────────── */
+.prev-rows{display:flex;flex-direction:column;gap:12px;margin-top:4px;}
+.prev-row{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px 22px;display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:center;}
+.prev-inst{display:flex;align-items:center;gap:11px;}
+.prev-logo{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;
+  color:white;flex-shrink:0;letter-spacing:-0.5px;}
+.prev-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+.prev-cat{font-size:10px;color:var(--muted);}
+.prev-bars{display:flex;flex-direction:column;gap:9px;}
+.prev-bar-row{display:grid;grid-template-columns:34px 1fr 50px;align-items:center;gap:8px;}
+.prev-metric{font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--muted);text-align:right;}
+.pb-track{height:5px;background:var(--cream);border-radius:3px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:3px;width:0;transition:width 1.4s cubic-bezier(0.16,1,0.3,1);}
+.pb-fill.go{width:var(--tw);}
+.prev-score{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;
+  color:var(--muted);text-align:right;white-space:nowrap;}
+.prev-note{font-size:10px;color:var(--muted);margin-top:14px;font-style:italic;text-align:center;
+  padding:8px;background:var(--cream);border-radius:6px;}
+@media(max-width:680px){
+  .prev-row{grid-template-columns:1fr;gap:12px;}
 }
 
 /* ── LAYOUT ─────────────────────────────────────────────── */
@@ -161,6 +196,8 @@ h1 .hollow{-webkit-text-stroke:2px var(--ink);color:transparent;}
 .kpi-card{background:var(--ink);color:var(--paper);border-radius:18px;padding:24px;position:relative;overflow:hidden;}
 .kpi-card::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;
   border-radius:50%;background:rgba(26,63,255,0.12);}
+#kpiCvs{position:absolute;inset:0;width:100%;height:100%;opacity:.45;pointer-events:none;z-index:0;}
+.kpi-card>*:not(#kpiCvs){position:relative;z-index:1;}
 .kpi-ey{font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
   color:rgba(247,244,238,0.35);margin-bottom:12px;}
 .kpi-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
@@ -710,6 +747,7 @@ footer a:hover{color:var(--accent);}
         </div>
       </div>
       <div class="kpi-card">
+        <canvas id="kpiCvs"></canvas>
         <div class="kpi-ey" data-i18n="kpi.eyebrow">Données UEMOA · En cours de collecte</div>
         <div class="kpi-title">Au 28 février 2026, <em>31 EDP agréés BCEAO</em>. La conformité est là. L'expérience client suit-elle ?</div>
         <div class="kpi-grid">
@@ -724,22 +762,77 @@ footer a:hover{color:var(--accent);}
         </div>
       </div>
     </div>
-    <div class="stats" style="padding-bottom:44px">
+    <div class="stats reveal" style="padding-bottom:44px">
       <div class="stat"><div class="stat-n" style="color:var(--accent)" id="cntTot">0</div><div class="stat-l" data-i18n="stat.lbl.exp">Expériences collectées</div><div class="stat-s" style="color:var(--green)" data-i18n="stat.open">● Collecte ouverte</div></div>
-      <div class="stat"><div class="stat-n">31</div><div class="stat-l" data-i18n="stat.lbl.edp">EDP agréés BCEAO</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
-      <div class="stat"><div class="stat-n">74</div><div class="stat-l" data-i18n="stat.lbl.pispi">Participants PI-SPI</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
-      <div class="stat"><div class="stat-n">8</div><div class="stat-l" data-i18n="stat.lbl.pays">Pays UEMOA couverts</div><div class="stat-s" style="color:var(--muted)">BJ · TG · CI · SN · ML · BF · NE · GW</div></div>
+      <div class="stat"><div class="stat-n" id="statEdp" data-target="31">0</div><div class="stat-l" data-i18n="stat.lbl.edp">EDP agréés BCEAO</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
+      <div class="stat"><div class="stat-n" id="statPiSpi" data-target="74">0</div><div class="stat-l" data-i18n="stat.lbl.pispi">Participants PI-SPI</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
+      <div class="stat"><div class="stat-n" id="statPays" data-target="8">0</div><div class="stat-l" data-i18n="stat.lbl.pays">Pays UEMOA couverts</div><div class="stat-s" style="color:var(--muted)">BJ · TG · CI · SN · ML · BF · NE · GW</div></div>
     </div>
     <div class="sec">
-      <div class="sec-top"><div><div class="sec-h" data-i18n="why.h">Pourquoi CXFI ?</div><div class="sec-sub" data-i18n="why.sub">Il n'existe aucun baromètre indépendant de l'expérience client dans la finance ouest-africaine. CXFI comble ce vide.</div></div></div>
+      <div class="sec-top reveal"><div><div class="sec-h" data-i18n="why.h">Pourquoi CXFI ?</div><div class="sec-sub" data-i18n="why.sub">Il n'existe aucun baromètre indépendant de l'expérience client dans la finance ouest-africaine. CXFI comble ce vide.</div></div></div>
       <div class="grid3">
-        <div class="card"><div class="card-tag bl" data-i18n="card1.tag">31 EDP vérifiés</div><div class="card-h" data-i18n="card1.h">Agréments BCEAO : une liste officielle, pas des suppositions</div><div class="card-p" data-i18n="card1.p">Nom légal, numéro d'inscription, date et pays d'agrément. Les 31 EDP au 28/02/2026 avec leur statut exact.</div><div class="card-m" style="color:var(--accent)">31 EDP</div></div>
-        <div class="card"><div class="card-tag rd" data-i18n="card2.tag">Écart mesuré</div><div class="card-h" data-i18n="card2.h">Conformité ≠ Qualité de service</div><div class="card-p" data-i18n="card2.p">Obtenir un agrément BCEAO est une nécessité légale — pas une garantie d'expérience client. CXFI mesure la friction, la résolution, la confiance.</div><div class="card-m" style="color:var(--red)" data-i18n="card2.m">Votre défi</div></div>
-        <div class="card"><div class="card-tag gn" data-i18n="card3.tag">Pour décideurs</div><div class="card-h" data-i18n="card3.h">Des données actionnables, pas des opinions</div><div class="card-p" data-i18n="card3.p">Chaque avis capture : l'opération, le canal, si ça a marché au 1er essai, pourquoi pas, la résolution finale.</div><div class="card-m" style="color:var(--green)">FCR · CES · NPS</div></div>
+        <div class="card reveal rd1"><div class="card-tag bl" data-i18n="card1.tag">31 EDP vérifiés</div><div class="card-h" data-i18n="card1.h">Agréments BCEAO : une liste officielle, pas des suppositions</div><div class="card-p" data-i18n="card1.p">Nom légal, numéro d'inscription, date et pays d'agrément. Les 31 EDP au 28/02/2026 avec leur statut exact.</div><div class="card-m" style="color:var(--accent)">31 EDP</div></div>
+        <div class="card reveal rd2"><div class="card-tag rd" data-i18n="card2.tag">Écart mesuré</div><div class="card-h" data-i18n="card2.h">Conformité ≠ Qualité de service</div><div class="card-p" data-i18n="card2.p">Obtenir un agrément BCEAO est une nécessité légale — pas une garantie d'expérience client. CXFI mesure la friction, la résolution, la confiance.</div><div class="card-m" style="color:var(--red)" data-i18n="card2.m">Votre défi</div></div>
+        <div class="card reveal rd3"><div class="card-tag gn" data-i18n="card3.tag">Pour décideurs</div><div class="card-h" data-i18n="card3.h">Des données actionnables, pas des opinions</div><div class="card-p" data-i18n="card3.p">Chaque avis capture : l'opération, le canal, si ça a marché au 1er essai, pourquoi pas, la résolution finale.</div><div class="card-m" style="color:var(--green)">FCR · CES · NPS</div></div>
       </div>
     </div>
+    <!-- ── SCORE PREVIEW ── -->
+    <div class="sec reveal" id="score-preview">
+      <div class="sec-top">
+        <div>
+          <div class="sec-h" data-i18n="preview.h">À quoi ressemble un score CXFI ?</div>
+          <div class="sec-sub" data-i18n="preview.sub">Trois métriques mesurées par institution. Les scores réels sont publiés à partir de 30 avis vérifiés.</div>
+        </div>
+      </div>
+      <div class="prev-rows">
+        <div class="prev-row reveal rd1">
+          <div class="prev-inst">
+            <div class="prev-logo" style="background:linear-gradient(135deg,#818CF8,#4F46E5)">A</div>
+            <div>
+              <div class="prev-name">Institution A <span class="tag tag-ft">Fintech</span></div>
+              <div class="prev-cat">🇸🇳 Sénégal</div>
+            </div>
+          </div>
+          <div class="prev-bars">
+            <div class="prev-bar-row"><span class="prev-metric">FCR</span><div class="pb-track"><div class="pb-fill fcr-hi" style="--tw:82%"></div></div><span class="prev-score" style="color:var(--green)">82%</span></div>
+            <div class="prev-bar-row"><span class="prev-metric">CES</span><div class="pb-track"><div class="pb-fill" style="--tw:84%;background:var(--accent)"></div></div><span class="prev-score" style="color:var(--accent)">4.2/5</span></div>
+            <div class="prev-bar-row"><span class="prev-metric">NPS</span><div class="pb-track"><div class="pb-fill" style="--tw:70%;background:var(--gold)"></div></div><span class="prev-score" style="color:var(--gold)">+34</span></div>
+          </div>
+        </div>
+        <div class="prev-row reveal rd2">
+          <div class="prev-inst">
+            <div class="prev-logo" style="background:linear-gradient(135deg,#86EFAC,#059669)">B</div>
+            <div>
+              <div class="prev-name">Institution B <span class="tag tag-mm">Mobile Money</span></div>
+              <div class="prev-cat">🇨🇮 Côte d'Ivoire</div>
+            </div>
+          </div>
+          <div class="prev-bars">
+            <div class="prev-bar-row"><span class="prev-metric">FCR</span><div class="pb-track"><div class="pb-fill fcr-md" style="--tw:67%"></div></div><span class="prev-score" style="color:var(--amber)">67%</span></div>
+            <div class="prev-bar-row"><span class="prev-metric">CES</span><div class="pb-track"><div class="pb-fill" style="--tw:68%;background:var(--amber)"></div></div><span class="prev-score" style="color:var(--amber)">3.4/5</span></div>
+            <div class="prev-bar-row"><span class="prev-metric">NPS</span><div class="pb-track"><div class="pb-fill" style="--tw:36%;background:var(--amber)"></div></div><span class="prev-score" style="color:var(--amber)">+18</span></div>
+          </div>
+        </div>
+        <div class="prev-row reveal rd3">
+          <div class="prev-inst">
+            <div class="prev-logo" style="background:linear-gradient(135deg,#FB923C,#B45309)">C</div>
+            <div>
+              <div class="prev-name">Institution C <span class="tag tag-bn">Banque</span></div>
+              <div class="prev-cat">🇧🇯 Bénin</div>
+            </div>
+          </div>
+          <div class="prev-bars">
+            <div class="prev-bar-row"><span class="prev-metric">FCR</span><div class="pb-track"><div class="pb-fill fcr-lo" style="--tw:52%"></div></div><span class="prev-score" style="color:var(--red)">52%</span></div>
+            <div class="prev-bar-row"><span class="prev-metric">CES</span><div class="pb-track"><div class="pb-fill" style="--tw:54%;background:var(--red)"></div></div><span class="prev-score" style="color:var(--red)">2.7/5</span></div>
+            <div class="prev-bar-row"><span class="prev-metric">NPS</span><div class="pb-track"><div class="pb-fill" style="--tw:10%;background:var(--red)"></div></div><span class="prev-score" style="color:var(--red)">−4</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="prev-note" data-i18n="preview.note">※ Scores illustratifs — données réelles publiées en décembre 2026 après 30 avis vérifiés par institution</p>
+    </div>
+
     <div class="sec" style="border-top:none;padding-top:0">
-      <div class="nax-banner">
+      <div class="nax-banner reveal">
         <div><div class="nax-h" data-i18n="nax.h">Votre score vous préoccupe ? Naxari peut vous aider.</div><p class="nax-p" data-i18n="nax.p">Cabinet spécialisé en intelligence CX pour les institutions financières de l'UEMOA. Diagnostic, benchmark sectoriel, plan d'action.</p></div>
         <div class="nax-btns">
           <button class="btn-nax" onclick="window.open('https://naxari.netlify.app/','_blank')">Visiter Naxari →</button>
@@ -754,7 +847,7 @@ footer a:hover{color:var(--accent);}
 <div id="sec-classement" style="display:none">
   <div class="wrap">
     <div class="sec" style="border-top:none;padding-top:80px">
-      <div class="sec-top">
+      <div class="sec-top reveal">
         <div><div class="sec-h" data-i18n="rank.h">Classement CXFI 2026</div><div class="sec-sub" data-i18n="rank.sub">Trié par FCR. Score publié après 30 avis vérifiés. ✓ EDP = agrément BCEAO officiel.</div></div>
       </div>
       <div class="search-wrap" role="search">
@@ -814,29 +907,29 @@ footer a:hover{color:var(--accent);}
 <div id="sec-regulatoire" style="display:none">
   <div class="wrap">
     <div class="sec" style="border-top:none;padding-top:80px">
-      <div class="sec-top">
+      <div class="sec-top reveal">
         <div><div class="sec-h" data-i18n="reg.h">Cadre réglementaire UEMOA</div><div class="sec-sub" data-i18n="reg.sub">Trois statuts distincts. CXFI les distingue avec les sources officielles.</div></div>
         <div class="ping-wrap">
           <span id="lastPing">⏳ Vérification...</span>
           <button class="ping-btn" onclick="pingBCEAO()">↻</button>
         </div>
       </div>
-      <div class="reg-grid">
-        <div class="reg-card" style="border:2px solid var(--green)">
+      <div class="reg-grid reveal">
+        <div class="reg-card reveal rd1" style="border:2px solid var(--green)">
           <div class="reg-badge" style="background:#ECFDF5;color:var(--green)">✓ EDP BCEAO</div>
           <div class="reg-h" data-i18n="reg.edp.h">Agrément Établissement de Paiement</div>
           <p class="reg-p" data-i18n="reg.edp.p">Instruction n°001-01-2024. Accordé pays par pays. Pour fintechs et EP uniquement. Capital requis : 10 à 100 millions FCFA.</p>
           <div class="reg-n" style="color:var(--green)">31</div>
           <div class="reg-l" data-i18n="reg.edp.lbl">EDP agréés au 28/02/2026</div>
         </div>
-        <div class="reg-card" style="border:2px solid var(--accent)">
+        <div class="reg-card reveal rd2" style="border:2px solid var(--accent)">
           <div class="reg-badge" style="background:#EEF2FF;color:var(--accent)" data-i18n="reg.bank.badge">🏦 Commission Bancaire</div>
           <div class="reg-h" data-i18n="reg.bank.h">Agrément Bancaire UEMOA</div>
           <p class="reg-p" data-i18n="reg.bank.p">Délivré par la Commission Bancaire. Valable dans les 8 pays. Régime distinct de l'EDP — les banques n'ont pas besoin d'agrément EDP.</p>
           <div class="reg-n" style="color:var(--accent)">~130</div>
           <div class="reg-l" data-i18n="reg.bank.lbl">Banques agréées dans l'UEMOA</div>
         </div>
-        <div class="reg-card" style="border:2px solid var(--gold)">
+        <div class="reg-card reveal rd3" style="border:2px solid var(--gold)">
           <div class="reg-badge" style="background:#FFFBEB;color:var(--gold)">⚡ PI-SPI</div>
           <div class="reg-h" data-i18n="reg.pispi.h">Participant PI-SPI</div>
           <p class="reg-p" data-i18n="reg.pispi.p">Plateforme Interopérable de Paiement Instantané, lancée le 30 sept. 2025. CXFI n'est pas participant PI-SPI — c'est un service d'information.</p>
@@ -856,7 +949,7 @@ footer a:hover{color:var(--accent);}
 <div id="sec-intelligence" style="display:none">
   <div class="wrap">
     <div class="sec" style="border-top:none;padding-top:80px">
-      <div class="sec-top"><div><div class="sec-h" data-i18n="intel.h">Intelligence collective</div><div class="sec-sub" data-i18n="intel.sub">Vos retours structurent CXFI. Signalez un problème, suggérez une institution ou proposez une amélioration.</div></div></div>
+      <div class="sec-top reveal"><div><div class="sec-h" data-i18n="intel.h">Intelligence collective</div><div class="sec-sub" data-i18n="intel.sub">Vos retours structurent CXFI. Signalez un problème, suggérez une institution ou proposez une amélioration.</div></div></div>
       <div class="fb-grid">
         <div class="fb-form">
           <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px" data-i18n="intel.form.h">Votre retour</div>
@@ -927,7 +1020,7 @@ footer a:hover{color:var(--accent);}
 <div id="sec-methode" style="display:none">
   <div class="wrap">
     <div class="sec" style="border-top:none;padding-top:80px">
-      <div class="sec-top"><div><div class="sec-h" data-i18n="meth.h">Méthodologie CXFI</div><div class="sec-sub" data-i18n="meth.sub">Transparence totale. Les institutions ne peuvent pas acheter leur score.</div></div></div>
+      <div class="sec-top reveal"><div><div class="sec-h" data-i18n="meth.h">Méthodologie CXFI</div><div class="sec-sub" data-i18n="meth.sub">Transparence totale. Les institutions ne peuvent pas acheter leur score.</div></div></div>
       <table class="meth-table">
         <tr><th data-i18n="meth.h1">Ce que CXFI mesure</th><th data-i18n="meth.h2">Pourquoi</th><th data-i18n="meth.col3">Ce que les autres font</th></tr>
         <tr><td data-i18n="meth.r1c1"><abbr title="First Contact Resolution — % d'opérations réussies sans friction au premier essai">FCR</abbr> — Résolu au 1er contact ?</td><td data-i18n="meth.r1c2">Prédicteur #1 de fidélité</td><td data-i18n="meth.r1c3">Note globale ⭐</td></tr>
@@ -1338,6 +1431,9 @@ const T = {
   'card3.tag': {fr:'Pour décideurs', en:'For decision-makers'},
   'card3.h': {fr:'Des données actionnables, pas des opinions', en:'Actionable data, not opinions'},
   'card3.p': {fr:'Chaque avis capture : l\'opération, le canal, si ça a marché au 1er essai, pourquoi pas, la résolution finale.', en:'Each review captures: the transaction, channel, whether it worked first try, why not, and final resolution.'},
+  'preview.h': {fr:'À quoi ressemble un score CXFI ?', en:'What does a CXFI score look like?'},
+  'preview.sub': {fr:'Trois métriques mesurées par institution. Les scores réels sont publiés à partir de 30 avis vérifiés.', en:'Three metrics per institution. Real scores published after 30 verified reviews.'},
+  'preview.note': {fr:'※ Scores illustratifs — données réelles publiées en décembre 2026 après 30 avis vérifiés par institution', en:'※ Illustrative scores — real data published December 2026 after 30 verified reviews per institution'},
   'nax.h': {fr:'Votre score vous préoccupe ? Naxari peut vous aider.', en:'Concerned about your score? Naxari can help.'},
   'nax.p': {fr:'Cabinet spécialisé en intelligence CX pour les institutions financières de l\'UEMOA. Diagnostic, benchmark sectoriel, plan d\'action.', en:'CX intelligence firm for WAEMU financial institutions. Diagnosis, sector benchmarking, action plan.'},
   'nax.btn1': {fr:'Visiter Naxari →', en:'Visit Naxari →'},
@@ -2756,6 +2852,149 @@ renderLB();
 applyLang();      // Appliquer la langue initiale (FR par défaut) — appelle buildHeroH1()
 buildHeroH1(); // Construire le h1 avec animation d'entrée
 loadStats();      // Charger les vrais chiffres depuis Supabase
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMATIONS SCROLL — A (compteurs) + B (barres) + C (reveal)
+   IntersectionObserver natif, zéro dépendance, ~30 lignes
+   ══════════════════════════════════════════════════════════════ */
+(function() {
+  if (!window.IntersectionObserver) {
+    // Fallback : tout visible immédiatement
+    document.querySelectorAll('.reveal').forEach(el => el.style.opacity = '1');
+    return;
+  }
+
+  /* C — Scroll-reveal stagger ─────────────────────────────── */
+  const revObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        revObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { revObs.observe(el); });
+
+  /* B — Barres de score animées ───────────────────────────── */
+  const barObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.pb-fill').forEach(function(bar) {
+          // Légère cascade entre les barres d'une même row
+          var delay = 0;
+          bar.closest('.prev-bar-row') && (delay = Array.from(
+            bar.closest('.prev-bars').querySelectorAll('.pb-fill')
+          ).indexOf(bar) * 120);
+          setTimeout(function() { bar.classList.add('go'); }, delay);
+        });
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.20 });
+  document.querySelectorAll('.prev-row').forEach(function(el) { barObs.observe(el); });
+
+  /* A — Compteurs animés sur les stats statiques ──────────── */
+  function animStat(el, target) {
+    var n = 0;
+    var duration = 900; // ms
+    var start = null;
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+    function step(ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      n = Math.round(easeOut(progress) * target);
+      el.textContent = n;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+  var statObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        var target = parseInt(e.target.dataset.target, 10);
+        if (!isNaN(target)) animStat(e.target, target);
+        statObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-target]').forEach(function(el) { statObs.observe(el); });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   CANVAS — Particules animées sur la KPI card hero
+   ══════════════════════════════════════════════════════════════ */
+(function() {
+  var cvs = document.getElementById('kpiCvs');
+  if (!cvs) return;
+  var ctx = cvs.getContext('2d');
+  var card = cvs.parentElement;
+  var N = 38, MAX_D = 90;
+  var dots = [];
+
+  function resize() {
+    cvs.width  = card.offsetWidth;
+    cvs.height = card.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (var i = 0; i < N; i++) {
+    dots.push({
+      x: Math.random() * cvs.width,
+      y: Math.random() * cvs.height,
+      vx: (Math.random() - 0.5) * 0.38,
+      vy: (Math.random() - 0.5) * 0.38,
+      r: Math.random() * 1.8 + 1,
+      p: Math.random() * Math.PI * 2
+    });
+  }
+
+  function draw() {
+    var W = cvs.width, H = cvs.height;
+    ctx.clearRect(0, 0, W, H);
+
+    dots.forEach(function(d) {
+      d.x += d.vx; d.y += d.vy; d.p += 0.016;
+      if (d.x < 0 || d.x > W) d.vx *= -1;
+      if (d.y < 0 || d.y > H) d.vy *= -1;
+    });
+
+    // Lignes entre points proches
+    for (var i = 0; i < N; i++) {
+      for (var j = i + 1; j < N; j++) {
+        var dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < MAX_D) {
+          ctx.beginPath();
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.strokeStyle = 'rgba(79,142,247,' + ((1 - dist/MAX_D) * 0.4) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Points
+    dots.forEach(function(d, i) {
+      var pf = 1 + Math.sin(d.p) * 0.2;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r * pf, 0, Math.PI * 2);
+      ctx.fillStyle = i % 9 === 0
+        ? 'rgba(74,222,128,0.85)'   // vert score
+        : 'rgba(79,142,247,0.7)';   // bleu accent
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  // Démarrer l'animation seulement si prefers-reduced-motion n'est pas actif
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    draw();
+  }
+})();
 
 </script>
 </body>

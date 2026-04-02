@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CXFI — Démo Animations</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0A2040;
+    --accent: #4F8EF7;
+    --paper: #F7F4EE;
+    --score: #4ADE80;
+    --muted: #6B7B8E;
+    --border: rgba(10,32,64,.1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;}
+
+  /* ── NAV ── */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 40px;height:56px;
+    background:rgba(247,244,238,.9);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--ink);}
+  .nav-pills{display:flex;gap:8px;}
+  .nav-pill{
+    padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
+    border:1.5px solid var(--border);cursor:pointer;background:none;color:var(--ink);
+    transition:all .2s;text-decoration:none;
+  }
+  .nav-pill:hover,.nav-pill.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+  /* ── HERO / SECTIONS ── */
+  section{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:80px 40px 60px;text-align:center;
+  }
+  section:nth-child(even){background:#f0ede6;}
+  .tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--accent);border:1.5px solid var(--accent);
+    border-radius:20px;padding:5px 14px;margin-bottom:20px;
+  }
+  h2{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,56px);font-weight:800;
+     line-height:1.05;letter-spacing:-2px;margin-bottom:16px;}
+  .sub{font-size:15px;color:var(--muted);max-width:500px;line-height:1.7;margin:0 auto 40px;}
+  .demo-box{
+    width:100%;max-width:700px;
+    background:#fff;border:1.5px solid var(--border);
+    border-radius:20px;padding:40px 32px;
+    box-shadow:0 4px 40px rgba(10,32,64,.06);
+  }
+  .code-note{
+    margin-top:20px;font-size:11px;color:var(--muted);
+    background:rgba(10,32,64,.04);border-radius:8px;padding:8px 14px;
+    font-family:monospace;
+  }
+
+  /* ══════════════════════════════════════
+     OPTION 1 — SCORE COUNTER ANIMÉ
+  ══════════════════════════════════════ */
+  .scores-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  }
+  .score-card{
+    background:var(--paper);border:1.5px solid var(--border);
+    border-radius:14px;padding:24px 16px;text-align:center;
+  }
+  .score-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+               color:var(--muted);margin-bottom:12px;}
+  .score-num{
+    font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
+    color:var(--ink);line-height:1;
+    transition:color .3s;
+  }
+  .score-num.green{color:var(--score);}
+  .score-num.orange{color:#F59E0B;}
+  .score-num.red{color:#F87171;}
+  .score-bar-wrap{
+    margin-top:12px;height:6px;background:rgba(10,32,64,.08);
+    border-radius:99px;overflow:hidden;
+  }
+  .score-bar{
+    height:100%;border-radius:99px;width:0%;
+    transition:width 1.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .score-bar.green{background:var(--score);}
+  .score-bar.orange{background:#F59E0B;}
+  .score-bar.red{background:#F87171;}
+  .score-inst{font-size:12px;font-weight:600;color:var(--ink);margin-top:10px;}
+  .btn-replay{
+    margin-top:28px;padding:10px 28px;background:var(--ink);color:var(--paper);
+    border:none;border-radius:99px;font-size:13px;font-weight:600;
+    cursor:pointer;transition:opacity .2s;
+  }
+  .btn-replay:hover{opacity:.8;}
+
+  /* ══════════════════════════════════════
+     OPTION 2 — FADE IN AU SCROLL
+  ══════════════════════════════════════ */
+  .fade-demo-list{display:flex;flex-direction:column;gap:16px;width:100%;max-width:560px;}
+  .fade-card{
+    background:var(--paper);border:1.5px solid var(--border);border-radius:14px;
+    padding:20px 22px;text-align:left;display:flex;gap:16px;align-items:flex-start;
+    opacity:0;transform:translateY(28px);
+    transition:opacity .55s cubic-bezier(0.16,1,0.3,1), transform .55s cubic-bezier(0.16,1,0.3,1);
+  }
+  .fade-card.visible{opacity:1;transform:none;}
+  .fade-card-icon{
+    width:40px;height:40px;border-radius:10px;background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
+  }
+  .fade-card-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+  .fade-card-sub{font-size:12px;color:var(--muted);line-height:1.5;}
+
+  /* ══════════════════════════════════════
+     OPTION 3 — HERO CANVAS ANIMÉ
+  ══════════════════════════════════════ */
+  #hero-canvas-wrap{
+    position:relative;width:100%;max-width:700px;
+    height:340px;border-radius:20px;overflow:hidden;
+    border:1.5px solid var(--border);
+    box-shadow:0 4px 40px rgba(10,32,64,.12);
+  }
+  #heroCanvas{
+    position:absolute;inset:0;width:100%;height:100%;
+    background:var(--ink);
+  }
+  .canvas-overlay{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;pointer-events:none;
+  }
+  .canvas-title{
+    font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,38px);font-weight:800;
+    color:#fff;letter-spacing:-1.5px;line-height:1.1;text-align:center;
+    text-shadow:0 2px 20px rgba(0,0,0,.4);
+  }
+  .canvas-title span{color:var(--score);}
+  .canvas-sub{
+    font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;
+    font-weight:500;
+  }
+  .canvas-badge{
+    margin-top:20px;padding:8px 20px;
+    background:rgba(79,142,247,.2);border:1.5px solid rgba(79,142,247,.5);
+    border-radius:99px;color:#7EB8FF;font-size:12px;font-weight:600;
+    letter-spacing:.06em;
+  }
+
+  /* ══════════════════════════════════════
+     SECTION FINALE
+  ══════════════════════════════════════ */
+  .choice-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+    width:100%;max-width:700px;
+  }
+  .choice-card{
+    border:2px solid var(--border);border-radius:14px;padding:22px 18px;
+    cursor:pointer;transition:all .25s;background:#fff;
+  }
+  .choice-card:hover{border-color:var(--accent);transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(79,142,247,.15);}
+  .choice-num{font-size:28px;font-weight:800;font-family:'Syne',sans-serif;
+               color:var(--accent);margin-bottom:8px;}
+  .choice-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .choice-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+
+  @media(max-width:600px){
+    .scores-grid{grid-template-columns:1fr;}
+    .choice-grid{grid-template-columns:1fr;}
+    section{padding:80px 20px 60px;}
+    nav{padding:0 20px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">CXFI — Anim Demo</span>
+  <div class="nav-pills">
+    <a href="#opt1" class="nav-pill">① Compteur</a>
+    <a href="#opt2" class="nav-pill">② Scroll</a>
+    <a href="#opt3" class="nav-pill">③ Canvas</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     SECTION 1 — SCORE COUNTER
+══════════════════════════════════════ -->
+<section id="opt1">
+  <div class="tag">Option 1</div>
+  <h2>Score counter<br>animé</h2>
+  <p class="sub">Les scores CXFI partent de 0 et montent jusqu'à la vraie valeur dès que la section entre dans l'écran. Effet radar / baromètre.</p>
+
+  <div class="demo-box">
+    <div class="scores-grid">
+      <div class="score-card">
+        <div class="score-label">Score CX Global</div>
+        <div class="score-num green" id="cnt1">0</div>
+        <div class="score-bar-wrap"><div class="score-bar green" id="bar1"></div></div>
+        <div class="score-inst">Mobile Money UEMOA</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">MTN MoMo</div>
+        <div class="score-num orange" id="cnt2">0</div>
+        <div class="score-bar-wrap"><div class="score-bar orange" id="bar2"></div></div>
+        <div class="score-inst">MTN Bénin</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Moov Money</div>
+        <div class="score-num red" id="cnt3">0</div>
+        <div class="score-bar-wrap"><div class="score-bar red" id="bar3"></div></div>
+        <div class="score-inst">Moov Africa</div>
+      </div>
+    </div>
+    <button class="btn-replay" onclick="replayCounters()">↺ Rejouer l'animation</button>
+  </div>
+  <div class="code-note">IntersectionObserver + requestAnimationFrame — ~30 lignes JS, 0 librairie</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 2 — FADE IN AU SCROLL
+══════════════════════════════════════ -->
+<section id="opt2">
+  <div class="tag">Option 2</div>
+  <h2>Fade-in<br>au scroll</h2>
+  <p class="sub">Chaque carte, section ou bloc glisse vers le haut et apparaît progressivement en entrant dans la vue. Appliqué à tout le site.</p>
+
+  <div class="fade-demo-list">
+    <div class="fade-card" data-delay="0">
+      <div class="fade-card-icon">📱</div>
+      <div>
+        <div class="fade-card-title">Mobile Money — Vue d'ensemble</div>
+        <div class="fade-card-sub">Classement 2024 des 8 opérateurs UEMOA selon 312 avis collectés dans la zone.</div>
+      </div>
+    </div>
+    <div class="fade-card" data-delay="100">
+      <div class="fade-card-icon">🏦</div>
+      <div>
+        <div class="fade-card-title">Banques commerciales</div>
+        <div class="fade-card-sub">Ecobank, UBA, BICI, Orabank — comparatif sur 5 critères d'expérience client.</div>
+      </div>
+    </div>
+    <div class="fade-card" data-delay="200">
+      <div class="fade-card-icon">📊</div>
+      <div>
+        <div class="fade-card-title">Baromètre sectoriel</div>
+        <div class="fade-card-sub">Score moyen par secteur, évolution trimestrielle, répartition géographique.</div>
+      </div>
+    </div>
+    <div class="fade-card" data-delay="300">
+      <div class="fade-card-icon">✦</div>
+      <div>
+        <div class="fade-card-title">Top performer Q1 2025</div>
+        <div class="fade-card-sub">Wave Sénégal — 87/100. Meilleure expérience mobile money de la zone UEMOA.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-note">IntersectionObserver + CSS transition — aucun JS framework, fonctionne sur tous mobiles</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 3 — CANVAS ANIMÉ
+══════════════════════════════════════ -->
+<section id="opt3">
+  <div class="tag">Option 3</div>
+  <h2>Hero canvas<br>animé</h2>
+  <p class="sub">Fond de particules connectées sur fond bleu nuit CXFI. Les points bougent lentement, les lignes se tracent entre les proches. Effet "réseau financier data".</p>
+
+  <div id="hero-canvas-wrap">
+    <canvas id="heroCanvas"></canvas>
+    <div class="canvas-overlay">
+      <div class="canvas-title">Le baromètre CX<br>de l'<span>UEMOA</span></div>
+      <div class="canvas-sub">312 avis · 8 pays · 24 institutions</div>
+      <div class="canvas-badge">Saison 2024 — En direct</div>
+    </div>
+  </div>
+
+  <div class="code-note">Canvas API 2D + requestAnimationFrame — ~80 lignes JS, 0 librairie, ultra-léger</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION CHOIX
+══════════════════════════════════════ -->
+<section id="choix" style="min-height:auto;padding:60px 40px;">
+  <div class="tag">Votre choix</div>
+  <h2 style="font-size:clamp(24px,4vw,40px);">Laquelle<br>intégrer dans CXFI ?</h2>
+  <p class="sub">Cliquez sur celle qui vous plaît le plus — je l'intègre dans index.html directement.</p>
+
+  <div class="choice-grid">
+    <div class="choice-card">
+      <div class="choice-num">①</div>
+      <div class="choice-title">Score counter</div>
+      <div class="choice-desc">Chiffres qui montent · Barres de progression · Parfait pour le classement CXFI</div>
+    </div>
+    <div class="choice-card">
+      <div class="choice-num">②</div>
+      <div class="choice-title">Fade au scroll</div>
+      <div class="choice-desc">Apparition élégante · Glissement vers le haut · S'applique à tout le site</div>
+    </div>
+    <div class="choice-card">
+      <div class="choice-num">③</div>
+      <div class="choice-title">Canvas particules</div>
+      <div class="choice-desc">Fond animé réseau · Ultra-visuel · Impact immédiat sur le hero</div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ══════════════════════════════════════
+   OPTION 1 — COUNTER ANIMATION
+══════════════════════════════════════ */
+const TARGETS = [
+  { id: 'cnt1', bar: 'bar1', val: 74 },
+  { id: 'cnt2', bar: 'bar2', val: 68 },
+  { id: 'cnt3', bar: 'bar3', val: 55 },
+];
+
+function animateCounter(el, barEl, target, duration = 1800) {
+  let start = null;
+  const step = (ts) => {
+    if (!start) start = ts;
+    const p = Math.min((ts - start) / duration, 1);
+    // Ease out expo
+    const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+    const current = Math.round(ease * target);
+    el.textContent = current;
+    barEl.style.width = (ease * target) + '%';
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function replayCounters() {
+  TARGETS.forEach(({ id, bar, val }) => {
+    const el = document.getElementById(id);
+    const barEl = document.getElementById(bar);
+    el.textContent = '0';
+    barEl.style.width = '0%';
+    // small delay to reset visually before re-animating
+    setTimeout(() => animateCounter(el, barEl, val), 50);
+  });
+}
+
+// Auto-trigger when section enters view
+const countersObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      TARGETS.forEach(({ id, bar, val }) => animateCounter(
+        document.getElementById(id),
+        document.getElementById(bar),
+        val
+      ));
+      countersObserver.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+countersObserver.observe(document.getElementById('opt1'));
+
+
+/* ══════════════════════════════════════
+   OPTION 2 — FADE IN ON SCROLL
+══════════════════════════════════════ */
+const fadeCards = document.querySelectorAll('.fade-card');
+
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const delay = parseInt(e.target.dataset.delay || 0);
+      setTimeout(() => e.target.classList.add('visible'), delay);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+fadeCards.forEach(card => fadeObserver.observe(card));
+
+
+/* ══════════════════════════════════════
+   OPTION 3 — CANVAS PARTICLES
+══════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('hero-canvas-wrap');
+
+  function resize() {
+    canvas.width = wrap.offsetWidth;
+    canvas.height = wrap.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COUNT = 55;
+  const MAX_DIST = 120;
+  const INK = '#0A2040';
+  const ACCENT = 'rgba(79,142,247,';
+  const SCORE_C = 'rgba(74,222,128,';
+
+  const dots = Array.from({ length: COUNT }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+    r: Math.random() * 2 + 1.5,
+    pulse: Math.random() * Math.PI * 2,
+  }));
+
+  let frame = 0;
+  function draw() {
+    frame++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Background gradient
+    const grad = ctx.createRadialGradient(
+      canvas.width * 0.5, canvas.height * 0.4, 0,
+      canvas.width * 0.5, canvas.height * 0.4, canvas.width * 0.7
+    );
+    grad.addColorStop(0, '#0D2D55');
+    grad.addColorStop(1, INK);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Move dots
+    dots.forEach(d => {
+      d.x += d.vx;
+      d.y += d.vy;
+      d.pulse += 0.02;
+      if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
+      if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+    });
+
+    // Draw connections
+    for (let i = 0; i < COUNT; i++) {
+      for (let j = i + 1; j < COUNT; j++) {
+        const dx = dots[i].x - dots[j].x;
+        const dy = dots[i].y - dots[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MAX_DIST) {
+          const alpha = (1 - dist / MAX_DIST) * 0.35;
+          ctx.beginPath();
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.strokeStyle = ACCENT + alpha + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw dots
+    dots.forEach((d, i) => {
+      const pulseFactor = 1 + Math.sin(d.pulse) * 0.25;
+      const isScore = i % 12 === 0; // some green "high score" dots
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r * pulseFactor, 0, Math.PI * 2);
+      ctx.fillStyle = isScore
+        ? SCORE_C + '0.9)'
+        : ACCENT + '0.8)';
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

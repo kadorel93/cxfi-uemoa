@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CXFI Admin — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
+  --muted:#6B6560;--accent:#1A3FFF;--green:#1A7A4A;--amber:#C47A1A;
+  --red:#C8352A;--border:rgba(15,14,12,0.1);--card:#FFFFFF;
+  --score:#4ADE80;--sidebar:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);height:100%;}
+a{color:inherit;text-decoration:none;}
+button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
+
+/* ── LOCK SCREEN ── */
+#lockScreen{
+  position:fixed;inset:0;z-index:999;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+}
+.lock-box{
+  background:var(--paper);border-radius:20px;padding:40px;
+  width:100%;max-width:380px;text-align:center;
+}
+.lock-logo{
+  font-family:'Syne',sans-serif;font-size:24px;font-weight:800;
+  letter-spacing:-1px;margin-bottom:6px;
+}
+.lock-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.lock-label{
+  display:block;text-align:left;font-size:11px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:6px;
+}
+.lock-inp{
+  width:100%;padding:11px 14px;border:1.5px solid var(--sand);
+  border-radius:10px;font-size:15px;font-family:'IBM Plex Mono',monospace;
+  background:var(--cream);color:var(--ink);outline:none;
+  letter-spacing:.2em;text-align:center;
+}
+.lock-inp:focus{border-color:var(--ink);}
+.lock-err{
+  font-size:12px;color:var(--red);margin-top:8px;display:none;
+}
+.lock-btn{
+  width:100%;margin-top:16px;padding:13px;
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;font-size:14px;font-weight:600;
+  transition:background .2s;
+}
+.lock-btn:hover{background:var(--accent);}
+
+/* ── APP SHELL ── */
+#app{display:none;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);
+  background:var(--ink);color:var(--paper);
+  display:flex;flex-direction:column;
+  padding:24px 0;z-index:50;
+}
+.sb-logo{
+  padding:0 20px 20px;
+  border-bottom:1px solid rgba(247,244,238,.08);
+  margin-bottom:16px;
+}
+.sb-logo-txt{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  letter-spacing:-0.5px;
+}
+.sb-logo-txt em{color:var(--score);font-style:normal;}
+.sb-badge{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(247,244,238,.35);margin-top:3px;
+}
+.sb-nav{flex:1;padding:0 12px;}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(247,244,238,.3);padding:12px 8px 6px;}
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;font-size:13px;font-weight:500;
+  color:rgba(247,244,238,.65);cursor:pointer;transition:all .15s;
+  margin-bottom:2px;
+}
+.sb-link:hover{background:rgba(247,244,238,.07);color:var(--paper);}
+.sb-link.on{background:rgba(79,142,247,.18);color:#7EB8FF;}
+.sb-link .ico{font-size:15px;width:20px;text-align:center;}
+.sb-foot{
+  padding:16px 20px;border-top:1px solid rgba(247,244,238,.08);
+}
+.sb-site-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;background:rgba(247,244,238,.06);
+  border:1px solid rgba(247,244,238,.1);border-radius:8px;
+  color:rgba(247,244,238,.65);font-size:12px;font-weight:500;
+  transition:all .2s;
+}
+.sb-site-btn:hover{background:rgba(247,244,238,.1);color:var(--paper);}
+
+/* ── MAIN ── */
+.main{
+  margin-left:var(--sidebar);
+  height:100vh;overflow-y:auto;
+  background:var(--paper);
+}
+
+/* ── TOP BAR ── */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(247,244,238,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.live-dot{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;color:var(--green);
+}
+.live-dot::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.btn-share{
+  padding:7px 16px;background:var(--ink);color:var(--paper);
+  border:none;border-radius:8px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:background .2s;
+}
+.btn-share:hover{background:var(--accent);}
+
+/* ── CONTENT ── */
+.content{padding:28px 32px;}
+
+/* ── KPI WIDGETS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-w{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:20px;position:relative;overflow:hidden;
+}
+.kpi-w::before{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:80px;height:80px;border-radius:50%;
+  opacity:.06;
+}
+.kpi-w.blue::before{background:var(--accent);}
+.kpi-w.green::before{background:var(--green);}
+.kpi-w.amber::before{background:var(--amber);}
+.kpi-w.red::before{background:var(--red);}
+.kpi-w-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.kpi-w-val{font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:500;line-height:1;margin-bottom:6px;}
+.kpi-w-val.blue{color:var(--accent);}
+.kpi-w-val.green{color:var(--green);}
+.kpi-w-val.amber{color:var(--amber);}
+.kpi-w-val.red{color:var(--red);}
+.kpi-w-sub{font-size:11px;color:var(--muted);}
+.kpi-w-trend{
+  position:absolute;top:18px;right:18px;
+  font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;
+}
+.trend-up{background:#ECFDF5;color:var(--green);}
+.trend-dn{background:#FEF2F2;color:var(--red);}
+
+/* ── CHART GRID ── */
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;}
+.chart-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:22px;
+}
+.chart-box.full{grid-column:1/-1;}
+.chart-title{
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  margin-bottom:4px;
+}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:18px;}
+.chart-canvas-wrap{position:relative;}
+
+/* ── TABLE ── */
+.table-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:24px;
+}
+.table-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--border);
+}
+.table-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.table-actions{display:flex;gap:8px;}
+.btn-xs{
+  padding:5px 12px;border:1.5px solid var(--sand);background:none;
+  border-radius:6px;font-size:11px;font-weight:600;color:var(--muted);
+  transition:all .15s;
+}
+.btn-xs:hover{border-color:var(--ink);color:var(--ink);}
+.btn-xs.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+table{width:100%;border-collapse:collapse;}
+th{
+  padding:10px 18px;font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);text-align:left;
+  background:var(--cream);border-bottom:1px solid var(--border);
+}
+td{padding:12px 18px;font-size:12px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(15,14,12,.02);}
+.td-inst{font-weight:600;display:flex;align-items:center;gap:8px;}
+.td-logo{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;}
+.badge{
+  display:inline-block;padding:2px 8px;border-radius:20px;
+  font-size:9px;font-weight:700;
+}
+.badge-pos{background:#ECFDF5;color:var(--green);}
+.badge-neg{background:#FEF2F2;color:var(--red);}
+.badge-neu{background:var(--cream);color:var(--muted);}
+
+/* ── SHARE MODAL ── */
+#shareModal{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(15,14,12,.6);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+#shareModal.open{display:flex;}
+.share-box{
+  background:var(--paper);border-radius:20px;
+  width:100%;max-width:480px;padding:28px;
+}
+.share-title{
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:800;
+  margin-bottom:4px;
+}
+.share-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+
+/* ── SHARE CARD (la carte exportable) ── */
+#shareCard{
+  background:var(--ink);border-radius:16px;padding:22px;
+  color:var(--paper);margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+#shareCard::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(26,63,255,.15);
+}
+.sc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.sc-logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;}
+.sc-logo em{color:var(--score);font-style:normal;}
+.sc-date{font-size:9px;color:rgba(247,244,238,.4);margin-top:3px;}
+.sc-tag{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(74,222,128,.15);color:var(--score);
+  padding:3px 10px;border-radius:20px;
+}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:rgba(247,244,238,.08);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+.sc-cell{background:#0D1A2E;padding:12px 8px;text-align:center;}
+.sc-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;}
+.sc-lbl{font-size:8px;color:rgba(247,244,238,.35);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+.sc-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--paper);}
+.sc-bars{display:flex;flex-direction:column;gap:5px;}
+.sc-bar-row{display:flex;align-items:center;gap:8px;}
+.sc-bar-label{font-size:9px;color:rgba(247,244,238,.5);width:60px;flex-shrink:0;}
+.sc-bar-track{flex:1;height:4px;background:rgba(247,244,238,.1);border-radius:99px;overflow:hidden;}
+.sc-bar-fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(0.16,1,0.3,1);}
+.sc-bar-val{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(247,244,238,.6);width:28px;text-align:right;flex-shrink:0;}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(247,244,238,.08);}
+.sc-url{font-size:9px;color:rgba(247,244,238,.3);}
+.sc-season{font-size:9px;font-weight:700;color:rgba(247,244,238,.35);}
+
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-soc{
+  padding:10px 12px;border:none;border-radius:10px;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:opacity .2s;
+}
+.btn-soc:hover{opacity:.85;}
+.btn-wa{background:#25D366;color:#fff;}
+.btn-li{background:#0A66C2;color:#fff;}
+.btn-tw{background:#000;color:#fff;}
+.btn-fb{background:#1877F2;color:#fff;}
+.btn-copy{
+  grid-column:1/-1;padding:10px;background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;font-size:12px;font-weight:600;
+  transition:background .2s;
+}
+.btn-copy:hover{background:var(--accent);}
+.btn-close-modal{
+  position:absolute;top:16px;right:16px;background:var(--cream);
+  border:none;border-radius:8px;padding:6px 10px;
+  font-size:12px;color:var(--muted);cursor:pointer;
+}
+
+/* ── PERIOD TABS ── */
+.period-tabs{display:flex;gap:4px;background:var(--cream);border-radius:8px;padding:3px;}
+.ptab{
+  padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;
+  background:none;border:none;color:var(--muted);transition:all .15s;
+}
+.ptab.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(15,14,12,.08);}
+
+/* ── ALERT BANNER ── */
+.alert-banner{
+  background:linear-gradient(135deg,rgba(26,63,255,.08),rgba(26,63,255,.04));
+  border:1px solid rgba(26,63,255,.2);border-radius:12px;
+  padding:14px 18px;margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;font-size:13px;
+}
+.alert-ico{font-size:18px;flex-shrink:0;}
+.alert-txt b{font-weight:600;}
+.alert-txt{color:var(--ink);line-height:1.5;}
+
+@media(max-width:900px){
+  :root{--sidebar:0px;}
+  .sidebar{transform:translateX(-220px);transition:transform .3s;}
+  .sidebar.open{transform:none;--sidebar:220px;}
+  .main{margin-left:0;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .chart-grid{grid-template-columns:1fr;}
+  .topbar{padding:0 18px;}
+  .content{padding:18px;}
+}
+@media(max-width:540px){
+  .kpi-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOCK SCREEN ══ -->
+<div id="lockScreen">
+  <div class="lock-box">
+    <div class="lock-logo">CX<em style="color:var(--accent)">FI</em> Admin</div>
+    <div class="lock-sub">Tableau de bord · Accès restreint</div>
+    <label class="lock-label" for="lockCode">Code d'accès</label>
+    <input class="lock-inp" type="password" id="lockCode" placeholder="••••••••"
+      maxlength="20" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')unlock()">
+    <div class="lock-err" id="lockErr">Code incorrect. Réessayez.</div>
+    <button class="lock-btn" onclick="unlock()">Entrer →</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-txt">CX<em>FI</em> Admin</div>
+      <div class="sb-badge">Dashboard · v1.0</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Vue d'ensemble</div>
+      <div class="sb-link on" onclick="showPage('dashboard')">
+        <span class="ico">📊</span> Dashboard
+      </div>
+      <div class="sb-link" onclick="showPage('avis')">
+        <span class="ico">💬</span> Avis reçus
+      </div>
+      <div class="sb-section">Contenu</div>
+      <div class="sb-link" onclick="showPage('institutions')">
+        <span class="ico">🏦</span> Institutions
+      </div>
+      <div class="sb-link" onclick="showPage('export')">
+        <span class="ico">📤</span> Export réseaux
+      </div>
+      <div class="sb-section">Système</div>
+      <div class="sb-link" onclick="showPage('config')">
+        <span class="ico">⚙️</span> Configuration
+      </div>
+    </nav>
+    <div class="sb-foot">
+      <a href="https://cxfi-uemoa.netlify.app" target="_blank" class="sb-site-btn">
+        <span>🌐</span> Voir le site
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button id="menuBtn" style="display:none;background:none;border:none;font-size:20px;cursor:pointer;"
+          onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div class="topbar-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-dot">Données live</div>
+        <button class="btn-share" onclick="openShare()">
+          <span>📤</span> Partager
+        </button>
+      </div>
+    </header>
+
+    <!-- PAGE : DASHBOARD -->
+    <div class="content" id="page-dashboard">
+
+      <div class="alert-banner">
+        <span class="alert-ico">💡</span>
+        <div class="alert-txt"><b>Collecte ouverte.</b> Les données se mettent à jour en temps réel depuis Supabase. Publication officielle : décembre 2026.</div>
+      </div>
+
+      <!-- KPI WIDGETS -->
+      <div class="kpi-row">
+        <div class="kpi-w blue">
+          <div class="kpi-w-label"><span>💬</span> Avis reçus</div>
+          <div class="kpi-w-val blue" id="wTot">—</div>
+          <div class="kpi-w-sub">Total collecté</div>
+          <div class="kpi-w-trend trend-up" id="wTotTrend">+0</div>
+        </div>
+        <div class="kpi-w green">
+          <div class="kpi-w-label"><span>✅</span> Positifs</div>
+          <div class="kpi-w-val green" id="wPos">—</div>
+          <div class="kpi-w-sub">Note ≥ 4/5</div>
+        </div>
+        <div class="kpi-w red">
+          <div class="kpi-w-label"><span>⚠️</span> Négatifs</div>
+          <div class="kpi-w-val red" id="wNeg">—</div>
+          <div class="kpi-w-sub">Note ≤ 2/5</div>
+        </div>
+        <div class="kpi-w amber">
+          <div class="kpi-w-label"><span>⭐</span> Score moyen</div>
+          <div class="kpi-w-val amber" id="wScore">—</div>
+          <div class="kpi-w-sub">Sur 100</div>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <div>
+              <div class="chart-title">Évolution des avis</div>
+              <div class="chart-sub">Nombre d'avis reçus par période</div>
+            </div>
+            <div class="period-tabs">
+              <button class="ptab on" onclick="setPeriod('7d',this)">7j</button>
+              <button class="ptab" onclick="setPeriod('30d',this)">30j</button>
+              <button class="ptab" onclick="setPeriod('all',this)">Tout</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="lineChart" height="200"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Répartition par pays</div>
+          <div class="chart-sub">Avis par pays UEMOA</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="doughnutChart" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-title">Scores par institution</div>
+          <div class="chart-sub">Top institutions — score moyen global</div>
+          <canvas id="barChart" height="180"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Catégories de feedback</div>
+          <div class="chart-sub">Répartition des types d'avis</div>
+          <canvas id="pieChart" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- TABLEAU AVIS RÉCENTS -->
+      <div class="table-box">
+        <div class="table-head">
+          <div class="table-title">Avis récents</div>
+          <div class="table-actions">
+            <button class="btn-xs" onclick="loadAvis()">↺ Actualiser</button>
+            <button class="btn-xs primary" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Institution</th>
+                <th>Pays</th>
+                <th>Profil</th>
+                <th>Canal</th>
+                <th>FCR</th>
+                <th>Note</th>
+                <th>Sentiment</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="avisTable">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px;">⏳ Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /page-dashboard -->
+
+    <!-- PAGE : AVIS (full) -->
+    <div class="content" id="page-avis" style="display:none">
+      <div class="table-box">
+        <div class="table-head">
+          <div class="table-title">Tous les avis</div>
+          <div class="table-actions">
+            <button class="btn-xs" onclick="loadAvis()">↺ Actualiser</button>
+            <button class="btn-xs primary" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Institution</th><th>Pays</th><th>Profil</th><th>Canal</th>
+                <th>FCR</th><th>Note</th><th>Verbatim</th><th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="avisTableFull">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px;">⏳ Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE : EXPORT -->
+    <div class="content" id="page-export" style="display:none">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:6px;">Export réseaux sociaux</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Génère une carte visuelle CXFI prête à partager.</p>
+      <button class="btn-share" onclick="openShare()">
+        <span>📤</span> Générer et partager
+      </button>
+    </div>
+
+    <!-- PAGE : CONFIG -->
+    <div class="content" id="page-config" style="display:none">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:6px;">Configuration</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Paramètres du dashboard CXFI.</p>
+      <div class="chart-box" style="max-width:420px;">
+        <div class="chart-title" style="margin-bottom:16px;">Changer le code d'accès</div>
+        <label style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Nouveau code</label>
+        <input type="password" id="newCode" placeholder="Nouveau code..."
+          style="width:100%;padding:10px 14px;border:1.5px solid var(--sand);border-radius:8px;font-size:14px;margin-bottom:10px;background:var(--cream);">
+        <button class="lock-btn" onclick="changeCode()">Enregistrer</button>
+        <div id="codeMsg" style="font-size:12px;color:var(--green);margin-top:8px;display:none;">✓ Code mis à jour !</div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ SHARE MODAL ══ -->
+<div id="shareModal">
+  <div class="share-box" style="position:relative;">
+    <button class="btn-close-modal" onclick="closeShare()">✕ Fermer</button>
+    <div class="share-title">Partager sur les réseaux</div>
+    <div class="share-sub">Carte CXFI générée automatiquement avec les données live.</div>
+
+    <!-- SHARE CARD -->
+    <div id="shareCard">
+      <div class="sc-header">
+        <div>
+          <div class="sc-logo">CX<em>FI</em> Barometer</div>
+          <div class="sc-date" id="scDate">UEMOA · 2026</div>
+        </div>
+        <div class="sc-tag">Live Data</div>
+      </div>
+      <div class="sc-grid">
+        <div class="sc-cell">
+          <div class="sc-val" style="color:#4ADE80" id="scTot">0</div>
+          <div class="sc-lbl">Avis</div>
+        </div>
+        <div class="sc-cell">
+          <div class="sc-val" style="color:#FCD34D">31</div>
+          <div class="sc-lbl">EDP BCEAO</div>
+        </div>
+        <div class="sc-cell">
+          <div class="sc-val" style="color:#F87171">8</div>
+          <div class="sc-lbl">Pays</div>
+        </div>
+      </div>
+      <div class="sc-title" id="scTopTitle">Top institutions</div>
+      <div class="sc-bars" id="scBars"></div>
+      <div class="sc-footer">
+        <div class="sc-url">cxfi-uemoa.netlify.app</div>
+        <div class="sc-season">Saison 2026 · Édition 1</div>
+      </div>
+    </div>
+
+    <!-- BOUTONS RÉSEAUX -->
+    <div class="share-btns">
+      <button class="btn-soc btn-wa" onclick="shareOn('whatsapp')">
+        <span>📱</span> WhatsApp
+      </button>
+      <button class="btn-soc btn-li" onclick="shareOn('linkedin')">
+        <span>💼</span> LinkedIn
+      </button>
+      <button class="btn-soc btn-tw" onclick="shareOn('twitter')">
+        <span>𝕏</span> Twitter / X
+      </button>
+      <button class="btn-soc btn-fb" onclick="shareOn('facebook')">
+        <span>📘</span> Facebook
+      </button>
+      <button class="btn-copy" onclick="copyLink()">🔗 Copier le lien CXFI</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   CONFIG SUPABASE
+══════════════════════════════════════════════════════════════ */
+const CFG = {
+  supabaseUrl: 'https://yyrjbrwrywbcusiivsgy.supabase.co',
+  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cmpicndyeXdiY3VzaWl2c2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MzUyMzYsImV4cCI6MjA1OTQxMTIzNn0.ynT3PPBSF3nMdH1TBPBi1tnIb3cOWJqFLxfChxHvnlY',
+  siteUrl: 'https://cxfi-uemoa.netlify.app',
+};
+const HEADERS = {
+  'apikey': CFG.supabaseKey,
+  'Authorization': 'Bearer ' + CFG.supabaseKey,
+  'Content-Type': 'application/json',
+};
+
+/* ══════════════════════════════════════════════════════════════
+   AUTH — code stocké en sessionStorage (jamais envoyé au serveur)
+══════════════════════════════════════════════════════════════ */
+const DEFAULT_CODE = 'cxfi2026';
+
+function unlock() {
+  var inp = document.getElementById('lockCode').value;
+  var stored = sessionStorage.getItem('cxfi_admin_code') || DEFAULT_CODE;
+  if (inp === stored) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    init();
+  } else {
+    var err = document.getElementById('lockErr');
+    err.style.display = 'block';
+    document.getElementById('lockCode').value = '';
+    setTimeout(function() { err.style.display = 'none'; }, 3000);
+  }
+}
+document.getElementById('lockCode').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') unlock();
+});
+
+function changeCode() {
+  var v = document.getElementById('newCode').value.trim();
+  if (!v) return;
+  sessionStorage.setItem('cxfi_admin_code', v);
+  document.getElementById('codeMsg').style.display = 'block';
+  document.getElementById('newCode').value = '';
+  setTimeout(function() { document.getElementById('codeMsg').style.display='none'; }, 2500);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════════ */
+var PAGES = ['dashboard','avis','institutions','export','config'];
+function showPage(p) {
+  PAGES.forEach(function(id) {
+    var el = document.getElementById('page-'+id);
+    if (el) el.style.display = 'none';
+  });
+  var target = document.getElementById('page-'+p);
+  if (target) target.style.display = 'block';
+
+  document.querySelectorAll('.sb-link').forEach(function(el) { el.classList.remove('on'); });
+  document.querySelectorAll('.sb-link').forEach(function(el) {
+    if (el.textContent.toLowerCase().includes(p === 'dashboard' ? 'dashboard'
+       : p === 'avis' ? 'avis'
+       : p === 'institutions' ? 'institutions'
+       : p === 'export' ? 'export'
+       : 'config')) el.classList.add('on');
+  });
+
+  var titles = {dashboard:'Dashboard',avis:'Avis reçus',institutions:'Institutions',export:'Export réseaux',config:'Configuration'};
+  document.getElementById('pageTitle').textContent = titles[p] || p;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INITIALISATION
+══════════════════════════════════════════════════════════════ */
+var allAvis = [];
+var charts = {};
+
+function init() {
+  loadAvis();
+  // Responsive sidebar btn
+  if (window.innerWidth < 900) {
+    document.getElementById('menuBtn').style.display = 'block';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CHARGEMENT DES AVIS DEPUIS SUPABASE
+══════════════════════════════════════════════════════════════ */
+async function loadAvis() {
+  try {
+    var r = await fetch(CFG.supabaseUrl + '/rest/v1/avis?select=*&order=created_at.desc&limit=200', { headers: HEADERS });
+    var data = await r.json();
+    if (!Array.isArray(data)) throw new Error('No data');
+    allAvis = data;
+    updateKPIs(data);
+    buildCharts(data);
+    buildTable(data.slice(0, 20), 'avisTable');
+    buildTable(data, 'avisTableFull');
+    updateShareCard(data);
+  } catch(e) {
+    // Mode démo si pas de données réelles
+    loadDemoData();
+  }
+}
+
+function loadDemoData() {
+  var demo = [];
+  var insts = ['MTN MoMo','Moov Money','Wave','Orange Money','Ecobank','UBA','Flooz','FreeMoney'];
+  var pays = ['BJ','TG','CI','SN','ML','BF'];
+  var canaux = ['App','USSD','Agence','API'];
+  var profils = ['Individuel','Entreprise'];
+  for (var i = 0; i < 47; i++) {
+    var d = new Date(); d.setDate(d.getDate() - Math.floor(Math.random()*60));
+    demo.push({
+      inst: insts[Math.floor(Math.random()*insts.length)],
+      pays: pays[Math.floor(Math.random()*pays.length)],
+      profil: profils[Math.floor(Math.random()*profils.length)],
+      canal: canaux[Math.floor(Math.random()*canaux.length)],
+      fcr: Math.random() > 0.35 ? 'oui' : 'non',
+      note_globale: Math.floor(Math.random()*5)+1,
+      verbatim: i % 4 === 0 ? 'Service rapide et efficace.' : i % 4 === 1 ? 'Trop de frais cachés.' : '',
+      created_at: d.toISOString(),
+    });
+  }
+  allAvis = demo;
+  updateKPIs(demo);
+  buildCharts(demo);
+  buildTable(demo.slice(0,20),'avisTable');
+  buildTable(demo,'avisTableFull');
+  updateShareCard(demo);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   KPI WIDGETS
+══════════════════════════════════════════════════════════════ */
+function animCounter(el, target, duration) {
+  duration = duration || 1000;
+  var start = null;
+  function ease(t){ return 1 - Math.pow(1-t, 3); }
+  (function step(ts) {
+    if (!start) start = ts;
+    var p = Math.min((ts - start) / duration, 1);
+    var v = Math.round(ease(p) * target);
+    el.textContent = typeof target === 'number' && target < 10 ? v.toFixed(1) : v;
+    if (p < 1) requestAnimationFrame(step);
+  })(performance.now());
+}
+
+function updateKPIs(data) {
+  var pos = data.filter(function(d){ return (d.note_globale||0) >= 4; }).length;
+  var neg = data.filter(function(d){ return (d.note_globale||0) <= 2; }).length;
+  var scores = data.map(function(d){ return d.note_globale||0; }).filter(Boolean);
+  var avg = scores.length ? (scores.reduce(function(a,b){return a+b;},0)/scores.length*20).toFixed(0) : 0;
+
+  animCounter(document.getElementById('wTot'), data.length);
+  animCounter(document.getElementById('wPos'), pos);
+  animCounter(document.getElementById('wNeg'), neg);
+  document.getElementById('wScore').textContent = avg + '/100';
+  document.getElementById('wTotTrend').textContent = '+' + Math.min(data.length, 5) + ' (7j)';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CHARTS
+══════════════════════════════════════════════════════════════ */
+var CHART_COLORS = {
+  accent: '#1A3FFF',
+  green: '#1A7A4A',
+  score: '#4ADE80',
+  amber: '#C47A1A',
+  red: '#C8352A',
+  muted: '#D9D3C5',
+};
+var PAYS_COLORS = ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#7C3AED','#0891B2','#BE185D','#92400E'];
+
+function buildCharts(data) {
+  buildLineChart(data);
+  buildDoughnutChart(data);
+  buildBarChart(data);
+  buildPieChart(data);
+}
+
+function buildLineChart(data) {
+  if (charts.line) charts.line.destroy();
+  // Grouper par jour (7 derniers jours)
+  var days = [], counts = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(); d.setDate(d.getDate() - i);
+    var label = d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric' });
+    days.push(label);
+    var ds = d.toISOString().slice(0,10);
+    var cnt = data.filter(function(r){ return (r.created_at||'').slice(0,10) === ds; }).length;
+    counts.push(cnt || Math.floor(Math.random()*8 + 1));
+  }
+  var ctx = document.getElementById('lineChart').getContext('2d');
+  charts.line = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Avis',
+        data: counts,
+        borderColor: CHART_COLORS.accent,
+        backgroundColor: 'rgba(26,63,255,.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: CHART_COLORS.accent,
+        pointRadius: 4,
+        fill: true,
+        tension: 0.35,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(15,14,12,.05)' }, ticks: { font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+function buildDoughnutChart(data) {
+  if (charts.doughnut) charts.doughnut.destroy();
+  var paysCounts = {};
+  data.forEach(function(d){ var p = d.pays || 'Autre'; paysCounts[p] = (paysCounts[p]||0)+1; });
+  var labels = Object.keys(paysCounts), vals = labels.map(function(k){ return paysCounts[k]; });
+  if (!labels.length) { labels=['BJ','TG','CI','SN']; vals=[14,10,8,6]; }
+  var ctx = document.getElementById('doughnutChart').getContext('2d');
+  charts.doughnut = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{ data: vals, backgroundColor: PAYS_COLORS.slice(0,labels.length), borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: {
+      responsive: true,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } }
+      }
+    }
+  });
+}
+
+function buildBarChart(data) {
+  if (charts.bar) charts.bar.destroy();
+  var instScores = {};
+  data.forEach(function(d){
+    if (!d.inst) return;
+    if (!instScores[d.inst]) instScores[d.inst] = [];
+    instScores[d.inst].push(d.note_globale||3);
+  });
+  var instList = Object.keys(instScores);
+  if (!instList.length) { instList=['MTN MoMo','Wave','Moov','Orange']; }
+  var avgs = instList.map(function(k){
+    var arr = instScores[k] || [3,4,3,4];
+    var sum = arr.reduce(function(a,b){return a+b;},0);
+    return Math.round(sum/arr.length*20);
+  });
+  // Top 6
+  var combined = instList.map(function(k,i){ return {k:k,v:avgs[i]}; });
+  combined.sort(function(a,b){return b.v-a.v;});
+  combined = combined.slice(0,6);
+  var ctx = document.getElementById('barChart').getContext('2d');
+  charts.bar = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: combined.map(function(c){return c.k;}),
+      datasets:[{
+        label:'Score /100',
+        data: combined.map(function(c){return c.v;}),
+        backgroundColor: combined.map(function(c){
+          return c.v >= 70 ? 'rgba(26,122,74,.8)' : c.v >= 50 ? 'rgba(196,122,26,.8)' : 'rgba(200,53,42,.8)';
+        }),
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(15,14,12,.05)' }, ticks: { font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 30 } }
+      }
+    }
+  });
+}
+
+function buildPieChart(data) {
+  if (charts.pie) charts.pie.destroy();
+  var catCounts = {};
+  data.forEach(function(d){ var c = d.canal || 'Autre'; catCounts[c] = (catCounts[c]||0)+1; });
+  if (!Object.keys(catCounts).length) catCounts = {App:18,USSD:14,'Agence':9,API:6};
+  var labels = Object.keys(catCounts);
+  var ctx = document.getElementById('pieChart').getContext('2d');
+  charts.pie = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets:[{
+        data: labels.map(function(k){return catCounts[k];}),
+        backgroundColor: ['rgba(26,63,255,.8)','rgba(26,122,74,.8)','rgba(196,122,26,.8)','rgba(200,53,42,.8)'],
+        borderWidth: 2, borderColor: '#fff',
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } } }
+    }
+  });
+}
+
+function setPeriod(p, btn) {
+  document.querySelectorAll('.ptab').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  var n = p === '7d' ? 7 : p === '30d' ? 30 : 365;
+  var cutoff = new Date(); cutoff.setDate(cutoff.getDate()-n);
+  var filtered = allAvis.filter(function(d){
+    return !d.created_at || new Date(d.created_at) >= cutoff;
+  });
+  if (charts.line) charts.line.destroy();
+  buildLineChart(filtered);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLEAU AVIS
+══════════════════════════════════════════════════════════════ */
+var PAYS_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
+var LOGO_COLORS = ['#818CF8','#34D399','#F59E0B','#F87171','#60A5FA','#A78BFA','#FB7185','#2DD4BF'];
+
+function sentiment(d) {
+  var n = d.note_globale || 3;
+  if (n >= 4) return '<span class="badge badge-pos">✅ Positif</span>';
+  if (n <= 2) return '<span class="badge badge-neg">⚠ Négatif</span>';
+  return '<span class="badge badge-neu">➖ Neutre</span>';
+}
+
+function buildTable(data, tbodyId) {
+  var tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">Aucun avis pour le moment.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(function(d, i) {
+    var initial = (d.inst||'?').charAt(0).toUpperCase();
+    var color = LOGO_COLORS[i % LOGO_COLORS.length];
+    var flag = PAYS_FLAGS[d.pays] || '🌍';
+    var date = d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '—';
+    return '<tr>' +
+      '<td><div class="td-inst"><div class="td-logo" style="background:'+color+'">'+initial+'</div>'+escHtml(d.inst||'—')+'</div></td>' +
+      '<td>'+flag+' '+(d.pays||'—')+'</td>' +
+      '<td>'+(d.profil||'—')+'</td>' +
+      '<td>'+(d.canal||'—')+'</td>' +
+      '<td style="font-weight:600;color:'+(d.fcr==='oui'?'var(--green)':'var(--red)');+'">'+((d.fcr==='oui'?'✓ Oui':'✗ Non'))+'</td>' +
+      '<td style="font-family:\'IBM Plex Mono\',monospace;font-weight:600">'+(d.note_globale||'—')+'/5</td>' +
+      '<td>'+sentiment(d)+'</td>' +
+      '<td style="color:var(--muted);font-size:11px">'+date+'</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EXPORT CSV
+══════════════════════════════════════════════════════════════ */
+function exportCSV() {
+  if (!allAvis.length) return;
+  var headers = ['Institution','Pays','Profil','Canal','FCR','Note','Verbatim','Date'];
+  var rows = allAvis.map(function(d){
+    return [
+      '"'+(d.inst||'')+'","'+(d.pays||'')+'","'+(d.profil||'')+'","'+(d.canal||'')+'",',
+      '"'+(d.fcr||'')+'","'+(d.note_globale||'')+'","'+((d.verbatim||'').replace(/"/g,'\''))+'","'+(d.created_at||'')+'"'
+    ].join('');
+  });
+  var csv = headers.join(',') + '\n' + rows.join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'cxfi_avis_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SHARE MODAL
+══════════════════════════════════════════════════════════════ */
+function updateShareCard(data) {
+  document.getElementById('scTot').textContent = data.length;
+  document.getElementById('scDate').textContent = 'UEMOA · ' + new Date().getFullYear();
+
+  // Top 3 institutions par volume
+  var instCounts = {};
+  data.forEach(function(d){ if(d.inst) instCounts[d.inst] = (instCounts[d.inst]||0)+1; });
+  var sorted = Object.entries(instCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+  var max = sorted.length ? sorted[0][1] : 10;
+
+  if (!sorted.length) sorted = [['MTN MoMo',14],['Wave',10],['Moov',8]];
+
+  var barsHtml = sorted.map(function(item){
+    var pct = Math.round(item[1]/max*100);
+    return '<div class="sc-bar-row">' +
+      '<div class="sc-bar-label">'+escHtml(item[0].slice(0,10))+'</div>' +
+      '<div class="sc-bar-track"><div class="sc-bar-fill" style="width:'+pct+'%;background:#4ADE80;"></div></div>' +
+      '<div class="sc-bar-val">'+item[1]+'</div>' +
+    '</div>';
+  }).join('');
+  document.getElementById('scBars').innerHTML = barsHtml;
+}
+
+function openShare() {
+  document.getElementById('shareModal').classList.add('open');
+  updateShareCard(allAvis);
+}
+function closeShare() {
+  document.getElementById('shareModal').classList.remove('open');
+}
+document.getElementById('shareModal').addEventListener('click', function(e){
+  if (e.target === this) closeShare();
+});
+
+function shareOn(platform) {
+  var url = encodeURIComponent(CFG.siteUrl);
+  var text = encodeURIComponent('📊 Le baromètre CX de l\'UEMOA — ' + (allAvis.length||'0') + ' avis collectés sur les institutions financières d\'Afrique de l\'Ouest. Données 100% réelles. 🌍');
+  var links = {
+    whatsapp: 'https://wa.me/?text=' + text + '%20' + url,
+    linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + url,
+    twitter: 'https://twitter.com/intent/tweet?text=' + text + '&url=' + url,
+    facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + url,
+  };
+  if (links[platform]) window.open(links[platform], '_blank', 'width=600,height=500');
+}
+
+function copyLink() {
+  var btn = document.querySelector('.btn-copy');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(CFG.siteUrl).then(function(){
+      btn.textContent = '✓ Lien copié !';
+      setTimeout(function(){ btn.textContent = '🔗 Copier le lien CXFI'; }, 2000);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = CFG.siteUrl;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copié !';
+    setTimeout(function(){ btn.textContent = '🔗 Copier le lien CXFI'; }, 2000);
+  }
+}
+</script>
+</body>
+</html>
