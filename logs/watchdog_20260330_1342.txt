@@ -1,0 +1,22 @@
+[CXFI WATCHDOG — 2026-03-30 2026-03-30 13:42]
+Status global : 🟢 OK
+
+CHECKS :
+✅ Site accessible — HTTP 200 — 1.19s
+✅ HTML intègre — sec-home ✓, institutions (JULAYA/Wave Mobile/Ecobank) ✓, Supabase config ✓, pas de id="main-content" ✓, tryGoStep2 ✓
+✅ API avis — HTTP 206
+✅ API feedback — HTTP 200
+✅ Avis en base : 9 (delta : 0 depuis dernier check)
+
+DÉTAIL DES CHECKS :
+- sec-home présent : OUI (1 occurrence)
+- Institutions présentes : OUI (8 occurrences JULAYA/Wave Mobile/Ecobank)
+- supabase.co configuré : OUI (2 occurrences)
+- id="main-content" absent (bug #1 fixé) : CONFIRMÉ ✓
+- tryGoStep2 présent (v8.1) : OUI (2 occurrences)
+- Table avis : 9 entrées (content-range: 0-0/9)
+- Table feedback : 0 entrées (content-range: */0)
+- Taille HTML : 176 091 octets
+
+AUCUNE ANOMALIE DÉTECTÉE.
+Prochain check automatique selon planning.

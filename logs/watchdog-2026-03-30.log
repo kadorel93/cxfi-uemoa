@@ -1,0 +1,108 @@
+
+[2026-03-30T09:58:51] ════════ CXFI WATCHDOG — 2026-03-30T09:58:51 ════════
+[2026-03-30T09:58:51] → [1/5] Accessibilité site...
+[2026-03-30T09:58:51] ✅ Site accessible — HTTP 200 — 0.832306s
+[2026-03-30T09:58:51] → [2/5] Intégrité contenu HTML...
+[2026-03-30T09:58:51] 🔴 Section #sec-home MANQUANTE dans le HTML livré
+[2026-03-30T09:58:51] 🔴 Données institutions ABSENTES — JavaScript non chargé ou build cassé
+[2026-03-30T09:58:51] ✅ Configuration Supabase présente
+
+[2026-03-30T09:59:38] ════════ CXFI WATCHDOG — 2026-03-30T09:59:38 ════════
+[2026-03-30T09:59:38] → [1/5] Accessibilité site...
+[2026-03-30T09:59:38] ✅ Site accessible — HTTP 200 — 0.849965s
+[2026-03-30T09:59:38] → [2/5] Intégrité contenu HTML...
+[2026-03-30T09:59:38] ✅ Section #sec-home présente
+[2026-03-30T09:59:38] ✅ Institutions INSTS présentes dans le HTML
+[2026-03-30T09:59:38] ✅ Configuration Supabase présente
+[2026-03-30T09:59:38] ✅ Pas de double id — Bug #1 stable
+[2026-03-30T09:59:38] ✅ Validation formulaire v8.1 présente (tryGoStep2)
+[2026-03-30T09:59:38] → [3/5] Disponibilité API Supabase (table avis)...
+[2026-03-30T09:59:38] ✅ API Supabase opérationnelle — table avis répond HTTP 206
+[2026-03-30T09:59:38] → [4/5] Disponibilité API Supabase (table feedback)...
+[2026-03-30T09:59:38] ✅ API Supabase opérationnelle — table feedback répond HTTP 200
+[2026-03-30T09:59:38] → [5/5] Intégrité des données — comptage avis...
+[2026-03-30T09:59:38] ✅ Total avis en base : 9
+
+══════════════════════════════════════════════
+CXFI WATCHDOG REPORT — 2026-03-30T09:59:38
+Status : 🟢 OK
+✅ OK      : 9 checks
+⚠️  Warnings: 0
+🔴 Errors  : 0
+──────────────────────────────────────────────
+══════════════════════════════════════════════
+
+[2026-03-30T09:59:58] ════════ CXFI WATCHDOG — 2026-03-30T09:59:58 ════════
+[2026-03-30T09:59:58] → [1/5] Accessibilité site...
+[2026-03-30T09:59:58] ✅ Site accessible — HTTP 200 — 0.859854s
+[2026-03-30T09:59:58] → [2/5] Intégrité contenu HTML...
+[2026-03-30T09:59:58] ✅ Section #sec-home présente
+[2026-03-30T09:59:58] ✅ Institutions INSTS présentes dans le HTML
+[2026-03-30T09:59:58] ✅ Configuration Supabase présente
+[2026-03-30T09:59:58] ✅ Pas de double id — Bug #1 stable
+[2026-03-30T09:59:58] ✅ Validation formulaire v8.1 présente (tryGoStep2)
+[2026-03-30T09:59:58] → [3/5] Disponibilité API Supabase (table avis)...
+[2026-03-30T09:59:58] ✅ API Supabase opérationnelle — table avis répond HTTP 206
+[2026-03-30T09:59:58] → [4/5] Disponibilité API Supabase (table feedback)...
+[2026-03-30T09:59:58] ✅ API Supabase opérationnelle — table feedback répond HTTP 200
+[2026-03-30T09:59:58] → [5/5] Intégrité des données — comptage avis...
+[2026-03-30T09:59:58] ✅ Total avis en base : 9
+
+══════════════════════════════════════════════
+CXFI WATCHDOG REPORT — 2026-03-30T09:59:58
+Status : 🟢 OK
+✅ OK      : 9 checks
+⚠️  Warnings: 0
+🔴 Errors  : 0
+──────────────────────────────────────────────
+══════════════════════════════════════════════
+
+[2026-03-30T14:08:15] ════════ CXFI WATCHDOG — 2026-03-30T14:08:15 ════════
+[2026-03-30T14:08:15] → [1/5] Accessibilité site...
+[2026-03-30T14:08:15] ✅ Site accessible — HTTP 200 — 0.855717s
+[2026-03-30T14:08:15] → [2/5] Intégrité contenu HTML...
+[2026-03-30T14:08:15] ✅ Section #sec-home présente
+[2026-03-30T14:08:15] ✅ Institutions INSTS présentes dans le HTML
+[2026-03-30T14:08:15] ✅ Configuration Supabase présente
+[2026-03-30T14:08:15] ✅ Pas de double id — Bug #1 stable
+[2026-03-30T14:08:15] ✅ Validation formulaire v8.1 présente (tryGoStep2)
+[2026-03-30T14:08:15] → [3/5] Disponibilité API Supabase (table avis)...
+[2026-03-30T14:08:15] ✅ API Supabase opérationnelle — table avis répond HTTP 206
+[2026-03-30T14:08:15] → [4/5] Disponibilité API Supabase (table feedback)...
+[2026-03-30T14:08:15] ✅ API Supabase opérationnelle — table feedback répond HTTP 200
+[2026-03-30T14:08:15] → [5/5] Intégrité des données — comptage avis...
+[2026-03-30T14:08:15] ✅ Total avis en base : 9
+
+══════════════════════════════════════════════
+CXFI WATCHDOG REPORT — 2026-03-30T14:08:15
+Status : 🟢 OK
+✅ OK      : 9 checks
+⚠️  Warnings: 0
+🔴 Errors  : 0
+──────────────────────────────────────────────
+══════════════════════════════════════════════
+
+[2026-03-30T18:00:51] ════════ CXFI WATCHDOG — 2026-03-30T18:00:51 ════════
+[2026-03-30T18:00:51] → [1/5] Accessibilité site...
+[2026-03-30T18:00:51] ✅ Site accessible — HTTP 200 — 0.968498s
+[2026-03-30T18:00:51] → [2/5] Intégrité contenu HTML...
+[2026-03-30T18:00:51] ✅ Section #sec-home présente
+[2026-03-30T18:00:51] ✅ Institutions INSTS présentes dans le HTML
+[2026-03-30T18:00:51] ✅ Configuration Supabase présente
+[2026-03-30T18:00:51] ✅ Pas de double id — Bug #1 stable
+[2026-03-30T18:00:51] ✅ Validation formulaire v8.1 présente (tryGoStep2)
+[2026-03-30T18:00:51] → [3/5] Disponibilité API Supabase (table avis)...
+[2026-03-30T18:00:51] ✅ API Supabase opérationnelle — table avis répond HTTP 206
+[2026-03-30T18:00:51] → [4/5] Disponibilité API Supabase (table feedback)...
+[2026-03-30T18:00:51] ✅ API Supabase opérationnelle — table feedback répond HTTP 200
+[2026-03-30T18:00:51] → [5/5] Intégrité des données — comptage avis...
+[2026-03-30T18:00:51] ✅ Total avis en base : 9
+
+══════════════════════════════════════════════
+CXFI WATCHDOG REPORT — 2026-03-30T18:00:51
+Status : 🟢 OK
+✅ OK      : 9 checks
+⚠️  Warnings: 0
+🔴 Errors  : 0
+──────────────────────────────────────────────
+══════════════════════════════════════════════

@@ -1,0 +1,21 @@
+[CXFI WATCHDOG — 2026-03-31 10:08]
+Status global : 🟢 OK
+
+CHECKS :
+✅ Site accessible — HTTP 200 — 0.870s
+✅ HTML intègre — sec-home ✓ | institutions ✓ | Supabase config ✓
+✅ Pas de double id — Bug #1 stable (id="main-content" absent)
+✅ Validation formulaire v8.1 — tryGoStep2 présent
+✅ API avis — HTTP 206
+✅ API feedback — HTTP 200
+✅ Avis en base : 9 (delta : 0 depuis dernier check du 2026-03-30)
+
+RÉSUMÉ :
+  • 9/9 checks passés avec succès
+  • Aucune anomalie détectée
+  • Aucun spike de données (stable à 9 avis)
+  • Temps de réponse excellent : 0.87s (seuil : 3s)
+  • Régression Bug #1 : non détectée ✅
+  • Régression formulaire v8.1 : non détectée ✅
+
+AUCUNE ACTION REQUISE.

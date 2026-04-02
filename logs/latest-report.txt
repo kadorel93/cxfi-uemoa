@@ -1,0 +1,18 @@
+
+[CXFI WATCHDOG — 2026-04-02 10:08]
+Status global : 🟢 OK
+
+CHECKS :
+✅ Site accessible — HTTP 200 — 1.16s
+✅ HTML intègre — sec-home présent, institutions présentes, Supabase config OK
+✅ Bug #1 stable — pas de double id="main-content"
+✅ Validation formulaire v8.1 présente (tryGoStep2)
+✅ API avis — HTTP 206 (Supabase opérationnelle)
+✅ API feedback — HTTP 200 (Supabase opérationnelle)
+✅ Avis en base : 12 (delta : +2 depuis dernier check — était 10)
+
+AUCUNE ANOMALIE DÉTECTÉE.
+Tous les 9 checks ont passé sans erreur ni avertissement.
+Delta avis (+2) dans la plage normale (seuil spike : +50).
+
+Prochain check : automatique selon planning.
