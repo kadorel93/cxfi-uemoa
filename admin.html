@@ -6,6 +6,7 @@
 <title>CXFI Admin — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
@@ -340,13 +341,17 @@ tr:hover td{background:rgba(15,14,12,.02);}
 <div id="lockScreen">
   <div class="lock-box">
     <div class="lock-logo">CX<em style="color:var(--accent)">FI</em> Admin</div>
-    <div class="lock-sub">Tableau de bord · Accès restreint</div>
-    <label class="lock-label" for="lockCode">Code d'accès</label>
+    <div class="lock-sub">Tableau de bord · Accès sécurisé Supabase</div>
+    <label class="lock-label" for="lockEmail">Email</label>
+    <input class="lock-inp" type="email" id="lockEmail" placeholder="admin@exemple.com"
+      autocomplete="email" style="margin-bottom:10px;"
+      onkeydown="if(event.key==='Enter')document.getElementById('lockCode').focus()">
+    <label class="lock-label" for="lockCode">Mot de passe</label>
     <input class="lock-inp" type="password" id="lockCode" placeholder="••••••••"
-      maxlength="20" autocomplete="current-password"
+      autocomplete="current-password"
       onkeydown="if(event.key==='Enter')unlock()">
-    <div class="lock-err" id="lockErr">Code incorrect. Réessayez.</div>
-    <button class="lock-btn" onclick="unlock()">Entrer →</button>
+    <div class="lock-err" id="lockErr">Email ou mot de passe incorrect.</div>
+    <button class="lock-btn" id="lockBtn" onclick="unlock()">Entrer →</button>
   </div>
 </div>
 
@@ -398,9 +403,11 @@ tr:hover td{background:rgba(15,14,12,.02);}
       </div>
       <div class="topbar-right">
         <div class="live-dot">Données live</div>
+        <span id="userEmail" style="font-size:12px;color:var(--muted);"></span>
         <button class="btn-share" onclick="openShare()">
           <span>📤</span> Partager
         </button>
+        <button onclick="signOut()" style="background:none;border:1.5px solid var(--sand);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--muted);" title="Déconnexion">⏻ Déconnexion</button>
       </div>
     </header>
 
@@ -549,12 +556,13 @@ tr:hover td{background:rgba(15,14,12,.02);}
       <h2 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:6px;">Configuration</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Paramètres du dashboard CXFI.</p>
       <div class="chart-box" style="max-width:420px;">
-        <div class="chart-title" style="margin-bottom:16px;">Changer le code d'accès</div>
-        <label style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Nouveau code</label>
-        <input type="password" id="newCode" placeholder="Nouveau code..."
-          style="width:100%;padding:10px 14px;border:1.5px solid var(--sand);border-radius:8px;font-size:14px;margin-bottom:10px;background:var(--cream);">
-        <button class="lock-btn" onclick="changeCode()">Enregistrer</button>
-        <div id="codeMsg" style="font-size:12px;color:var(--green);margin-top:8px;display:none;">✓ Code mis à jour !</div>
+        <div class="chart-title" style="margin-bottom:16px;">Authentification</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">L'accès est sécurisé via Supabase Auth. Pour changer votre mot de passe, allez dans votre dashboard Supabase → Authentication → Users.</p>
+        <div id="userInfoBox" style="background:var(--cream);border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:16px;">
+          <span style="color:var(--muted);">Connecté en tant que :</span><br>
+          <strong id="configUserEmail" style="color:var(--ink);">—</strong>
+        </div>
+        <button class="lock-btn" onclick="signOut()" style="background:var(--red);">⏻ Se déconnecter</button>
       </div>
     </div>
 
@@ -628,42 +636,72 @@ const CFG = {
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cmpicndyeXdiY3VzaWl2c2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MzUyMzYsImV4cCI6MjA1OTQxMTIzNn0.ynT3PPBSF3nMdH1TBPBi1tnIb3cOWJqFLxfChxHvnlY',
   siteUrl: 'https://cxfi-uemoa.netlify.app',
 };
-const HEADERS = {
+
+/* Supabase client (JWT auth sécurisé) */
+const { createClient } = supabase;
+const sb = createClient(CFG.supabaseUrl, CFG.supabaseKey);
+
+let HEADERS = {
   'apikey': CFG.supabaseKey,
   'Authorization': 'Bearer ' + CFG.supabaseKey,
   'Content-Type': 'application/json',
 };
 
 /* ══════════════════════════════════════════════════════════════
-   AUTH — code stocké en sessionStorage (jamais envoyé au serveur)
+   AUTH — Supabase Auth (JWT, sécurisé côté serveur)
 ══════════════════════════════════════════════════════════════ */
-const DEFAULT_CODE = 'cxfi2026';
 
-function unlock() {
-  var inp = document.getElementById('lockCode').value;
-  var stored = sessionStorage.getItem('cxfi_admin_code') || DEFAULT_CODE;
-  if (inp === stored) {
-    document.getElementById('lockScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    init();
-  } else {
-    var err = document.getElementById('lockErr');
-    err.style.display = 'block';
-    document.getElementById('lockCode').value = '';
-    setTimeout(function() { err.style.display = 'none'; }, 3000);
-  }
-}
-document.getElementById('lockCode').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') unlock();
+/* Vérifier session existante au chargement */
+sb.auth.getSession().then(function(result) {
+  var session = result.data.session;
+  if (session) showDashboard(session);
 });
 
-function changeCode() {
-  var v = document.getElementById('newCode').value.trim();
-  if (!v) return;
-  sessionStorage.setItem('cxfi_admin_code', v);
-  document.getElementById('codeMsg').style.display = 'block';
-  document.getElementById('newCode').value = '';
-  setTimeout(function() { document.getElementById('codeMsg').style.display='none'; }, 2500);
+/* Listener pour rafraîchissement automatique du token */
+sb.auth.onAuthStateChange(function(event, session) {
+  if (event === 'SIGNED_OUT') location.reload();
+  if (event === 'TOKEN_REFRESHED' && session) {
+    HEADERS['Authorization'] = 'Bearer ' + session.access_token;
+  }
+});
+
+async function unlock() {
+  var email = document.getElementById('lockEmail').value.trim();
+  var pwd   = document.getElementById('lockCode').value;
+  var btn   = document.getElementById('lockBtn');
+  var err   = document.getElementById('lockErr');
+  if (!email || !pwd) { err.textContent='Renseignez l\'email et le mot de passe.'; err.style.display='block'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Connexion…';
+  var result = await sb.auth.signInWithPassword({ email: email, password: pwd });
+  if (result.error) {
+    err.textContent = 'Email ou mot de passe incorrect.';
+    err.style.display = 'block';
+    document.getElementById('lockCode').value = '';
+    btn.disabled = false;
+    btn.textContent = 'Entrer →';
+    setTimeout(function() { err.style.display = 'none'; }, 4000);
+  } else {
+    showDashboard(result.data.session);
+  }
+}
+
+function showDashboard(session) {
+  /* Mise à jour du token JWT pour les requêtes REST */
+  HEADERS['Authorization'] = 'Bearer ' + session.access_token;
+  var email = session.user.email;
+  var emailEl = document.getElementById('userEmail');
+  if (emailEl) emailEl.textContent = email;
+  var cfgEl = document.getElementById('configUserEmail');
+  if (cfgEl) cfgEl.textContent = email;
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  init();
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  location.reload();
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -699,10 +737,35 @@ var charts = {};
 
 function init() {
   loadAvis();
+  initRealtime();
   // Responsive sidebar btn
   if (window.innerWidth < 900) {
     document.getElementById('menuBtn').style.display = 'block';
   }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMPS RÉEL — Supabase Realtime (postgres_changes)
+══════════════════════════════════════════════════════════════ */
+function initRealtime() {
+  sb.channel('admin-avis-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'avis' }, function(payload) {
+      /* Rechargement doux des données à chaque INSERT / UPDATE / DELETE */
+      loadAvis();
+      /* Indicateur visuel flash */
+      var dot = document.querySelector('.live-dot');
+      if (dot) {
+        dot.style.background = '#4ADE80';
+        dot.style.color = '#0F0E0C';
+        dot.textContent = '⚡ Mise à jour';
+        setTimeout(function() {
+          dot.style.background = '';
+          dot.style.color = '';
+          dot.textContent = 'Données live';
+        }, 2000);
+      }
+    })
+    .subscribe();
 }
 
 /* ══════════════════════════════════════════════════════════════

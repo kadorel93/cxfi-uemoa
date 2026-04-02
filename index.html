@@ -764,9 +764,9 @@ footer a:hover{color:var(--accent);}
     </div>
     <div class="stats reveal" style="padding-bottom:44px">
       <div class="stat"><div class="stat-n" style="color:var(--accent)" id="cntTot">0</div><div class="stat-l" data-i18n="stat.lbl.exp">Expériences collectées</div><div class="stat-s" style="color:var(--green)" data-i18n="stat.open">● Collecte ouverte</div></div>
-      <div class="stat"><div class="stat-n" id="statEdp" data-target="31">0</div><div class="stat-l" data-i18n="stat.lbl.edp">EDP agréés BCEAO</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
-      <div class="stat"><div class="stat-n" id="statPiSpi" data-target="74">0</div><div class="stat-l" data-i18n="stat.lbl.pispi">Participants PI-SPI</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
-      <div class="stat"><div class="stat-n" id="statPays" data-target="8">0</div><div class="stat-l" data-i18n="stat.lbl.pays">Pays UEMOA couverts</div><div class="stat-s" style="color:var(--muted)">BJ · TG · CI · SN · ML · BF · NE · GW</div></div>
+      <div class="stat"><div class="stat-n" id="statEdp">31</div><div class="stat-l" data-i18n="stat.lbl.edp">EDP agréés BCEAO</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
+      <div class="stat"><div class="stat-n" id="statPiSpi">74</div><div class="stat-l" data-i18n="stat.lbl.pispi">Participants PI-SPI</div><div class="stat-s" style="color:var(--muted)" data-i18n="stat.src.edp">Source : bceao.int</div></div>
+      <div class="stat"><div class="stat-n" id="statPays">8</div><div class="stat-l" data-i18n="stat.lbl.pays">Pays UEMOA couverts</div><div class="stat-s" style="color:var(--muted)">BJ · TG · CI · SN · ML · BF · NE · GW</div></div>
     </div>
     <div class="sec">
       <div class="sec-top reveal"><div><div class="sec-h" data-i18n="why.h">Pourquoi CXFI ?</div><div class="sec-sub" data-i18n="why.sub">Il n'existe aucun baromètre indépendant de l'expérience client dans la finance ouest-africaine. CXFI comble ce vide.</div></div></div>
@@ -2893,32 +2893,6 @@ loadStats();      // Charger les vrais chiffres depuis Supabase
   }, { threshold: 0.20 });
   document.querySelectorAll('.prev-row').forEach(function(el) { barObs.observe(el); });
 
-  /* A — Compteurs animés sur les stats statiques ──────────── */
-  function animStat(el, target) {
-    var n = 0;
-    var duration = 900; // ms
-    var start = null;
-    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
-    function step(ts) {
-      if (!start) start = ts;
-      var progress = Math.min((ts - start) / duration, 1);
-      n = Math.round(easeOut(progress) * target);
-      el.textContent = n;
-      if (progress < 1) requestAnimationFrame(step);
-      else el.textContent = target;
-    }
-    requestAnimationFrame(step);
-  }
-  var statObs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) {
-        var target = parseInt(e.target.dataset.target, 10);
-        if (!isNaN(target)) animStat(e.target, target);
-        statObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('[data-target]').forEach(function(el) { statObs.observe(el); });
 })();
 
 /* ══════════════════════════════════════════════════════════════
