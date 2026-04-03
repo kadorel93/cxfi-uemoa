@@ -186,7 +186,7 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
 .kpi-w-secondary-sub{font-size:10px;color:var(--muted);}
 
 /* ── CHART GRID ── */
-.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 .chart-grid.full{grid-template-columns:1fr;}
 .chart-box{
   background:var(--card);border:1px solid var(--border);
@@ -197,8 +197,12 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
   font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
   margin-bottom:4px;
 }
-.chart-sub{font-size:11px;color:var(--muted);margin-bottom:18px;}
-.chart-canvas-wrap{position:relative;}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.chart-canvas-wrap{position:relative;height:220px;}
+.chart-section-label{
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;margin-top:4px;padding-left:2px;
+}
 
 /* ── TABLE ── */
 .table-box{
@@ -488,13 +492,16 @@ tr:hover td{background:rgba(15,14,12,.02);}
         </div>
       </div>
 
-      <!-- CHARTS -->
+      <!-- CHARTS — ordre data-science : Volume → Qualité → Performance → Friction -->
+
+      <!-- BLOC 1 : Volume & Couverture géographique -->
+      <div class="chart-section-label">📈 Volume & couverture</div>
       <div class="chart-grid">
         <div class="chart-box">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
             <div>
               <div class="chart-title">Évolution des avis</div>
-              <div class="chart-sub">Nombre d'avis par période</div>
+              <div class="chart-sub">Collecte quotidienne — tendance globale</div>
             </div>
             <div class="period-tabs">
               <button class="ptab on" onclick="setPeriod('7d',this)">7j</button>
@@ -503,41 +510,57 @@ tr:hover td{background:rgba(15,14,12,.02);}
             </div>
           </div>
           <div class="chart-canvas-wrap">
-            <canvas id="lineChart" height="200"></canvas>
+            <canvas id="lineChart"></canvas>
           </div>
         </div>
         <div class="chart-box">
           <div class="chart-title">Répartition par pays</div>
-          <div class="chart-sub">Avis collectés par pays UEMOA</div>
+          <div class="chart-sub">Poids de chaque pays UEMOA dans l'échantillon</div>
           <div class="chart-canvas-wrap">
-            <canvas id="doughnutChart" height="200"></canvas>
+            <canvas id="doughnutChart"></canvas>
           </div>
         </div>
       </div>
 
+      <!-- BLOC 2 : Qualité de l'expérience -->
+      <div class="chart-section-label">⭐ Qualité de l'expérience client</div>
       <div class="chart-grid">
         <div class="chart-box">
-          <div class="chart-title">Score par critère</div>
-          <div class="chart-sub">Moyennes : Rapidité, Facilité, Frais, Support, Confiance</div>
-          <canvas id="criteriaChart" height="180"></canvas>
+          <div class="chart-title">Score moyen par critère</div>
+          <div class="chart-sub">Moyennes /5 — Rapidité, Facilité, Frais, Support, Confiance</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="criteriaChart"></canvas>
+          </div>
         </div>
         <div class="chart-box">
-          <div class="chart-title">FCR par institution</div>
-          <div class="chart-sub">% First Contact Resolution (top 8)</div>
-          <canvas id="fcrChart" height="180"></canvas>
+          <div class="chart-title">Distribution NPS</div>
+          <div class="chart-sub">
+            <span style="color:#C8352A;">■ Détracteurs 0–6</span> &nbsp;
+            <span style="color:#C47A1A;">■ Passifs 7–8</span> &nbsp;
+            <span style="color:#1A7A4A;">■ Promoteurs 9–10</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="npsChart"></canvas>
+          </div>
         </div>
       </div>
 
-      <div class="chart-grid full">
-        <div class="chart-box" style="grid-column:1 / 2;">
-          <div class="chart-title">Distribution NPS</div>
-          <div class="chart-sub">Promoteurs (9-10), Passifs (7-8), Détracteurs (0-6)</div>
-          <canvas id="npsChart" height="180"></canvas>
+      <!-- BLOC 3 : Performance par institution -->
+      <div class="chart-section-label">🏦 Performance par institution</div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-title">FCR par institution</div>
+          <div class="chart-sub">% First Contact Resolution · <span style="color:#1A7A4A;">≥75% ✓</span> · <span style="color:#C47A1A;">50–74% ~</span> · <span style="color:#C8352A;">&lt;50% ✗</span></div>
+          <div class="chart-canvas-wrap">
+            <canvas id="fcrChart"></canvas>
+          </div>
         </div>
-        <div class="chart-box" style="grid-column:2 / 3;">
-          <div class="chart-title">Top frictions</div>
-          <div class="chart-sub">Principaux problèmes signalés</div>
-          <canvas id="frictionChart" height="180"></canvas>
+        <div class="chart-box">
+          <div class="chart-title">Top frictions signalées</div>
+          <div class="chart-sub">Points de douleur les plus fréquents dans les verbatims</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="frictionChart"></canvas>
+          </div>
         </div>
       </div>
 
@@ -595,19 +618,20 @@ tr:hover td{background:rgba(15,14,12,.02);}
           <table>
             <thead>
               <tr>
+                <th>#</th>
                 <th>Institution</th>
                 <th>Avis</th>
                 <th>FCR %</th>
                 <th>Sat /100</th>
-                <th>NPS</th>
-                <th>CXFI</th>
+                <th>NPS net</th>
+                <th>CXFI /100</th>
                 <th>Top Friction</th>
                 <th>Canal dominant</th>
                 <th>Trend 7j</th>
               </tr>
             </thead>
             <tbody id="instTable">
-              <tr><td colspan="9" style="text-align:center;color:var(--muted);">Chargement...</td></tr>
+              <tr><td colspan="10" style="text-align:center;color:var(--muted);">Chargement...</td></tr>
             </tbody>
           </table>
         </div>
@@ -754,6 +778,7 @@ const CFG = {
 };
 
 let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
+let loginAttempts = 0, lockUntil = 0;
 
 const COUNTRY_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
 
@@ -842,30 +867,59 @@ function getSentiment(avis) {
 
 async function initSupabase() {
   sbClient = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
-  const session = await sbClient.auth.getSession();
-  if (session.data.session) {
-    document.getElementById('lockScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    document.getElementById('userEmail').textContent = session.data.session.user.email;
-    await loadData();
-    initRealtime();
-  }
+  // Toujours effacer la session stockée — chaque visite exige une authentification fraîche
+  await sbClient.auth.signOut();
 }
 
 async function unlock() {
-  const email = document.getElementById('lockEmail').value;
+  const now = Date.now();
+  const errEl = document.getElementById('lockErr');
+  const btn = document.getElementById('lockBtn');
+
+  // Vérifier le verrouillage temporaire
+  if (now < lockUntil) {
+    const secs = Math.ceil((lockUntil - now) / 1000);
+    errEl.textContent = `Trop de tentatives. Réessayez dans ${secs}s.`;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const email = document.getElementById('lockEmail').value.trim();
   const pwd = document.getElementById('lockCode').value;
+
+  if (!email || !pwd) {
+    errEl.textContent = 'Veuillez renseigner email et mot de passe.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Vérification…';
+  errEl.style.display = 'none';
+
   try {
     const { data, error } = await sbClient.auth.signInWithPassword({ email, password: pwd });
     if (error) throw error;
-    document.getElementById('lockErr').style.display = 'none';
+
+    loginAttempts = 0;
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     document.getElementById('userEmail').textContent = email;
     await loadData();
     initRealtime();
   } catch (e) {
-    document.getElementById('lockErr').style.display = 'block';
+    loginAttempts++;
+    if (loginAttempts >= 3) {
+      lockUntil = Date.now() + 30000;
+      errEl.textContent = 'Trop de tentatives (3/3). Accès bloqué 30 secondes.';
+      loginAttempts = 0;
+    } else {
+      errEl.textContent = `Identifiants incorrects — tentative ${loginAttempts}/3.`;
+    }
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Entrer →';
   }
 }
 
@@ -937,160 +991,217 @@ function updateDashboard() {
   updateShareCard(metrics);
 }
 
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#0F0E0C',
+      titleColor: '#F7F4EE',
+      bodyColor: '#F7F4EE',
+      padding: 10,
+      cornerRadius: 8
+    }
+  }
+};
+
 function updateCharts() {
-  // Line Chart (Evolution)
+  // ── 1. Évolution (line) ─────────────────────────────────────────
   const lineData = buildLineData(globalData, currentPeriod);
   if (charts.line) charts.line.destroy();
   const lineCtx = document.getElementById('lineChart').getContext('2d');
   charts.line = new Chart(lineCtx, {
     type: 'line',
     data: {
-      labels: lineData.labels,
+      labels: lineData.labels.length ? lineData.labels : ['Aucune donnée'],
       datasets: [{
         label: 'Avis',
-        data: lineData.data,
+        data: lineData.data.length ? lineData.data : [0],
         borderColor: '#1A3FFF',
-        backgroundColor: 'rgba(26,63,255,0.1)',
-        borderWidth: 2,
+        backgroundColor: 'rgba(26,63,255,0.08)',
+        borderWidth: 2.5,
         fill: true,
         tension: 0.4,
-        pointRadius: 3,
-        pointBackgroundColor: '#1A3FFF'
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#1A3FFF',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2
       }]
     },
-    options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.parsed.y} avis` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
   });
 
-  // Doughnut Chart (Countries)
+  // ── 2. Pays (doughnut) ──────────────────────────────────────────
   const countryData = {};
-  globalData.forEach(d => {
-    countryData[d.pays] = (countryData[d.pays] || 0) + 1;
-  });
-  const countryLabels = Object.keys(countryData).map(p => COUNTRY_FLAGS[p] + ' ' + p);
+  globalData.forEach(d => { countryData[d.pays] = (countryData[d.pays] || 0) + 1; });
+  const sorted = Object.entries(countryData).sort((a,b) => b[1]-a[1]);
+  const PALETTE = ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981'];
   if (charts.doughnut) charts.doughnut.destroy();
   const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
   charts.doughnut = new Chart(doughnutCtx, {
     type: 'doughnut',
     data: {
-      labels: countryLabels,
-      datasets: [{
-        data: Object.values(countryData),
-        backgroundColor: ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981']
-      }]
+      labels: sorted.map(([p]) => (COUNTRY_FLAGS[p] || '') + ' ' + p),
+      datasets: [{ data: sorted.map(([,v]) => v), backgroundColor: PALETTE, hoverOffset: 6, borderWidth: 2 }]
     },
-    options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}}
+    options: {
+      ...CHART_DEFAULTS,
+      cutout: '62%',
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: { display: true, position: 'bottom', labels: { font: { size: 11 }, padding: 12, boxWidth: 12 } },
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+            const pct = total ? Math.round(ctx.parsed/total*100) : 0;
+            return ` ${ctx.parsed} avis (${pct}%)`;
+          }
+        }}
+      }
+    }
   });
 
-  // Criteria Chart
-  const starFields = ['star_rapidite', 'star_facilite', 'star_frais', 'star_support', 'star_confiance'];
-  const criteriaLabels = ['Rapidité', 'Facilité', 'Frais', 'Support', 'Confiance'];
+  // ── 3. Score par critère (horizontal bar) ───────────────────────
+  const starFields = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance'];
+  const criteriaLabels = ['Rapidité','Facilité','Frais','Support','Confiance'];
   const criteriaData = starFields.map(f => {
     const vals = globalData.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
-    return vals.length > 0 ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : 0;
+    return vals.length > 0 ? parseFloat((vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2)) : 0;
   });
+  const criteriaColors = criteriaData.map(v => v >= 4 ? '#1A7A4A' : v >= 3 ? '#C47A1A' : '#C8352A');
   if (charts.criteria) charts.criteria.destroy();
   const criteriaCtx = document.getElementById('criteriaChart').getContext('2d');
   charts.criteria = new Chart(criteriaCtx, {
     type: 'bar',
     data: {
       labels: criteriaLabels,
-      datasets: [{
-        label: '/5',
-        data: criteriaData,
-        backgroundColor: '#10B981',
-        borderRadius: 8
-      }]
+      datasets: [{ label: '/5', data: criteriaData, backgroundColor: criteriaColors, borderRadius: 8, barThickness: 20 }]
     },
     options: {
+      ...CHART_DEFAULTS,
       indexAxis: 'y',
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{x:{max:5}}
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.parsed.x.toFixed(1)}/5` } }
+      },
+      scales: {
+        x: { max: 5, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
     }
   });
 
-  // FCR by Institution
+  // ── 4. NPS Distribution (bar avec zones colorées) ───────────────
+  const npsData = globalData.filter(d => !isNaN(parseInt(d.nps)));
+  const npsCount = Array(11).fill(0);
+  npsData.forEach(d => npsCount[parseInt(d.nps)]++);
+  const npsColors = npsCount.map((_,i) => i <= 6 ? 'rgba(200,53,42,0.85)' : i <= 8 ? 'rgba(196,122,26,0.85)' : 'rgba(26,122,74,0.85)');
+  if (charts.nps) charts.nps.destroy();
+  const npsCtx = document.getElementById('npsChart').getContext('2d');
+  charts.nps = new Chart(npsCtx, {
+    type: 'bar',
+    data: {
+      labels: ['0','1','2','3','4','5','6','7','8','9','10'],
+      datasets: [{ label: 'Répondants', data: npsCount, backgroundColor: npsColors, borderRadius: 5 }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+          label: ctx => ` ${ctx.parsed.y} répondant${ctx.parsed.y > 1 ? 's' : ''}`,
+          title: ctx => `Score ${ctx[0].label} — ${parseInt(ctx[0].label) <= 6 ? 'Détracteur' : parseInt(ctx[0].label) <= 8 ? 'Passif' : 'Promoteur'}`
+        }}
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+
+  // ── 5. FCR par institution (horizontal bar, top 10 trié) ─────────
   const instMetrics = {};
   globalData.forEach(d => {
     if (!instMetrics[d.institution]) instMetrics[d.institution] = {fcr:0, tot:0};
     if (d.fcr === 'oui') instMetrics[d.institution].fcr++;
     instMetrics[d.institution].tot++;
   });
-  const instLabels = Object.keys(instMetrics)
-    .sort((a,b) => (instMetrics[b].fcr/instMetrics[b].tot) - (instMetrics[a].fcr/instMetrics[a].tot))
-    .slice(0,8);
-  const fcrPercents = instLabels.map(i => Math.round(100 * instMetrics[i].fcr / instMetrics[i].tot));
+  const instEntries = Object.entries(instMetrics)
+    .map(([name, m]) => ({ name, pct: Math.round(100 * m.fcr / m.tot), n: m.tot }))
+    .sort((a,b) => b.pct - a.pct)
+    .slice(0, 10);
   if (charts.fcr) charts.fcr.destroy();
   const fcrCtx = document.getElementById('fcrChart').getContext('2d');
   charts.fcr = new Chart(fcrCtx, {
     type: 'bar',
     data: {
-      labels: instLabels,
+      labels: instEntries.map(e => e.name),
       datasets: [{
         label: 'FCR %',
-        data: fcrPercents,
-        backgroundColor: fcrPercents.map(p => p >= 75 ? '#1A7A4A' : p >= 50 ? '#C47A1A' : '#C8352A'),
-        borderRadius: 8
+        data: instEntries.map(e => e.pct),
+        backgroundColor: instEntries.map(e => e.pct >= 75 ? 'rgba(26,122,74,0.85)' : e.pct >= 50 ? 'rgba(196,122,26,0.85)' : 'rgba(200,53,42,0.85)'),
+        borderRadius: 8,
+        barThickness: 18
       }]
     },
     options: {
+      ...CHART_DEFAULTS,
       indexAxis: 'y',
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{x:{max:100}}
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+          label: ctx => ` FCR ${ctx.parsed.x}%`,
+          afterLabel: ctx => ` (${instEntries[ctx.dataIndex].n} avis)`
+        }}
+      },
+      scales: {
+        x: { max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
     }
   });
 
-  // NPS Distribution
-  const npsData = globalData.filter(d => !isNaN(parseInt(d.nps)));
-  const npsCount = [0,0,0,0,0,0,0,0,0,0,0];
-  npsData.forEach(d => npsCount[parseInt(d.nps)]++);
-  if (charts.nps) charts.nps.destroy();
-  const npsCtx = document.getElementById('npsChart').getContext('2d');
-  charts.nps = new Chart(npsCtx, {
-    type: 'bar',
-    data: {
-      labels: Array.from({length:11}, (_,i) => i),
-      datasets: [{
-        label: 'Nombre',
-        data: npsCount,
-        backgroundColor: npsCount.map((_,i) => i <= 6 ? '#C8352A' : i <= 8 ? '#C47A1A' : '#1A7A4A'),
-        borderRadius: 4
-      }]
-    },
-    options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
-  });
-
-  // Top Frictions
+  // ── 6. Top frictions (horizontal bar) ───────────────────────────
   const frictionMap = {};
   globalData.forEach(d => {
-    if (d.friction) {
-      d.friction.split('|').forEach(f => {
-        const clean = f.trim();
-        frictionMap[clean] = (frictionMap[clean] || 0) + 1;
-      });
-    }
+    if (d.friction) d.friction.split('|').forEach(f => {
+      const k = f.trim(); if (k) frictionMap[k] = (frictionMap[k] || 0) + 1;
+    });
   });
-  const topFrictions = Object.entries(frictionMap)
-    .sort((a,b) => b[1] - a[1])
-    .slice(0,8);
+  const topFrictions = Object.entries(frictionMap).sort((a,b) => b[1]-a[1]).slice(0,8);
   if (charts.friction) charts.friction.destroy();
   const frictionCtx = document.getElementById('frictionChart').getContext('2d');
   charts.friction = new Chart(frictionCtx, {
     type: 'bar',
     data: {
       labels: topFrictions.map(f => f[0]),
-      datasets: [{
-        label: 'Mentions',
-        data: topFrictions.map(f => f[1]),
-        backgroundColor: '#8B5CF6',
-        borderRadius: 8
-      }]
+      datasets: [{ label: 'Mentions', data: topFrictions.map(f => f[1]),
+        backgroundColor: 'rgba(139,92,246,0.8)', borderRadius: 8, barThickness: 18 }]
     },
     options: {
+      ...CHART_DEFAULTS,
       indexAxis: 'y',
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}}
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.parsed.x} mention${ctx.parsed.x > 1 ? 's' : ''}` } }
+      },
+      scales: {
+        x: { ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
     }
   });
 }
@@ -1179,7 +1290,9 @@ function buildInstitutionsPage() {
   });
 
   const tbody = document.getElementById('instTable');
-  tbody.innerHTML = Object.entries(instData).map(([inst, avis]) => {
+  // Trier par score CXFI décroissant (meilleure institution en tête)
+  const sorted = Object.entries(instData).sort(([,a],[,b]) => calcMetrics(b).cxfiScore - calcMetrics(a).cxfiScore);
+  tbody.innerHTML = sorted.map(([inst, avis], idx) => {
     const m = calcMetrics(avis);
     const satAvg = avis.reduce((sum,d) => {
       const stars = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance']
@@ -1193,7 +1306,7 @@ function buildInstitutionsPage() {
 
     const frictionMap = {};
     avis.forEach(d => {
-      if (d.friction) d.friction.split('|').forEach(f => frictionMap[f.trim()] = (frictionMap[f.trim()]||0)+1);
+      if (d.friction) d.friction.split('|').forEach(f => { const k=f.trim(); if(k) frictionMap[k]=(frictionMap[k]||0)+1; });
     });
     const topFriction = Object.entries(frictionMap).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
 
@@ -1207,21 +1320,23 @@ function buildInstitutionsPage() {
 
     const satColor = m.satScore >= 75 ? 'green' : m.satScore >= 50 ? 'amber' : 'red';
     const cxfiColor = m.cxfiScore >= 75 ? 'green' : m.cxfiScore >= 50 ? 'amber' : 'red';
+    const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx+1}`;
 
     return `
       <tr>
+        <td style="font-weight:700;color:var(--muted);text-align:center;">${rank}</td>
         <td class="td-inst"><span style="font-weight:600;">${inst}</span></td>
-        <td>${avis.length}</td>
+        <td style="font-variant-numeric:tabular-nums;">${avis.length}</td>
         <td><span class="badge badge-${m.fcrRate >= 75 ? 'green' : m.fcrRate >= 50 ? 'amber' : 'red'}">${m.fcrRate}%</span></td>
         <td><span class="badge badge-${satColor}">${Math.round(satAvg)}</span></td>
-        <td>${m.npsScore > 0 ? '+' : ''}${m.npsScore}</td>
-        <td><span class="badge badge-${cxfiColor}">${m.cxfiScore}</span></td>
-        <td>${topFriction}</td>
+        <td style="font-variant-numeric:tabular-nums;font-weight:600;color:${m.npsScore>=0?'var(--green)':'var(--red)'};">${m.npsScore > 0 ? '+' : ''}${m.npsScore}</td>
+        <td><span class="badge badge-${cxfiColor}" style="font-size:13px;font-weight:700;">${m.cxfiScore}</span></td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${topFriction}">${topFriction}</td>
         <td>${canalDom}</td>
         <td style="color:${trend>0?'var(--green)':trend<0?'var(--red)':'var(--muted)'};font-weight:600;">${trend>0?'+':''}${trend}</td>
       </tr>
     `;
-  }).join('');
+  }).join('') || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px;">Aucune donnée disponible.</td></tr>';
 }
 
 function reloadPage() {
