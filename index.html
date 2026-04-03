@@ -42,9 +42,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
   border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--muted);
   letter-spacing:.05em;margin-bottom:28px;}
 .hero-badge span{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;}
-.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(22px,3.2vw,44px);
-  line-height:1.15;max-width:860px;margin-bottom:22px;}
-.hero h1 em{color:var(--accent);font-style:normal;}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,3.8vw,52px);
+  line-height:1.15;max-width:820px;margin-bottom:22px;}
+.hero h1 em{color:var(--accent);font-style:normal;
+  background:linear-gradient(var(--accent),var(--accent)) no-repeat bottom/100% 2px;
+  padding-bottom:2px;}
 .hero-sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:540px;margin:0 auto 38px;line-height:1.6;}
 .hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
 .btn-primary{background:var(--accent);color:#fff;border-radius:10px;padding:14px 28px;font-size:15px;font-weight:600;transition:opacity .2s;display:inline-flex;align-items:center;gap:8px;}
@@ -267,18 +269,6 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 .hero-ctas{opacity:0;animation:heroFadeUp .6s ease .6s forwards;}
 .hero-proof{opacity:0;animation:heroFadeUp .6s ease .75s forwards;}
 
-/* ── KEYWORDS — Vert · Or · Grenat, palette Pan-Africaine sobre ── */
-@keyframes kwSlide{
-  0%  {opacity:0;transform:translateY(8px);}
-  100%{opacity:1;transform:translateY(0);}
-}
-/* Spécificité renforcée pour battre .hero h1 em */
-.hero h1 .kw-b{color:#166534;font-style:normal;display:inline-block;
-  animation:kwSlide .5s cubic-bezier(.22,1,.36,1) 1.05s both;}
-.hero h1 .kw-g{color:#B45309;font-style:normal;display:inline-block;
-  animation:kwSlide .5s cubic-bezier(.22,1,.36,1) 1.2s both;}
-.hero h1 .kw-o{color:#991B1B;font-style:normal;display:inline-block;
-  animation:kwSlide .5s cubic-bezier(.22,1,.36,1) 1.35s both;}
 
 /* ── SCROLL REVEAL ────────────────────────────────────────── */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1);}
@@ -317,7 +307,7 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 <section class="hero" id="home">
   <canvas id="heroBg"></canvas>
   <div class="hero-badge"><span></span> Baromètre UEMOA 2026 · Édition 1</div>
-  <h1>Consultez des <em>avis fiables</em> sur les <em class="kw-b">Banques,</em> <em class="kw-g">Fintech</em> et <em class="kw-o">Opérateurs Mobile Money</em> d'Afrique de l'Ouest</h1>
+  <h1>Consultez des <em>avis fiables</em> sur les Banques, Fintech et Opérateurs Mobile Money d'Afrique de l'Ouest</h1>
   <p class="hero-sub" id="heroSub"></p>
   <div class="hero-ctas">
     <a class="btn-primary" href="#resultats">Voir les avis →</a>
