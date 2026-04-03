@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CXFI Admin — Dashboard</title>
+<title>CXFI Admin — Dashboard naxari</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -140,7 +140,8 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
 .btn-share:hover{background:var(--accent);}
 
 /* ── CONTENT ── */
-.content{padding:28px 32px;}
+.content{padding:28px 32px;display:none;}
+.content.on{display:block;}
 
 /* ── KPI WIDGETS ── */
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
@@ -171,9 +172,22 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
 }
 .trend-up{background:#ECFDF5;color:var(--green);}
 .trend-dn{background:#FEF2F2;color:var(--red);}
+.trend-eq{background:var(--cream);color:var(--muted);}
+
+/* ── SECONDARY KPIs ── */
+.kpi-row-secondary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-w-secondary{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:14px;
+}
+.kpi-w-secondary-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;}
+.kpi-w-secondary-val{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;line-height:1;margin-bottom:3px;}
+.kpi-w-secondary-sub{font-size:10px;color:var(--muted);}
 
 /* ── CHART GRID ── */
 .chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;}
+.chart-grid.full{grid-template-columns:1fr;}
 .chart-box{
   background:var(--card);border:1px solid var(--border);
   border-radius:14px;padding:22px;
@@ -217,12 +231,15 @@ tr:hover td{background:rgba(15,14,12,.02);}
 .td-logo{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;
   justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;}
 .badge{
-  display:inline-block;padding:2px 8px;border-radius:20px;
+  display:inline-block;padding:3px 10px;border-radius:20px;
   font-size:9px;font-weight:700;
 }
 .badge-pos{background:#ECFDF5;color:var(--green);}
 .badge-neg{background:#FEF2F2;color:var(--red);}
 .badge-neu{background:var(--cream);color:var(--muted);}
+.badge-green{background:#ECFDF5;color:var(--green);}
+.badge-amber{background:#FEF5E8;color:var(--amber);}
+.badge-red{background:#FEF2F2;color:var(--red);}
 
 /* ── SHARE MODAL ── */
 #shareModal{
@@ -233,7 +250,8 @@ tr:hover td{background:rgba(15,14,12,.02);}
 #shareModal.open{display:flex;}
 .share-box{
   background:var(--paper);border-radius:20px;
-  width:100%;max-width:480px;padding:28px;
+  width:100%;max-width:520px;padding:28px;
+  max-height:90vh;overflow-y:auto;
 }
 .share-title{
   font-family:'Syne',sans-serif;font-size:17px;font-weight:800;
@@ -241,7 +259,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
 }
 .share-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
 
-/* ── SHARE CARD (la carte exportable) ── */
+/* ── SHARE CARD ── */
 #shareCard{
   background:var(--ink);border-radius:16px;padding:22px;
   color:var(--paper);margin-bottom:18px;
@@ -261,23 +279,22 @@ tr:hover td{background:rgba(15,14,12,.02);}
   background:rgba(74,222,128,.15);color:var(--score);
   padding:3px 10px;border-radius:20px;
 }
-.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+.sc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
   background:rgba(247,244,238,.08);border-radius:10px;margin-bottom:16px;overflow:hidden;}
 .sc-cell{background:#0D1A2E;padding:12px 8px;text-align:center;}
-.sc-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;}
+.sc-val{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;}
 .sc-lbl{font-size:8px;color:rgba(247,244,238,.35);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
-.sc-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--paper);}
-.sc-bars{display:flex;flex-direction:column;gap:5px;}
+.sc-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:8px;color:var(--paper);}
+.sc-bars{display:flex;flex-direction:column;gap:6px;}
 .sc-bar-row{display:flex;align-items:center;gap:8px;}
-.sc-bar-label{font-size:9px;color:rgba(247,244,238,.5);width:60px;flex-shrink:0;}
-.sc-bar-track{flex:1;height:4px;background:rgba(247,244,238,.1);border-radius:99px;overflow:hidden;}
-.sc-bar-fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(0.16,1,0.3,1);}
-.sc-bar-val{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(247,244,238,.6);width:28px;text-align:right;flex-shrink:0;}
+.sc-bar-label{font-size:8px;color:rgba(247,244,238,.5);width:50px;flex-shrink:0;}
+.sc-bar-track{flex:1;height:3px;background:rgba(247,244,238,.1);border-radius:99px;overflow:hidden;}
+.sc-bar-fill{height:100%;border-radius:99px;}
+.sc-bar-val{font-family:'IBM Plex Mono',monospace;font-size:8px;color:rgba(247,244,238,.6);width:26px;text-align:right;flex-shrink:0;}
 .sc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(247,244,238,.08);}
 .sc-url{font-size:9px;color:rgba(247,244,238,.3);}
-.sc-season{font-size:9px;font-weight:700;color:rgba(247,244,238,.35);}
 
-.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
 .btn-soc{
   padding:10px 12px;border:none;border-radius:10px;
   font-size:12px;font-weight:700;
@@ -287,8 +304,6 @@ tr:hover td{background:rgba(15,14,12,.02);}
 .btn-soc:hover{opacity:.85;}
 .btn-wa{background:#25D366;color:#fff;}
 .btn-li{background:#0A66C2;color:#fff;}
-.btn-tw{background:#000;color:#fff;}
-.btn-fb{background:#1877F2;color:#fff;}
 .btn-copy{
   grid-column:1/-1;padding:10px;background:var(--ink);color:var(--paper);
   border:none;border-radius:10px;font-size:12px;font-weight:600;
@@ -317,21 +332,26 @@ tr:hover td{background:rgba(15,14,12,.02);}
   display:flex;align-items:center;gap:12px;font-size:13px;
 }
 .alert-ico{font-size:18px;flex-shrink:0;}
-.alert-txt b{font-weight:600;}
 .alert-txt{color:var(--ink);line-height:1.5;}
+.alert-txt b{font-weight:600;}
+
+/* ── EXPORT SECTION ── */
+.export-section{margin-top:20px;padding:16px;background:var(--cream);border-radius:12px;}
+.export-section-title{font-size:13px;font-weight:600;margin-bottom:10px;}
+.export-btns{display:flex;gap:8px;}
 
 @media(max-width:900px){
   :root{--sidebar:0px;}
   .sidebar{transform:translateX(-220px);transition:transform .3s;}
   .sidebar.open{transform:none;--sidebar:220px;}
   .main{margin-left:0;}
-  .kpi-row{grid-template-columns:1fr 1fr;}
+  .kpi-row,.kpi-row-secondary{grid-template-columns:1fr 1fr;}
   .chart-grid{grid-template-columns:1fr;}
   .topbar{padding:0 18px;}
   .content{padding:18px;}
 }
 @media(max-width:540px){
-  .kpi-row{grid-template-columns:1fr;}
+  .kpi-row,.kpi-row-secondary{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -362,24 +382,24 @@ tr:hover td{background:rgba(15,14,12,.02);}
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-txt">CX<em>FI</em> Admin</div>
-      <div class="sb-badge">Dashboard · v1.0</div>
+      <div class="sb-badge">naxari · v2.0</div>
     </div>
     <nav class="sb-nav">
-      <div class="sb-section">Vue d'ensemble</div>
+      <div class="sb-section">Analyse</div>
       <div class="sb-link on" onclick="showPage('dashboard')">
         <span class="ico">📊</span> Dashboard
       </div>
       <div class="sb-link" onclick="showPage('avis')">
         <span class="ico">💬</span> Avis reçus
       </div>
-      <div class="sb-section">Contenu</div>
       <div class="sb-link" onclick="showPage('institutions')">
         <span class="ico">🏦</span> Institutions
       </div>
-      <div class="sb-link" onclick="showPage('export')">
-        <span class="ico">📤</span> Export réseaux
+      <div class="sb-section">Export</div>
+      <div class="sb-link" onclick="showPage('rapport')">
+        <span class="ico">📋</span> Rapport
       </div>
-      <div class="sb-section">Système</div>
+      <div class="sb-section">Admin</div>
       <div class="sb-link" onclick="showPage('config')">
         <span class="ico">⚙️</span> Configuration
       </div>
@@ -402,45 +422,69 @@ tr:hover td{background:rgba(15,14,12,.02);}
         <div class="topbar-title" id="pageTitle">Dashboard</div>
       </div>
       <div class="topbar-right">
-        <div class="live-dot">Données live</div>
+        <div class="live-dot">Temps réel</div>
         <span id="userEmail" style="font-size:12px;color:var(--muted);"></span>
         <button class="btn-share" onclick="openShare()">
           <span>📤</span> Partager
         </button>
-        <button onclick="signOut()" style="background:none;border:1.5px solid var(--sand);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--muted);" title="Déconnexion">⏻ Déconnexion</button>
+        <button onclick="signOut()" style="background:none;border:1.5px solid var(--sand);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--muted);" title="Déconnexion">⏻</button>
       </div>
     </header>
 
     <!-- PAGE : DASHBOARD -->
-    <div class="content" id="page-dashboard">
+    <div class="content on" id="page-dashboard">
 
       <div class="alert-banner">
         <span class="alert-ico">💡</span>
-        <div class="alert-txt"><b>Collecte ouverte.</b> Les données se mettent à jour en temps réel depuis Supabase. Publication officielle : décembre 2026.</div>
+        <div class="alert-txt"><b>Dashboard data science CXFI.</b> Métriques composites naxari calculées en temps réel depuis Supabase. Publication officielle : décembre 2026.</div>
       </div>
 
-      <!-- KPI WIDGETS -->
+      <!-- PRIMARY KPIs -->
       <div class="kpi-row">
         <div class="kpi-w blue">
-          <div class="kpi-w-label"><span>💬</span> Avis reçus</div>
+          <div class="kpi-w-label"><span>💬</span> Total avis</div>
           <div class="kpi-w-val blue" id="wTot">—</div>
-          <div class="kpi-w-sub">Total collecté</div>
-          <div class="kpi-w-trend trend-up" id="wTotTrend">+0</div>
+          <div class="kpi-w-sub">Collecté</div>
+          <div class="kpi-w-trend" id="wTotTrend"></div>
         </div>
         <div class="kpi-w green">
-          <div class="kpi-w-label"><span>✅</span> Positifs</div>
-          <div class="kpi-w-val green" id="wPos">—</div>
-          <div class="kpi-w-sub">Note ≥ 4/5</div>
-        </div>
-        <div class="kpi-w red">
-          <div class="kpi-w-label"><span>⚠️</span> Négatifs</div>
-          <div class="kpi-w-val red" id="wNeg">—</div>
-          <div class="kpi-w-sub">Note ≤ 2/5</div>
+          <div class="kpi-w-label"><span>✅</span> FCR Rate</div>
+          <div class="kpi-w-val green" id="wFCR">—</div>
+          <div class="kpi-w-sub">First Contact Resolution</div>
         </div>
         <div class="kpi-w amber">
-          <div class="kpi-w-label"><span>⭐</span> Score moyen</div>
-          <div class="kpi-w-val amber" id="wScore">—</div>
-          <div class="kpi-w-sub">Sur 100</div>
+          <div class="kpi-w-label"><span>⭐</span> CXFI Score</div>
+          <div class="kpi-w-val amber" id="wCXFI">—</div>
+          <div class="kpi-w-sub">Score composite /100</div>
+        </div>
+        <div class="kpi-w" style="border-color:var(--accent);">
+          <div class="kpi-w-label"><span>📈</span> NPS Net</div>
+          <div class="kpi-w-val" id="wNPS" style="color:var(--accent);">—</div>
+          <div class="kpi-w-sub">-100 à +100</div>
+        </div>
+      </div>
+
+      <!-- SECONDARY KPIs -->
+      <div class="kpi-row-secondary">
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Satisfaction</div>
+          <div class="kpi-w-secondary-val" id="wSat">—</div>
+          <div class="kpi-w-secondary-sub">/100 (avg stars)</div>
+        </div>
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Résolution</div>
+          <div class="kpi-w-secondary-val" id="wResol">—</div>
+          <div class="kpi-w-secondary-sub">% (quand FCR=non)</div>
+        </div>
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Institutions</div>
+          <div class="kpi-w-secondary-val" id="wInst">—</div>
+          <div class="kpi-w-secondary-sub">Couvertes</div>
+        </div>
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Canal dominant</div>
+          <div class="kpi-w-secondary-val" id="wCanal" style="font-size:16px;">—</div>
+          <div class="kpi-w-secondary-sub">Mode</div>
         </div>
       </div>
 
@@ -450,7 +494,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
           <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
             <div>
               <div class="chart-title">Évolution des avis</div>
-              <div class="chart-sub">Nombre d'avis reçus par période</div>
+              <div class="chart-sub">Nombre d'avis par période</div>
             </div>
             <div class="period-tabs">
               <button class="ptab on" onclick="setPeriod('7d',this)">7j</button>
@@ -464,7 +508,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
         </div>
         <div class="chart-box">
           <div class="chart-title">Répartition par pays</div>
-          <div class="chart-sub">Avis par pays UEMOA</div>
+          <div class="chart-sub">Avis collectés par pays UEMOA</div>
           <div class="chart-canvas-wrap">
             <canvas id="doughnutChart" height="200"></canvas>
           </div>
@@ -473,24 +517,41 @@ tr:hover td{background:rgba(15,14,12,.02);}
 
       <div class="chart-grid">
         <div class="chart-box">
-          <div class="chart-title">Scores par institution</div>
-          <div class="chart-sub">Top institutions — score moyen global</div>
-          <canvas id="barChart" height="180"></canvas>
+          <div class="chart-title">Score par critère</div>
+          <div class="chart-sub">Moyennes : Rapidité, Facilité, Frais, Support, Confiance</div>
+          <canvas id="criteriaChart" height="180"></canvas>
         </div>
         <div class="chart-box">
-          <div class="chart-title">Catégories de feedback</div>
-          <div class="chart-sub">Répartition des types d'avis</div>
-          <canvas id="pieChart" height="180"></canvas>
+          <div class="chart-title">FCR par institution</div>
+          <div class="chart-sub">% First Contact Resolution (top 8)</div>
+          <canvas id="fcrChart" height="180"></canvas>
         </div>
       </div>
 
-      <!-- TABLEAU AVIS RÉCENTS -->
+      <div class="chart-grid full">
+        <div class="chart-box" style="grid-column:1 / 2;">
+          <div class="chart-title">Distribution NPS</div>
+          <div class="chart-sub">Promoteurs (9-10), Passifs (7-8), Détracteurs (0-6)</div>
+          <canvas id="npsChart" height="180"></canvas>
+        </div>
+        <div class="chart-box" style="grid-column:2 / 3;">
+          <div class="chart-title">Top frictions</div>
+          <div class="chart-sub">Principaux problèmes signalés</div>
+          <canvas id="frictionChart" height="180"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE : AVIS REÇUS -->
+    <div class="content" id="page-avis">
+
       <div class="table-box">
         <div class="table-head">
-          <div class="table-title">Avis récents</div>
+          <div class="table-title">Avis reçus</div>
           <div class="table-actions">
-            <button class="btn-xs" onclick="loadAvis()">↺ Actualiser</button>
-            <button class="btn-xs primary" onclick="exportCSV()">⬇ Export CSV</button>
+            <button class="btn-xs" onclick="reloadPage()">↺ Actualiser</button>
+            <button class="btn-xs primary" onclick="exportCSV()">⬇ CSV</button>
           </div>
         </div>
         <div style="overflow-x:auto;">
@@ -501,642 +562,756 @@ tr:hover td{background:rgba(15,14,12,.02);}
                 <th>Pays</th>
                 <th>Profil</th>
                 <th>Canal</th>
+                <th>Opération</th>
                 <th>FCR</th>
-                <th>Note</th>
+                <th>Résolu</th>
+                <th>Note /5</th>
+                <th>NPS</th>
                 <th>Sentiment</th>
+                <th>Verbatim</th>
                 <th>Date</th>
               </tr>
             </thead>
             <tbody id="avisTable">
-              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px;">⏳ Chargement...</td></tr>
+              <tr><td colspan="12" style="text-align:center;color:var(--muted);">Chargement...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-    </div><!-- /page-dashboard -->
+    </div>
 
-    <!-- PAGE : AVIS (full) -->
-    <div class="content" id="page-avis" style="display:none">
+    <!-- PAGE : INSTITUTIONS -->
+    <div class="content" id="page-institutions">
+
       <div class="table-box">
         <div class="table-head">
-          <div class="table-title">Tous les avis</div>
+          <div class="table-title">Institutions</div>
           <div class="table-actions">
-            <button class="btn-xs" onclick="loadAvis()">↺ Actualiser</button>
-            <button class="btn-xs primary" onclick="exportCSV()">⬇ Export CSV</button>
+            <button class="btn-xs" onclick="reloadPage()">↺ Actualiser</button>
           </div>
         </div>
         <div style="overflow-x:auto;">
           <table>
             <thead>
               <tr>
-                <th>Institution</th><th>Pays</th><th>Profil</th><th>Canal</th>
-                <th>FCR</th><th>Note</th><th>Verbatim</th><th>Date</th>
+                <th>Institution</th>
+                <th>Avis</th>
+                <th>FCR %</th>
+                <th>Sat /100</th>
+                <th>NPS</th>
+                <th>CXFI</th>
+                <th>Top Friction</th>
+                <th>Canal dominant</th>
+                <th>Trend 7j</th>
               </tr>
             </thead>
-            <tbody id="avisTableFull">
-              <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px;">⏳ Chargement...</td></tr>
+            <tbody id="instTable">
+              <tr><td colspan="9" style="text-align:center;color:var(--muted);">Chargement...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
+
     </div>
 
-    <!-- PAGE : EXPORT -->
-    <div class="content" id="page-export" style="display:none">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:6px;">Export réseaux sociaux</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Génère une carte visuelle CXFI prête à partager.</p>
-      <button class="btn-share" onclick="openShare()">
-        <span>📤</span> Générer et partager
-      </button>
-    </div>
+    <!-- PAGE : RAPPORT -->
+    <div class="content" id="page-rapport">
 
-    <!-- PAGE : CONFIG -->
-    <div class="content" id="page-config" style="display:none">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:6px;">Configuration</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Paramètres du dashboard CXFI.</p>
-      <div class="chart-box" style="max-width:420px;">
-        <div class="chart-title" style="margin-bottom:16px;">Authentification</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">L'accès est sécurisé via Supabase Auth. Pour changer votre mot de passe, allez dans votre dashboard Supabase → Authentication → Users.</p>
-        <div id="userInfoBox" style="background:var(--cream);border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:16px;">
-          <span style="color:var(--muted);">Connecté en tant que :</span><br>
-          <strong id="configUserEmail" style="color:var(--ink);">—</strong>
+      <div class="chart-box" style="margin-bottom:24px;">
+        <div class="chart-title">Export rapport</div>
+        <div class="chart-sub">Téléchargez vos données dans le format souhaité</div>
+
+        <div style="margin-top:20px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:12px;">Share Card (image)</div>
+          <button class="btn-xs primary" onclick="downloadShareCard()" style="margin-bottom:20px;">📸 Télécharger comme image</button>
         </div>
-        <button class="lock-btn" onclick="signOut()" style="background:var(--red);">⏻ Se déconnecter</button>
+
+        <div style="border-top:1px solid var(--border);padding-top:20px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:12px;">Données complètes</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn-xs primary" onclick="exportCSV()">📄 CSV (tableur)</button>
+            <button class="btn-xs primary" onclick="exportJSON()">🔗 JSON (API)</button>
+          </div>
+        </div>
       </div>
+
     </div>
 
-  </div><!-- /main -->
-</div><!-- /app -->
+    <!-- PAGE : CONFIGURATION -->
+    <div class="content" id="page-config">
+
+      <div class="chart-box">
+        <div class="chart-title">Configuration</div>
+        <div style="margin-top:16px;line-height:1.8;">
+          <p><strong>Environnement:</strong> Production Supabase</p>
+          <p><strong>Base de données:</strong> <code style="background:var(--cream);padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono';font-size:11px;">avis</code></p>
+          <p><strong>Authentification:</strong> JWT (Supabase)</p>
+          <p><strong>Mise à jour:</strong> Temps réel (Realtime API)</p>
+          <p><strong>Dernière synchronisation:</strong> <span id="lastSync">—</span></p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 <!-- ══ SHARE MODAL ══ -->
 <div id="shareModal">
-  <div class="share-box" style="position:relative;">
-    <button class="btn-close-modal" onclick="closeShare()">✕ Fermer</button>
-    <div class="share-title">Partager sur les réseaux</div>
-    <div class="share-sub">Carte CXFI générée automatiquement avec les données live.</div>
+  <button class="btn-close-modal" onclick="closeShare()">✕</button>
+  <div class="share-box">
+    <div class="share-title">Partager le rapport</div>
+    <div class="share-sub">Exportez et partagez les performances</div>
 
-    <!-- SHARE CARD -->
     <div id="shareCard">
       <div class="sc-header">
         <div>
-          <div class="sc-logo">CX<em>FI</em> Barometer</div>
-          <div class="sc-date" id="scDate">UEMOA · 2026</div>
+          <div class="sc-logo">CX<em>FI</em></div>
+          <div class="sc-date" id="scDate"></div>
         </div>
-        <div class="sc-tag">Live Data</div>
+        <div class="sc-tag">RAPPORT CXFI</div>
       </div>
+
       <div class="sc-grid">
         <div class="sc-cell">
-          <div class="sc-val" style="color:#4ADE80" id="scTot">0</div>
+          <div class="sc-val" id="scTotal">—</div>
           <div class="sc-lbl">Avis</div>
         </div>
         <div class="sc-cell">
-          <div class="sc-val" style="color:#FCD34D">31</div>
-          <div class="sc-lbl">EDP BCEAO</div>
+          <div class="sc-val" id="scFCR">—</div>
+          <div class="sc-lbl">FCR %</div>
         </div>
         <div class="sc-cell">
-          <div class="sc-val" style="color:#F87171">8</div>
-          <div class="sc-lbl">Pays</div>
+          <div class="sc-val" id="scSat">—</div>
+          <div class="sc-lbl">Sat</div>
+        </div>
+        <div class="sc-cell">
+          <div class="sc-val" id="scCXFI">—</div>
+          <div class="sc-lbl">CXFI</div>
         </div>
       </div>
-      <div class="sc-title" id="scTopTitle">Top institutions</div>
-      <div class="sc-bars" id="scBars"></div>
+
+      <div style="margin-bottom:12px;">
+        <div class="sc-title">Score par critère</div>
+        <div class="sc-bars">
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Rapidité</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar1" style="width:0%;background:#6366F1;"></div></div>
+            <div class="sc-bar-val" id="scBarVal1">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Facilité</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar2" style="width:0%;background:#8B5CF6;"></div></div>
+            <div class="sc-bar-val" id="scBarVal2">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Frais</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar3" style="width:0%;background:#EC4899;"></div></div>
+            <div class="sc-bar-val" id="scBarVal3">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Support</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar4" style="width:0%;background:#F59E0B;"></div></div>
+            <div class="sc-bar-val" id="scBarVal4">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Confiance</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar5" style="width:0%;background:#10B981;"></div></div>
+            <div class="sc-bar-val" id="scBarVal5">—</div>
+          </div>
+        </div>
+      </div>
+
       <div class="sc-footer">
         <div class="sc-url">cxfi-uemoa.netlify.app</div>
-        <div class="sc-season">Saison 2026 · Édition 1</div>
+        <div class="sc-season" id="scSeason">2026</div>
       </div>
     </div>
 
-    <!-- BOUTONS RÉSEAUX -->
     <div class="share-btns">
-      <button class="btn-soc btn-wa" onclick="shareOn('whatsapp')">
-        <span>📱</span> WhatsApp
-      </button>
-      <button class="btn-soc btn-li" onclick="shareOn('linkedin')">
-        <span>💼</span> LinkedIn
-      </button>
-      <button class="btn-soc btn-tw" onclick="shareOn('twitter')">
-        <span>𝕏</span> Twitter / X
-      </button>
-      <button class="btn-soc btn-fb" onclick="shareOn('facebook')">
-        <span>📘</span> Facebook
-      </button>
-      <button class="btn-copy" onclick="copyLink()">🔗 Copier le lien CXFI</button>
+      <button class="btn-soc btn-li" onclick="shareLinkedIn()">in Partager</button>
+      <button class="btn-soc btn-wa" onclick="shareWhatsApp()">Partager</button>
     </div>
+    <button class="btn-copy" onclick="copyShareLink()">📋 Copier le lien</button>
 
+    <div class="export-section">
+      <div class="export-section-title">Télécharger les données</div>
+      <div class="export-btns">
+        <button class="btn-xs primary" onclick="exportCSV()" style="flex:1;">📄 CSV</button>
+        <button class="btn-xs primary" onclick="exportJSON()" style="flex:1;">🔗 JSON</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════════
-   CONFIG SUPABASE
-══════════════════════════════════════════════════════════════ */
 const CFG = {
   supabaseUrl: 'https://yyrjbrwrywbcusiivsgy.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cmpicndyeXdiY3VzaWl2c2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTYzNDQsImV4cCI6MjA4OTA5MjM0NH0.PYK_Fiby1t4YIR36HGylDnBKHbu5iGfooF-WHIAlUmQ',
   siteUrl: 'https://cxfi-uemoa.netlify.app',
 };
 
-/* Supabase client (JWT auth sécurisé) */
-const { createClient } = supabase;
-const sb = createClient(CFG.supabaseUrl, CFG.supabaseKey);
+let supabase, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
 
-let HEADERS = {
-  'apikey': CFG.supabaseKey,
-  'Authorization': 'Bearer ' + CFG.supabaseKey,
-  'Content-Type': 'application/json',
-};
+const COUNTRY_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
 
-/* ══════════════════════════════════════════════════════════════
-   AUTH — Supabase Auth (JWT, sécurisé côté serveur)
-══════════════════════════════════════════════════════════════ */
+// ═══════════════════════════════════════════════════════════════════
+// DATA SCIENCE FORMULAS
+// ═══════════════════════════════════════════════════════════════════
 
-/* Vérifier session existante au chargement */
-sb.auth.getSession().then(function(result) {
-  var session = result.data.session;
-  if (session) showDashboard(session);
-});
+function calcMetrics(data) {
+  const n = data.length;
+  if (n === 0) return {total:0, fcrRate:0, satScore:0, npsScore:0, resolRate:0, cxfiScore:0};
 
-/* Listener pour rafraîchissement automatique du token */
-sb.auth.onAuthStateChange(function(event, session) {
-  if (event === 'SIGNED_OUT') location.reload();
-  if (event === 'TOKEN_REFRESHED' && session) {
-    HEADERS['Authorization'] = 'Bearer ' + session.access_token;
+  // FCR Rate
+  const fcrCount = data.filter(d => d.fcr === 'oui').length;
+  const fcrRate = (fcrCount / n);
+
+  // Satisfaction Score
+  const starFields = ['star_rapidite', 'star_facilite', 'star_frais', 'star_support', 'star_confiance'];
+  let totalStars = 0, starCount = 0;
+  data.forEach(d => {
+    starFields.forEach(f => {
+      const v = parseInt(d[f]);
+      if (!isNaN(v) && v >= 1 && v <= 5) {
+        totalStars += v;
+        starCount++;
+      }
+    });
+  });
+  const satScore = starCount > 0 ? (totalStars / starCount) / 5 : 0;
+
+  // NPS Normalisé
+  const npsData = data.filter(d => !isNaN(parseInt(d.nps)));
+  let npsNorm = 0;
+  if (npsData.length > 0) {
+    const promo = npsData.filter(d => parseInt(d.nps) >= 9).length;
+    const detra = npsData.filter(d => parseInt(d.nps) <= 6).length;
+    npsNorm = (promo - detra) / npsData.length;
+    npsNorm = (npsNorm + 1) / 2;
   }
-});
+
+  // Resolution Rate
+  const noFcr = data.filter(d => d.fcr === 'non');
+  const resolRate = noFcr.length > 0 ? noFcr.filter(d => d.resolu === 'oui').length / noFcr.length : 0.5;
+
+  // CXFI Score = FCR×35 + Sat×35 + NPS×20 + Resol×10
+  const cxfiScore = Math.round(fcrRate * 35 + satScore * 35 + npsNorm * 20 + resolRate * 10);
+
+  // NPS Net (-100 à +100)
+  let npsNet = 0;
+  if (npsData.length > 0) {
+    const promo = npsData.filter(d => parseInt(d.nps) >= 9).length / npsData.length;
+    const detra = npsData.filter(d => parseInt(d.nps) <= 6).length / npsData.length;
+    npsNet = Math.round((promo - detra) * 100);
+  }
+
+  return {
+    total: n,
+    fcrRate: Math.round(fcrRate * 100),
+    satScore: Math.round(satScore * 100),
+    npsScore: npsNet,
+    resolRate: Math.round(resolRate * 100),
+    cxfiScore
+  };
+}
+
+function getAvgStars(avis) {
+  const stars = ['star_rapidite', 'star_facilite', 'star_frais', 'star_support', 'star_confiance']
+    .map(f => parseInt(avis[f]))
+    .filter(v => !isNaN(v) && v >= 1 && v <= 5);
+  return stars.length > 0 ? (stars.reduce((a,b) => a+b,0) / stars.length).toFixed(1) : '—';
+}
+
+function getSentiment(avis) {
+  const avgStars = getAvgStars(avis);
+  const fcr = avis.fcr === 'oui';
+  const resolved = avis.resolu === 'oui';
+  const starVal = parseFloat(avgStars);
+
+  if (fcr && starVal >= 4) return {text:'Positif', class:'badge-pos'};
+  if (!fcr && (!resolved || starVal <= 2)) return {text:'Négatif', class:'badge-neg'};
+  return {text:'Neutre', class:'badge-neu'};
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// AUTH & REALTIME
+// ═══════════════════════════════════════════════════════════════════
+
+async function initSupabase() {
+  supabase = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+  const session = await supabase.auth.getSession();
+  if (session.data.session) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('userEmail').textContent = session.data.session.user.email;
+    await loadData();
+    initRealtime();
+  }
+}
 
 async function unlock() {
-  var email = document.getElementById('lockEmail').value.trim();
-  var pwd   = document.getElementById('lockCode').value;
-  var btn   = document.getElementById('lockBtn');
-  var err   = document.getElementById('lockErr');
-  if (!email || !pwd) { err.textContent='Renseignez l\'email et le mot de passe.'; err.style.display='block'; return; }
-  btn.disabled = true;
-  btn.textContent = 'Connexion…';
-  var result = await sb.auth.signInWithPassword({ email: email, password: pwd });
-  if (result.error) {
-    err.textContent = 'Email ou mot de passe incorrect.';
-    err.style.display = 'block';
-    document.getElementById('lockCode').value = '';
-    btn.disabled = false;
-    btn.textContent = 'Entrer →';
-    setTimeout(function() { err.style.display = 'none'; }, 4000);
-  } else {
-    showDashboard(result.data.session);
+  const email = document.getElementById('lockEmail').value;
+  const pwd = document.getElementById('lockCode').value;
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    if (error) throw error;
+    document.getElementById('lockErr').style.display = 'none';
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('userEmail').textContent = email;
+    await loadData();
+    initRealtime();
+  } catch (e) {
+    document.getElementById('lockErr').style.display = 'block';
   }
 }
 
-function showDashboard(session) {
-  /* Mise à jour du token JWT pour les requêtes REST */
-  HEADERS['Authorization'] = 'Bearer ' + session.access_token;
-  var email = session.user.email;
-  var emailEl = document.getElementById('userEmail');
-  if (emailEl) emailEl.textContent = email;
-  var cfgEl = document.getElementById('configUserEmail');
-  if (cfgEl) cfgEl.textContent = email;
-  document.getElementById('lockScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  init();
-}
-
-async function signOut() {
-  await sb.auth.signOut();
+function signOut() {
+  supabase.auth.signOut();
   location.reload();
 }
 
-/* ══════════════════════════════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════════════════════════════ */
-var PAGES = ['dashboard','avis','institutions','export','config'];
-function showPage(p) {
-  PAGES.forEach(function(id) {
-    var el = document.getElementById('page-'+id);
-    if (el) el.style.display = 'none';
-  });
-  var target = document.getElementById('page-'+p);
-  if (target) target.style.display = 'block';
-
-  document.querySelectorAll('.sb-link').forEach(function(el) { el.classList.remove('on'); });
-  document.querySelectorAll('.sb-link').forEach(function(el) {
-    if (el.textContent.toLowerCase().includes(p === 'dashboard' ? 'dashboard'
-       : p === 'avis' ? 'avis'
-       : p === 'institutions' ? 'institutions'
-       : p === 'export' ? 'export'
-       : 'config')) el.classList.add('on');
-  });
-
-  var titles = {dashboard:'Dashboard',avis:'Avis reçus',institutions:'Institutions',export:'Export réseaux',config:'Configuration'};
-  document.getElementById('pageTitle').textContent = titles[p] || p;
-}
-
-/* ══════════════════════════════════════════════════════════════
-   INITIALISATION
-══════════════════════════════════════════════════════════════ */
-var allAvis = [];
-var charts = {};
-
-function init() {
-  loadAvis();
-  initRealtime();
-  // Responsive sidebar btn
-  if (window.innerWidth < 900) {
-    document.getElementById('menuBtn').style.display = 'block';
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════
-   TEMPS RÉEL — Supabase Realtime (postgres_changes)
-══════════════════════════════════════════════════════════════ */
 function initRealtime() {
-  sb.channel('admin-avis-live')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'avis' }, function(payload) {
-      /* Rechargement doux des données à chaque INSERT / UPDATE / DELETE */
-      loadAvis();
-      /* Indicateur visuel flash */
-      var dot = document.querySelector('.live-dot');
-      if (dot) {
-        dot.style.background = '#4ADE80';
-        dot.style.color = '#0F0E0C';
-        dot.textContent = '⚡ Mise à jour';
-        setTimeout(function() {
-          dot.style.background = '';
-          dot.style.color = '';
-          dot.textContent = 'Données live';
-        }, 2000);
-      }
-    })
-    .subscribe();
+  supabase.channel('avis').on('postgres_changes', {event:'*', schema:'public', table:'avis'}, () => {
+    loadData();
+  }).subscribe();
+  document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('fr-FR');
 }
 
-/* ══════════════════════════════════════════════════════════════
-   CHARGEMENT DES AVIS DEPUIS SUPABASE
-══════════════════════════════════════════════════════════════ */
-async function loadAvis() {
-  try {
-    var r = await fetch(CFG.supabaseUrl + '/rest/v1/avis?select=*&order=created_at.desc&limit=200', { headers: HEADERS });
-    var data = await r.json();
-    if (!Array.isArray(data)) throw new Error('No data');
-    allAvis = data;
-    updateKPIs(data);
-    buildCharts(data);
-    buildTable(data.slice(0, 20), 'avisTable');
-    buildTable(data, 'avisTableFull');
-    updateShareCard(data);
-  } catch(e) {
-    // Mode démo si pas de données réelles
-    loadDemoData();
-  }
+async function loadData() {
+  const { data, error } = await supabase.from('avis').select('*');
+  if (error) { console.error(error); return; }
+  globalData = data || [];
+  updateDashboard();
 }
 
-function loadDemoData() {
-  var demo = [];
-  var insts = ['MTN MoMo','Moov Money','Wave','Orange Money','Ecobank','UBA','Flooz','FreeMoney'];
-  var pays = ['BJ','TG','CI','SN','ML','BF'];
-  var canaux = ['App','USSD','Agence','API'];
-  var profils = ['Individuel','Entreprise'];
-  for (var i = 0; i < 47; i++) {
-    var d = new Date(); d.setDate(d.getDate() - Math.floor(Math.random()*60));
-    demo.push({
-      inst: insts[Math.floor(Math.random()*insts.length)],
-      pays: pays[Math.floor(Math.random()*pays.length)],
-      profil: profils[Math.floor(Math.random()*profils.length)],
-      canal: canaux[Math.floor(Math.random()*canaux.length)],
-      fcr: Math.random() > 0.35 ? 'oui' : 'non',
-      note_globale: Math.floor(Math.random()*5)+1,
-      verbatim: i % 4 === 0 ? 'Service rapide et efficace.' : i % 4 === 1 ? 'Trop de frais cachés.' : '',
-      created_at: d.toISOString(),
-    });
-  }
-  allAvis = demo;
-  updateKPIs(demo);
-  buildCharts(demo);
-  buildTable(demo.slice(0,20),'avisTable');
-  buildTable(demo,'avisTableFull');
-  updateShareCard(demo);
+// ═══════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+
+function updateDashboard() {
+  const metrics = calcMetrics(globalData);
+
+  // Primary KPIs
+  document.getElementById('wTot').textContent = metrics.total;
+  document.getElementById('wFCR').textContent = metrics.fcrRate + '%';
+  document.getElementById('wCXFI').textContent = metrics.cxfiScore;
+  document.getElementById('wNPS').textContent = metrics.npsScore > 0 ? '+' + metrics.npsScore : metrics.npsScore;
+
+  // Secondary KPIs
+  document.getElementById('wSat').textContent = metrics.satScore;
+  document.getElementById('wResol').textContent = metrics.resolRate + '%';
+
+  // Institutions couvertes
+  const instCount = new Set(globalData.map(d => d.institution)).size;
+  document.getElementById('wInst').textContent = instCount;
+
+  // Canal dominant
+  const canalFreq = {};
+  globalData.forEach(d => {
+    canalFreq[d.canal] = (canalFreq[d.canal] || 0) + 1;
+  });
+  const canalDom = Object.keys(canalFreq).reduce((a,b) => canalFreq[a] > canalFreq[b] ? a : b, 'N/A');
+  document.getElementById('wCanal').textContent = canalDom;
+
+  // Trend 7j
+  const now = new Date();
+  const last7 = globalData.filter(d => {
+    const dt = new Date(d.created_at);
+    return (now - dt) <= 7 * 24 * 60 * 60 * 1000;
+  }).length;
+  const prev7 = globalData.filter(d => {
+    const dt = new Date(d.created_at);
+    const diff = now - dt;
+    return diff > 7 * 24 * 60 * 60 * 1000 && diff <= 14 * 24 * 60 * 60 * 1000;
+  }).length;
+  const delta = last7 - prev7;
+  const trendEl = document.getElementById('wTotTrend');
+  trendEl.className = 'kpi-w-trend ' + (delta > 0 ? 'trend-up' : delta < 0 ? 'trend-dn' : 'trend-eq');
+  trendEl.textContent = (delta > 0 ? '+' : '') + delta;
+
+  updateCharts();
+  updateShareCard(metrics);
 }
 
-/* ══════════════════════════════════════════════════════════════
-   KPI WIDGETS
-══════════════════════════════════════════════════════════════ */
-function animCounter(el, target, duration) {
-  duration = duration || 1000;
-  var start = null;
-  function ease(t){ return 1 - Math.pow(1-t, 3); }
-  (function step(ts) {
-    if (!start) start = ts;
-    var p = Math.min((ts - start) / duration, 1);
-    var v = Math.round(ease(p) * target);
-    el.textContent = typeof target === 'number' && target < 10 ? v.toFixed(1) : v;
-    if (p < 1) requestAnimationFrame(step);
-  })(performance.now());
-}
-
-function updateKPIs(data) {
-  var pos = data.filter(function(d){ return (d.note_globale||0) >= 4; }).length;
-  var neg = data.filter(function(d){ return (d.note_globale||0) <= 2; }).length;
-  var scores = data.map(function(d){ return d.note_globale||0; }).filter(Boolean);
-  var avg = scores.length ? (scores.reduce(function(a,b){return a+b;},0)/scores.length*20).toFixed(0) : 0;
-
-  animCounter(document.getElementById('wTot'), data.length);
-  animCounter(document.getElementById('wPos'), pos);
-  animCounter(document.getElementById('wNeg'), neg);
-  document.getElementById('wScore').textContent = avg + '/100';
-  document.getElementById('wTotTrend').textContent = '+' + Math.min(data.length, 5) + ' (7j)';
-}
-
-/* ══════════════════════════════════════════════════════════════
-   CHARTS
-══════════════════════════════════════════════════════════════ */
-var CHART_COLORS = {
-  accent: '#1A3FFF',
-  green: '#1A7A4A',
-  score: '#4ADE80',
-  amber: '#C47A1A',
-  red: '#C8352A',
-  muted: '#D9D3C5',
-};
-var PAYS_COLORS = ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#7C3AED','#0891B2','#BE185D','#92400E'];
-
-function buildCharts(data) {
-  buildLineChart(data);
-  buildDoughnutChart(data);
-  buildBarChart(data);
-  buildPieChart(data);
-}
-
-function buildLineChart(data) {
+function updateCharts() {
+  // Line Chart (Evolution)
+  const lineData = buildLineData(globalData, currentPeriod);
   if (charts.line) charts.line.destroy();
-  // Grouper par jour (7 derniers jours)
-  var days = [], counts = [];
-  for (var i = 6; i >= 0; i--) {
-    var d = new Date(); d.setDate(d.getDate() - i);
-    var label = d.toLocaleDateString('fr-FR', { weekday:'short', day:'numeric' });
-    days.push(label);
-    var ds = d.toISOString().slice(0,10);
-    var cnt = data.filter(function(r){ return (r.created_at||'').slice(0,10) === ds; }).length;
-    counts.push(cnt || Math.floor(Math.random()*8 + 1));
-  }
-  var ctx = document.getElementById('lineChart').getContext('2d');
-  charts.line = new Chart(ctx, {
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  charts.line = new Chart(lineCtx, {
     type: 'line',
     data: {
-      labels: days,
+      labels: lineData.labels,
       datasets: [{
         label: 'Avis',
-        data: counts,
-        borderColor: CHART_COLORS.accent,
-        backgroundColor: 'rgba(26,63,255,.08)',
-        borderWidth: 2.5,
-        pointBackgroundColor: CHART_COLORS.accent,
-        pointRadius: 4,
+        data: lineData.data,
+        borderColor: '#1A3FFF',
+        backgroundColor: 'rgba(26,63,255,0.1)',
+        borderWidth: 2,
         fill: true,
-        tension: 0.35,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#1A3FFF'
       }]
     },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(15,14,12,.05)' }, ticks: { font: { size: 10 } } },
-        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-      }
-    }
+    options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
   });
-}
 
-function buildDoughnutChart(data) {
+  // Doughnut Chart (Countries)
+  const countryData = {};
+  globalData.forEach(d => {
+    countryData[d.pays] = (countryData[d.pays] || 0) + 1;
+  });
+  const countryLabels = Object.keys(countryData).map(p => COUNTRY_FLAGS[p] + ' ' + p);
   if (charts.doughnut) charts.doughnut.destroy();
-  var paysCounts = {};
-  data.forEach(function(d){ var p = d.pays || 'Autre'; paysCounts[p] = (paysCounts[p]||0)+1; });
-  var labels = Object.keys(paysCounts), vals = labels.map(function(k){ return paysCounts[k]; });
-  if (!labels.length) { labels=['BJ','TG','CI','SN']; vals=[14,10,8,6]; }
-  var ctx = document.getElementById('doughnutChart').getContext('2d');
-  charts.doughnut = new Chart(ctx, {
+  const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+  charts.doughnut = new Chart(doughnutCtx, {
     type: 'doughnut',
     data: {
-      labels: labels,
-      datasets: [{ data: vals, backgroundColor: PAYS_COLORS.slice(0,labels.length), borderWidth: 2, borderColor: '#fff' }]
+      labels: countryLabels,
+      datasets: [{
+        data: Object.values(countryData),
+        backgroundColor: ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981']
+      }]
     },
-    options: {
-      responsive: true,
-      cutout: '65%',
-      plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } }
-      }
-    }
+    options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}}
   });
-}
 
-function buildBarChart(data) {
-  if (charts.bar) charts.bar.destroy();
-  var instScores = {};
-  data.forEach(function(d){
-    if (!d.inst) return;
-    if (!instScores[d.inst]) instScores[d.inst] = [];
-    instScores[d.inst].push(d.note_globale||3);
+  // Criteria Chart
+  const starFields = ['star_rapidite', 'star_facilite', 'star_frais', 'star_support', 'star_confiance'];
+  const criteriaLabels = ['Rapidité', 'Facilité', 'Frais', 'Support', 'Confiance'];
+  const criteriaData = starFields.map(f => {
+    const vals = globalData.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
+    return vals.length > 0 ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : 0;
   });
-  var instList = Object.keys(instScores);
-  if (!instList.length) { instList=['MTN MoMo','Wave','Moov','Orange']; }
-  var avgs = instList.map(function(k){
-    var arr = instScores[k] || [3,4,3,4];
-    var sum = arr.reduce(function(a,b){return a+b;},0);
-    return Math.round(sum/arr.length*20);
-  });
-  // Top 6
-  var combined = instList.map(function(k,i){ return {k:k,v:avgs[i]}; });
-  combined.sort(function(a,b){return b.v-a.v;});
-  combined = combined.slice(0,6);
-  var ctx = document.getElementById('barChart').getContext('2d');
-  charts.bar = new Chart(ctx, {
+  if (charts.criteria) charts.criteria.destroy();
+  const criteriaCtx = document.getElementById('criteriaChart').getContext('2d');
+  charts.criteria = new Chart(criteriaCtx, {
     type: 'bar',
     data: {
-      labels: combined.map(function(c){return c.k;}),
-      datasets:[{
-        label:'Score /100',
-        data: combined.map(function(c){return c.v;}),
-        backgroundColor: combined.map(function(c){
-          return c.v >= 70 ? 'rgba(26,122,74,.8)' : c.v >= 50 ? 'rgba(196,122,26,.8)' : 'rgba(200,53,42,.8)';
-        }),
-        borderRadius: 6,
-        borderSkipped: false,
+      labels: criteriaLabels,
+      datasets: [{
+        label: '/5',
+        data: criteriaData,
+        backgroundColor: '#10B981',
+        borderRadius: 8
       }]
     },
     options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, max: 100, grid: { color: 'rgba(15,14,12,.05)' }, ticks: { font: { size: 10 } } },
-        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 30 } }
-      }
+      indexAxis: 'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{max:5}}
     }
   });
-}
 
-function buildPieChart(data) {
-  if (charts.pie) charts.pie.destroy();
-  var catCounts = {};
-  data.forEach(function(d){ var c = d.canal || 'Autre'; catCounts[c] = (catCounts[c]||0)+1; });
-  if (!Object.keys(catCounts).length) catCounts = {App:18,USSD:14,'Agence':9,API:6};
-  var labels = Object.keys(catCounts);
-  var ctx = document.getElementById('pieChart').getContext('2d');
-  charts.pie = new Chart(ctx, {
-    type: 'pie',
+  // FCR by Institution
+  const instMetrics = {};
+  globalData.forEach(d => {
+    if (!instMetrics[d.institution]) instMetrics[d.institution] = {fcr:0, tot:0};
+    if (d.fcr === 'oui') instMetrics[d.institution].fcr++;
+    instMetrics[d.institution].tot++;
+  });
+  const instLabels = Object.keys(instMetrics)
+    .sort((a,b) => (instMetrics[b].fcr/instMetrics[b].tot) - (instMetrics[a].fcr/instMetrics[a].tot))
+    .slice(0,8);
+  const fcrPercents = instLabels.map(i => Math.round(100 * instMetrics[i].fcr / instMetrics[i].tot));
+  if (charts.fcr) charts.fcr.destroy();
+  const fcrCtx = document.getElementById('fcrChart').getContext('2d');
+  charts.fcr = new Chart(fcrCtx, {
+    type: 'bar',
     data: {
-      labels: labels,
-      datasets:[{
-        data: labels.map(function(k){return catCounts[k];}),
-        backgroundColor: ['rgba(26,63,255,.8)','rgba(26,122,74,.8)','rgba(196,122,26,.8)','rgba(200,53,42,.8)'],
-        borderWidth: 2, borderColor: '#fff',
+      labels: instLabels,
+      datasets: [{
+        label: 'FCR %',
+        data: fcrPercents,
+        backgroundColor: fcrPercents.map(p => p >= 75 ? '#1A7A4A' : p >= 50 ? '#C47A1A' : '#C8352A'),
+        borderRadius: 8
       }]
     },
     options: {
-      responsive: true,
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } } }
+      indexAxis: 'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{max:100}}
+    }
+  });
+
+  // NPS Distribution
+  const npsData = globalData.filter(d => !isNaN(parseInt(d.nps)));
+  const npsCount = [0,0,0,0,0,0,0,0,0,0,0];
+  npsData.forEach(d => npsCount[parseInt(d.nps)]++);
+  if (charts.nps) charts.nps.destroy();
+  const npsCtx = document.getElementById('npsChart').getContext('2d');
+  charts.nps = new Chart(npsCtx, {
+    type: 'bar',
+    data: {
+      labels: Array.from({length:11}, (_,i) => i),
+      datasets: [{
+        label: 'Nombre',
+        data: npsCount,
+        backgroundColor: npsCount.map((_,i) => i <= 6 ? '#C8352A' : i <= 8 ? '#C47A1A' : '#1A7A4A'),
+        borderRadius: 4
+      }]
+    },
+    options: {responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}}
+  });
+
+  // Top Frictions
+  const frictionMap = {};
+  globalData.forEach(d => {
+    if (d.friction) {
+      d.friction.split('|').forEach(f => {
+        const clean = f.trim();
+        frictionMap[clean] = (frictionMap[clean] || 0) + 1;
+      });
+    }
+  });
+  const topFrictions = Object.entries(frictionMap)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0,8);
+  if (charts.friction) charts.friction.destroy();
+  const frictionCtx = document.getElementById('frictionChart').getContext('2d');
+  charts.friction = new Chart(frictionCtx, {
+    type: 'bar',
+    data: {
+      labels: topFrictions.map(f => f[0]),
+      datasets: [{
+        label: 'Mentions',
+        data: topFrictions.map(f => f[1]),
+        backgroundColor: '#8B5CF6',
+        borderRadius: 8
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}}
     }
   });
 }
 
-function setPeriod(p, btn) {
-  document.querySelectorAll('.ptab').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  var n = p === '7d' ? 7 : p === '30d' ? 30 : 365;
-  var cutoff = new Date(); cutoff.setDate(cutoff.getDate()-n);
-  var filtered = allAvis.filter(function(d){
-    return !d.created_at || new Date(d.created_at) >= cutoff;
-  });
-  if (charts.line) charts.line.destroy();
-  buildLineChart(filtered);
-}
+function buildLineData(data, period) {
+  const now = new Date();
+  let startDate, labelFormat;
 
-/* ══════════════════════════════════════════════════════════════
-   TABLEAU AVIS
-══════════════════════════════════════════════════════════════ */
-var PAYS_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
-var LOGO_COLORS = ['#818CF8','#34D399','#F59E0B','#F87171','#60A5FA','#A78BFA','#FB7185','#2DD4BF'];
-
-function sentiment(d) {
-  var n = d.note_globale || 3;
-  if (n >= 4) return '<span class="badge badge-pos">✅ Positif</span>';
-  if (n <= 2) return '<span class="badge badge-neg">⚠ Négatif</span>';
-  return '<span class="badge badge-neu">➖ Neutre</span>';
-}
-
-function buildTable(data, tbodyId) {
-  var tbody = document.getElementById(tbodyId);
-  if (!tbody) return;
-  if (!data.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;">Aucun avis pour le moment.</td></tr>';
-    return;
+  if (period === '7d') {
+    startDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    labelFormat = (d) => d.toLocaleDateString('fr-FR', {month:'short', day:'numeric'});
+  } else if (period === '30d') {
+    startDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    labelFormat = (d) => d.toLocaleDateString('fr-FR', {month:'short', day:'numeric'});
+  } else {
+    startDate = new Date(0);
+    labelFormat = (d) => d.toLocaleDateString('fr-FR', {month:'short', year:'2-digit'});
   }
-  tbody.innerHTML = data.map(function(d, i) {
-    var initial = (d.inst||'?').charAt(0).toUpperCase();
-    var color = LOGO_COLORS[i % LOGO_COLORS.length];
-    var flag = PAYS_FLAGS[d.pays] || '🌍';
-    var date = d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}) : '—';
-    return '<tr>' +
-      '<td><div class="td-inst"><div class="td-logo" style="background:'+color+'">'+initial+'</div>'+escHtml(d.inst||'—')+'</div></td>' +
-      '<td>'+flag+' '+(d.pays||'—')+'</td>' +
-      '<td>'+(d.profil||'—')+'</td>' +
-      '<td>'+(d.canal||'—')+'</td>' +
-      '<td style="font-weight:600;color:'+(d.fcr==='oui'?'var(--green)':'var(--red)')+'">'+((d.fcr==='oui'?'✓ Oui':'✗ Non'))+'</td>' +
-      '<td style="font-family:\'IBM Plex Mono\',monospace;font-weight:600">'+(d.note_globale||'—')+'/5</td>' +
-      '<td>'+sentiment(d)+'</td>' +
-      '<td style="color:var(--muted);font-size:11px">'+date+'</td>' +
-    '</tr>';
-  }).join('');
-}
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-/* ══════════════════════════════════════════════════════════════
-   EXPORT CSV
-══════════════════════════════════════════════════════════════ */
-function exportCSV() {
-  if (!allAvis.length) return;
-  var headers = ['Institution','Pays','Profil','Canal','FCR','Note','Verbatim','Date'];
-  var rows = allAvis.map(function(d){
-    return [
-      '"'+(d.inst||'')+'","'+(d.pays||'')+'","'+(d.profil||'')+'","'+(d.canal||'')+'",',
-      '"'+(d.fcr||'')+'","'+(d.note_globale||'')+'","'+((d.verbatim||'').replace(/"/g,'\''))+'","'+(d.created_at||'')+'"'
-    ].join('');
+  const filtered = data.filter(d => new Date(d.created_at) >= startDate);
+  const grouped = {};
+  filtered.forEach(d => {
+    const dt = new Date(d.created_at);
+    const key = dt.toISOString().split('T')[0];
+    grouped[key] = (grouped[key] || 0) + 1;
   });
-  var csv = headers.join(',') + '\n' + rows.join('\n');
-  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url; a.download = 'cxfi_avis_' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click(); URL.revokeObjectURL(url);
+
+  const sorted = Object.entries(grouped).sort((a,b) => new Date(a[0]) - new Date(b[0]));
+  return {
+    labels: sorted.map(([k]) => labelFormat(new Date(k))),
+    data: sorted.map(([,v]) => v)
+  };
 }
 
-/* ══════════════════════════════════════════════════════════════
-   SHARE MODAL
-══════════════════════════════════════════════════════════════ */
-function updateShareCard(data) {
-  document.getElementById('scTot').textContent = data.length;
-  document.getElementById('scDate').textContent = 'UEMOA · ' + new Date().getFullYear();
+function setPeriod(p, el) {
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  currentPeriod = p;
+  updateCharts();
+}
 
-  // Top 3 institutions par volume
-  var instCounts = {};
-  data.forEach(function(d){ if(d.inst) instCounts[d.inst] = (instCounts[d.inst]||0)+1; });
-  var sorted = Object.entries(instCounts).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
-  var max = sorted.length ? sorted[0][1] : 10;
+// ═══════════════════════════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════════════════════════
 
-  if (!sorted.length) sorted = [['MTN MoMo',14],['Wave',10],['Moov',8]];
+function showPage(page) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('on'));
+  document.getElementById('page-' + page).classList.add('on');
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('on'));
+  event.target.closest('.sb-link').classList.add('on');
 
-  var barsHtml = sorted.map(function(item){
-    var pct = Math.round(item[1]/max*100);
-    return '<div class="sc-bar-row">' +
-      '<div class="sc-bar-label">'+escHtml(item[0].slice(0,10))+'</div>' +
-      '<div class="sc-bar-track"><div class="sc-bar-fill" style="width:'+pct+'%;background:#4ADE80;"></div></div>' +
-      '<div class="sc-bar-val">'+item[1]+'</div>' +
-    '</div>';
+  const titles = {dashboard:'Dashboard', avis:'Avis reçus', institutions:'Institutions', rapport:'Rapport', config:'Configuration'};
+  document.getElementById('pageTitle').textContent = titles[page];
+
+  if (page === 'avis') buildAvisPage();
+  if (page === 'institutions') buildInstitutionsPage();
+}
+
+function buildAvisPage() {
+  const tbody = document.getElementById('avisTable');
+  tbody.innerHTML = globalData.map(d => `
+    <tr>
+      <td>${d.institution}</td>
+      <td>${COUNTRY_FLAGS[d.pays]} ${d.pays}</td>
+      <td>${d.profil}</td>
+      <td>${d.canal}</td>
+      <td>${d.operation || '—'}</td>
+      <td>${d.fcr === 'oui' ? '✓' : '✗'}</td>
+      <td>${d.resolu === 'oui' ? '✓' : '✗'}</td>
+      <td>${getAvgStars(d)}</td>
+      <td>${d.nps || '—'}</td>
+      <td><span class="badge ${getSentiment(d).class}">${getSentiment(d).text}</span></td>
+      <td>${(d.verbatim || '').substring(0,40)}...</td>
+      <td>${new Date(d.created_at).toLocaleDateString('fr-FR')}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="12" style="text-align:center;color:var(--muted);">Aucun avis.</td></tr>';
+}
+
+function buildInstitutionsPage() {
+  const instData = {};
+  globalData.forEach(d => {
+    if (!instData[d.institution]) {
+      instData[d.institution] = [];
+    }
+    instData[d.institution].push(d);
+  });
+
+  const tbody = document.getElementById('instTable');
+  tbody.innerHTML = Object.entries(instData).map(([inst, avis]) => {
+    const m = calcMetrics(avis);
+    const satAvg = avis.reduce((sum,d) => {
+      const stars = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance']
+        .map(f=>parseInt(d[f])).filter(v=>!isNaN(v)&&v>=1&&v<=5);
+      return sum + (stars.length ? stars.reduce((a,b)=>a+b)/stars.length : 0);
+    }, 0) / avis.length * 20;
+
+    const canalFreq = {};
+    avis.forEach(d => canalFreq[d.canal] = (canalFreq[d.canal]||0)+1);
+    const canalDom = Object.keys(canalFreq).reduce((a,b) => canalFreq[a] > canalFreq[b] ? a : b, 'N/A');
+
+    const frictionMap = {};
+    avis.forEach(d => {
+      if (d.friction) d.friction.split('|').forEach(f => frictionMap[f.trim()] = (frictionMap[f.trim()]||0)+1);
+    });
+    const topFriction = Object.entries(frictionMap).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+
+    const now = new Date();
+    const last7 = avis.filter(d => (now - new Date(d.created_at)) <= 7*24*60*60*1000).length;
+    const prev7 = avis.filter(d => {
+      const diff = now - new Date(d.created_at);
+      return diff > 7*24*60*60*1000 && diff <= 14*24*60*60*1000;
+    }).length;
+    const trend = last7 - prev7;
+
+    const satColor = m.satScore >= 75 ? 'green' : m.satScore >= 50 ? 'amber' : 'red';
+    const cxfiColor = m.cxfiScore >= 75 ? 'green' : m.cxfiScore >= 50 ? 'amber' : 'red';
+
+    return `
+      <tr>
+        <td class="td-inst"><span style="font-weight:600;">${inst}</span></td>
+        <td>${avis.length}</td>
+        <td><span class="badge badge-${m.fcrRate >= 75 ? 'green' : m.fcrRate >= 50 ? 'amber' : 'red'}">${m.fcrRate}%</span></td>
+        <td><span class="badge badge-${satColor}">${Math.round(satAvg)}</span></td>
+        <td>${m.npsScore > 0 ? '+' : ''}${m.npsScore}</td>
+        <td><span class="badge badge-${cxfiColor}">${m.cxfiScore}</span></td>
+        <td>${topFriction}</td>
+        <td>${canalDom}</td>
+        <td style="color:${trend>0?'var(--green)':trend<0?'var(--red)':'var(--muted)'};font-weight:600;">${trend>0?'+':''}${trend}</td>
+      </tr>
+    `;
   }).join('');
-  document.getElementById('scBars').innerHTML = barsHtml;
+}
+
+function reloadPage() {
+  loadData();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SHARE & EXPORT
+// ═══════════════════════════════════════════════════════════════════
+
+function updateShareCard(metrics) {
+  document.getElementById('scDate').textContent = new Date().toLocaleDateString('fr-FR');
+  document.getElementById('scTotal').textContent = metrics.total;
+  document.getElementById('scFCR').textContent = metrics.fcrRate + '%';
+  document.getElementById('scSat').textContent = metrics.satScore;
+  document.getElementById('scCXFI').textContent = metrics.cxfiScore;
+
+  const starFields = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance'];
+  starFields.forEach((f, i) => {
+    const vals = globalData.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
+    const avg = vals.length > 0 ? (vals.reduce((a,b)=>a+b,0)/vals.length)/5*100 : 0;
+    document.getElementById('scBar' + (i+1)).style.width = avg + '%';
+    document.getElementById('scBarVal' + (i+1)).textContent = Math.round(avg) + '%';
+  });
+
+  document.getElementById('scSeason').textContent = new Date().getFullYear();
 }
 
 function openShare() {
   document.getElementById('shareModal').classList.add('open');
-  updateShareCard(allAvis);
 }
+
 function closeShare() {
   document.getElementById('shareModal').classList.remove('open');
 }
-document.getElementById('shareModal').addEventListener('click', function(e){
-  if (e.target === this) closeShare();
-});
 
-function shareOn(platform) {
-  var url = encodeURIComponent(CFG.siteUrl);
-  var text = encodeURIComponent('📊 Le baromètre CX de l\'UEMOA — ' + (allAvis.length||'0') + ' avis collectés sur les institutions financières d\'Afrique de l\'Ouest. Données 100% réelles. 🌍');
-  var links = {
-    whatsapp: 'https://wa.me/?text=' + text + '%20' + url,
-    linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + url,
-    twitter: 'https://twitter.com/intent/tweet?text=' + text + '&url=' + url,
-    facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + url,
-  };
-  if (links[platform]) window.open(links[platform], '_blank', 'width=600,height=500');
+function shareLinkedIn() {
+  const url = encodeURIComponent(CFG.siteUrl);
+  const text = encodeURIComponent('📊 Rapport CXFI: ' + document.getElementById('wCXFI').textContent + '/100 score composite naxari');
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
 }
 
-function copyLink() {
-  var btn = document.querySelector('.btn-copy');
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(CFG.siteUrl).then(function(){
-      btn.textContent = '✓ Lien copié !';
-      setTimeout(function(){ btn.textContent = '🔗 Copier le lien CXFI'; }, 2000);
-    });
-  } else {
-    var ta = document.createElement('textarea');
-    ta.value = CFG.siteUrl;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '✓ Copié !';
-    setTimeout(function(){ btn.textContent = '🔗 Copier le lien CXFI'; }, 2000);
-  }
+function shareWhatsApp() {
+  const text = encodeURIComponent('📊 Rapport CXFI naxari\nScore: ' + document.getElementById('wCXFI').textContent + '/100\nFCR: ' + document.getElementById('wFCR').textContent);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
 }
+
+function copyShareLink() {
+  navigator.clipboard.writeText(CFG.siteUrl);
+  alert('Lien copié!');
+}
+
+function exportCSV() {
+  const headers = ['Institution','Pays','Profil','Canal','Operation','FCR','Resolu','Friction','Star_Rapidite','Star_Facilite','Star_Frais','Star_Support','Star_Confiance','Note_Moy','NPS','CXFI_ind','Verbatim','Date'];
+  const rows = globalData.map(d => {
+    const noteAvg = getAvgStars(d);
+    const m = calcMetrics([d]);
+    return [
+      d.institution, d.pays, d.profil, d.canal, d.operation || '', d.fcr, d.resolu, d.friction || '',
+      d.star_rapidite || '', d.star_facilite || '', d.star_frais || '', d.star_support || '', d.star_confiance || '',
+      noteAvg, d.nps || '', m.cxfiScore, (d.verbatim||'').replace(/"/g,'""'), new Date(d.created_at).toLocaleDateString('fr-FR')
+    ];
+  });
+  const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cxfi_avis_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+function exportJSON() {
+  const json = JSON.stringify(globalData, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cxfi_avis_' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+}
+
+function downloadShareCard() {
+  alert('Fonction en développement — utilisez Print (Cmd+P) pour exporter en PDF.');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+
+initSupabase();
 </script>
+
 </body>
 </html>
