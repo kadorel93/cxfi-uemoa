@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CXFI — Kit Réseaux Sociaux</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--muted:#6B6560;
+  --accent:#1A3FFF;--green:#1A7A4A;--border:rgba(15,14,12,0.1);
+}
+body{font-family:'IBM Plex Sans',sans-serif;background:#1a1a1a;color:#fff;padding:40px 24px;min-height:100vh;}
+
+/* ── UI ── */
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;color:#fff;}
+.subtitle{color:rgba(255,255,255,0.45);font-size:14px;margin-bottom:36px;}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+.tab{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:7px 18px;font-size:13px;font-weight:500;cursor:pointer;color:rgba(255,255,255,0.6);transition:all .2s;font-family:'IBM Plex Sans',sans-serif;}
+.tab.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.card-wrap{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;}
+.card-col{display:flex;flex-direction:column;gap:16px;}
+.card-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px;}
+.dl-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#fff;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;width:100%;}
+.dl-btn:hover{background:rgba(255,255,255,0.14);}
+.dl-btn svg{opacity:.6;}
+
+/* ── CARD CONTAINER ── */
+.card-preview{border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+
+/* ══════════════════════════════════════════════
+   CARDS  1080×1080
+══════════════════════════════════════════════ */
+.card{
+  width:540px;height:540px; /* displayed at 50%, export at 1080x1080 */
+  position:relative;overflow:hidden;flex-shrink:0;
+  font-family:'Syne',sans-serif;
+}
+
+/* ── CARD 1 : INTRO ── */
+#c1{background:#0F0E0C;}
+#c1 .bg-circle{
+  position:absolute;width:480px;height:480px;border-radius:50%;
+  border:1.5px solid rgba(26,63,255,0.18);
+  top:-120px;right:-120px;
+}
+#c1 .bg-circle2{
+  position:absolute;width:280px;height:280px;border-radius:50%;
+  border:1.5px solid rgba(26,63,255,0.1);
+  bottom:-80px;left:-60px;
+}
+#c1 .bg-dot{
+  position:absolute;width:6px;height:6px;border-radius:50%;background:var(--accent);
+  top:72px;right:72px;
+}
+#c1 .logo{
+  position:absolute;top:44px;left:44px;
+  display:flex;align-items:center;gap:10px;
+}
+#c1 .logo-box{
+  width:36px;height:36px;background:#fff;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:10px;
+  color:#0F0E0C;letter-spacing:-.5px;
+}
+#c1 .logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:.02em;}
+#c1 .body{position:absolute;bottom:0;left:0;right:0;padding:0 44px 44px;}
+#c1 .eyebrow{font-family:'IBM Plex Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:16px;}
+#c1 .headline{font-family:'Syne',sans-serif;font-weight:800;font-size:46px;line-height:1.05;color:#fff;margin-bottom:20px;}
+#c1 .headline em{color:var(--accent);font-style:normal;}
+#c1 .tag-line{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;max-width:340px;}
+#c1 .url{
+  position:absolute;top:44px;right:44px;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.2);
+  letter-spacing:.05em;
+}
+
+/* ── CARD 2 : HOW IT WORKS ── */
+#c2{background:#0F0E0C;}
+#c2 .accent-bar{
+  position:absolute;top:0;left:44px;width:40px;height:3px;background:var(--accent);
+}
+#c2 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c2 .logo-box{width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:8px;color:#0F0E0C;}
+#c2 .logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#fff;}
+#c2 .title{position:absolute;top:108px;left:44px;right:44px;}
+#c2 .title h2{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#fff;line-height:1.15;}
+#c2 .title h2 span{color:var(--accent);}
+#c2 .steps-grid{position:absolute;bottom:44px;left:44px;right:44px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+#c2 .step{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 16px;}
+#c2 .step-n{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:10px;font-weight:500;}
+#c2 .step-ico{font-size:22px;margin-bottom:10px;}
+#c2 .step-t{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:4px;line-height:1.3;}
+#c2 .step-d{font-family:'IBM Plex Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);line-height:1.5;}
+
+/* ── CARD 3 : MILESTONE ── */
+#c3{background:#0F0E0C;}
+#c3 .glow{
+  position:absolute;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(26,63,255,0.15) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+#c3 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c3 .logo-box{width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:8px;color:#0F0E0C;}
+#c3 .logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#fff;}
+#c3 .center{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);text-align:center;width:100%;}
+#c3 .big-num{font-family:'Syne',sans-serif;font-weight:800;font-size:140px;line-height:1;color:#fff;letter-spacing:-4px;}
+#c3 .big-label{font-family:'IBM Plex Sans',sans-serif;font-size:18px;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-8px;letter-spacing:.02em;}
+#c3 .congrats{position:absolute;bottom:44px;left:0;right:0;text-align:center;}
+#c3 .congrats-txt{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:#fff;margin-bottom:6px;}
+#c3 .congrats-sub{font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.35);}
+#c3 .badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(26,63,255,0.15);border:1px solid rgba(26,63,255,0.3);
+  border-radius:99px;padding:4px 12px;
+  font-family:'IBM Plex Sans',sans-serif;font-size:10px;font-weight:600;
+  color:var(--accent);letter-spacing:.05em;
+  position:absolute;top:44px;right:44px;
+}
+#c3 .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block;}
+
+/* ── CARD 4 : SCORE DÉBLOQUÉ ── */
+#c4{background:#0F0E0C;}
+#c4 .top-bar{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),#7C3AED);}
+#c4 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c4 .logo-box{width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:8px;color:#0F0E0C;}
+#c4 .logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#fff;}
+#c4 .content{position:absolute;top:50%;left:44px;right:44px;transform:translateY(-50%);}
+#c4 .lock-icon{font-size:40px;margin-bottom:20px;}
+#c4 .inst-name{font-family:'Syne',sans-serif;font-weight:800;font-size:36px;color:#fff;line-height:1.1;margin-bottom:12px;}
+#c4 .inst-sub{font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.6;}
+#c4 .score-row{display:flex;align-items:center;gap:20px;}
+#c4 .score-box{background:rgba(26,63,255,0.12);border:1px solid rgba(26,63,255,0.25);border-radius:12px;padding:14px 20px;text-align:center;}
+#c4 .score-n{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#fff;}
+#c4 .score-l{font-family:'IBM Plex Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;letter-spacing:.05em;text-transform:uppercase;}
+#c4 .divider{width:1px;height:48px;background:rgba(255,255,255,0.08);}
+#c4 .fcr-box{padding:0 4px;}
+#c4 .fcr-n{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#1A7A4A;}
+#c4 .fcr-l{font-family:'IBM Plex Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;letter-spacing:.05em;text-transform:uppercase;}
+#c4 .url{position:absolute;bottom:44px;left:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:.05em;}
+
+/* ── CARD 5 : CTA ── */
+#c5{background:var(--accent);}
+#c5 .noise{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
+#c5 .circle1{position:absolute;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);top:-100px;right:-100px;}
+#c5 .circle2{position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);bottom:-50px;left:50px;}
+#c5 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c5 .logo-box{width:36px;height:36px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:10px;color:#fff;}
+#c5 .logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#fff;}
+#c5 .body{position:absolute;bottom:44px;left:44px;right:44px;}
+#c5 .tag{font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+#c5 .big{font-family:'Syne',sans-serif;font-weight:800;font-size:52px;line-height:1.0;color:#fff;margin-bottom:18px;}
+#c5 .pills{display:flex;gap:8px;flex-wrap:wrap;}
+#c5 .pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:500;color:#fff;}
+#c5 .url{position:absolute;top:44px;right:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:.05em;}
+
+</style>
+</head>
+<body>
+
+<h1>Kit Réseaux Sociaux — CXFI</h1>
+<p class="subtitle">Visuels 1080×1080 · Cliquez "Télécharger" pour exporter en PNG</p>
+
+<div class="tabs">
+  <button class="tab on" onclick="showAll()">Tous</button>
+  <button class="tab" onclick="showTab('intro')">Présentation</button>
+  <button class="tab" onclick="showTab('how')">Comment ça marche</button>
+  <button class="tab" onclick="showTab('milestone')">Paliers</button>
+  <button class="tab" onclick="showTab('unlock')">Score débloqué</button>
+  <button class="tab" onclick="showTab('cta')">Appel à noter</button>
+</div>
+
+<div class="card-wrap" id="cardWrap">
+
+  <!-- ── CARD 1 : INTRO ── -->
+  <div class="card-col" data-cat="intro">
+    <div class="card-label">Présentation CXFI</div>
+    <div class="card-preview">
+      <div class="card" id="c1">
+        <div class="bg-circle"></div>
+        <div class="bg-circle2"></div>
+        <div class="bg-dot"></div>
+        <div class="logo">
+          <div class="logo-box">CX</div>
+          <span class="logo-name">CXFI</span>
+        </div>
+        <div class="url">cxfi-uemoa.netlify.app</div>
+        <div class="body">
+          <div class="eyebrow">Afrique de l'Ouest · UEMOA</div>
+          <div class="headline">Vos banques.<br><em>Notées.</em><br>Publiées.</div>
+          <div class="tag-line">La première plateforme indépendante d'avis clients sur les institutions financières de l'UEMOA.</div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="download('c1','cxfi-intro')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Télécharger PNG
+    </button>
+  </div>
+
+  <!-- ── CARD 2 : HOW IT WORKS ── -->
+  <div class="card-col" data-cat="how">
+    <div class="card-label">Comment ça marche</div>
+    <div class="card-preview">
+      <div class="card" id="c2">
+        <div class="accent-bar"></div>
+        <div class="logo">
+          <div class="logo-box">CX</div>
+          <span class="logo-name">CXFI</span>
+        </div>
+        <div class="title">
+          <h2>3 minutes.<br><span>Un avis qui compte.</span></h2>
+        </div>
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-n">01</div>
+            <div class="step-ico">✍️</div>
+            <div class="step-t">Notez votre expérience</div>
+            <div class="step-d">Banque, fintech ou Mobile Money — 5 critères clés.</div>
+          </div>
+          <div class="step">
+            <div class="step-n">02</div>
+            <div class="step-ico">🔒</div>
+            <div class="step-t">100% anonyme</div>
+            <div class="step-d">Aucune donnée personnelle collectée.</div>
+          </div>
+          <div class="step">
+            <div class="step-n">03</div>
+            <div class="step-ico">📊</div>
+            <div class="step-t">Score publié</div>
+            <div class="step-d">Dès 30 avis, les résultats sont visibles par tous.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="download('c2','cxfi-comment-ca-marche')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Télécharger PNG
+    </button>
+  </div>
+
+  <!-- ── CARD 3 : MILESTONE 100 ── -->
+  <div class="card-col" data-cat="milestone">
+    <div class="card-label">Palier 100 avis</div>
+    <div class="card-preview">
+      <div class="card" id="c3">
+        <div class="glow"></div>
+        <div class="logo">
+          <div class="logo-box">CX</div>
+          <span class="logo-name">CXFI</span>
+        </div>
+        <div class="badge">MILESTONE</div>
+        <div class="center">
+          <div class="big-num" id="milestoneNum">100</div>
+          <div class="big-label">avis collectés</div>
+        </div>
+        <div class="congrats">
+          <div class="congrats-txt">Merci à notre communauté 🙌</div>
+          <div class="congrats-sub">100 voix pour plus de transparence financière en Afrique de l'Ouest</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;">
+      <span style="font-size:12px;color:rgba(255,255,255,0.4);">Nombre :</span>
+      <input type="number" id="milestoneVal" value="100" min="1"
+        style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;width:90px;font-family:'IBM Plex Sans',sans-serif;"
+        oninput="document.getElementById('milestoneNum').textContent=this.value">
+    </div>
+    <button class="dl-btn" onclick="download('c3','cxfi-milestone-'+document.getElementById('milestoneVal').value)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Télécharger PNG
+    </button>
+  </div>
+
+  <!-- ── CARD 4 : SCORE DÉBLOQUÉ ── -->
+  <div class="card-col" data-cat="unlock">
+    <div class="card-label">Score débloqué</div>
+    <div class="card-preview">
+      <div class="card" id="c4">
+        <div class="top-bar"></div>
+        <div class="logo">
+          <div class="logo-box">CX</div>
+          <span class="logo-name">CXFI</span>
+        </div>
+        <div class="content">
+          <div class="lock-icon">🔓</div>
+          <div class="inst-name" id="instName">Wave Sénégal</div>
+          <div class="inst-sub">vient d'atteindre <strong style="color:#fff;">30 avis vérifiés</strong>.<br>Son score est maintenant public sur CXFI.</div>
+          <div class="score-row">
+            <div class="score-box">
+              <div class="score-n" id="scoreNum">4.2</div>
+              <div class="score-l">Score CXFI</div>
+            </div>
+            <div class="divider"></div>
+            <div class="fcr-box">
+              <div class="fcr-n" id="fcrNum">78%</div>
+              <div class="fcr-l">Résolution au 1er contact</div>
+            </div>
+          </div>
+        </div>
+        <div class="url">cxfi-uemoa.netlify.app</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:12px;color:rgba(255,255,255,0.4);min-width:80px;">Institution :</span>
+        <input type="text" id="instInput" value="Wave Sénégal"
+          style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;flex:1;font-family:'IBM Plex Sans',sans-serif;"
+          oninput="document.getElementById('instName').textContent=this.value">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:12px;color:rgba(255,255,255,0.4);min-width:80px;">Score /5 :</span>
+        <input type="text" id="scoreInput" value="4.2"
+          style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;width:70px;font-family:'IBM Plex Sans',sans-serif;"
+          oninput="document.getElementById('scoreNum').textContent=this.value">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:12px;color:rgba(255,255,255,0.4);min-width:80px;">FCR % :</span>
+        <input type="text" id="fcrInput" value="78%"
+          style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;width:70px;font-family:'IBM Plex Sans',sans-serif;"
+          oninput="document.getElementById('fcrNum').textContent=this.value">
+      </div>
+    </div>
+    <button class="dl-btn" onclick="download('c4','cxfi-score-'+document.getElementById('instInput').value.toLowerCase().replace(/\s/g,'-'))">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Télécharger PNG
+    </button>
+  </div>
+
+  <!-- ── CARD 5 : CTA ── -->
+  <div class="card-col" data-cat="cta">
+    <div class="card-label">Appel à noter</div>
+    <div class="card-preview">
+      <div class="card" id="c5">
+        <div class="noise"></div>
+        <div class="circle1"></div>
+        <div class="circle2"></div>
+        <div class="logo">
+          <div class="logo-box">CX</div>
+          <span class="logo-name">CXFI</span>
+        </div>
+        <div class="url">cxfi-uemoa.netlify.app</div>
+        <div class="body">
+          <div class="tag">Donnez votre avis</div>
+          <div class="big">Votre banque<br>le mérite<br>(ou pas).</div>
+          <div class="pills">
+            <span class="pill">2 minutes</span>
+            <span class="pill">100% anonyme</span>
+            <span class="pill">Gratuit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="download('c5','cxfi-cta')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Télécharger PNG
+    </button>
+  </div>
+
+</div>
+
+<script>
+function showAll() {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('[data-cat]').forEach(c=>c.style.display='flex');
+  event.target.classList.add('on');
+}
+function showTab(cat) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  event.target.classList.add('on');
+  document.querySelectorAll('[data-cat]').forEach(c=>{
+    c.style.display = c.dataset.cat === cat ? 'flex' : 'none';
+  });
+}
+
+async function download(id, filename) {
+  const el = document.getElementById(id);
+  const btn = event.target;
+  btn.textContent = 'Export en cours…';
+  btn.disabled = true;
+
+  // Render at 2× for 1080px output (cards are 540px displayed)
+  const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,
+    logging: false,
+    width: 540,
+    height: 540
+  });
+
+  const link = document.createElement('a');
+  link.download = filename + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Télécharger PNG';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
