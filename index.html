@@ -46,7 +46,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
   line-height:1.1;max-width:760px;margin-bottom:22px;}
 .hero h1 em{color:var(--accent);font-style:normal;}
 .hero-sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:540px;margin:0 auto 38px;line-height:1.6;}
-.hero-ctас{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
 .btn-primary{background:var(--accent);color:#fff;border-radius:10px;padding:14px 28px;font-size:15px;font-weight:600;transition:opacity .2s;display:inline-flex;align-items:center;gap:8px;}
 .btn-primary:hover{opacity:.88;}
 .btn-secondary{background:transparent;color:var(--ink);border:1.5px solid var(--sand);border-radius:10px;padding:13px 24px;font-size:15px;font-weight:500;transition:all .2s;}
@@ -249,7 +249,7 @@ footer a:hover{color:var(--accent);}
 
 /* Canvas bg */
 #heroBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity 1.2s ease;}
-#heroBg.ready{opacity:.4;}
+#heroBg.ready{opacity:.06;}
 .hero>*:not(#heroBg){position:relative;z-index:1;}
 
 /* ── NAV SCROLL ────────────────────────────────────────────── */
@@ -264,7 +264,7 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 .hero-badge{opacity:0;animation:heroFadeUp .6s ease .1s forwards;}
 .hero h1{opacity:0;animation:heroFadeUp .7s ease .25s forwards;}
 .hero-sub{opacity:0;animation:heroFadeUp .6s ease .45s forwards;}
-.hero-ctас{opacity:0;animation:heroFadeUp .6s ease .6s forwards;}
+.hero-ctas{opacity:0;animation:heroFadeUp .6s ease .6s forwards;}
 .hero-proof{opacity:0;animation:heroFadeUp .6s ease .75s forwards;}
 
 /* ── SCROLL REVEAL ────────────────────────────────────────── */
@@ -304,24 +304,24 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 <section class="hero" id="home">
   <canvas id="heroBg"></canvas>
   <div class="hero-badge"><span></span> Baromètre UEMOA 2026 · Édition 1</div>
-  <h1>Votre banque ou fintech<br>mérite-t-elle votre <em>confiance</em> ?</h1>
-  <p class="hero-sub">CXFI collecte les avis clients sur les institutions financières d'Afrique de l'Ouest. Indépendant, gratuit, transparent.</p>
-  <div class="hero-ctас">
-    <button class="btn-primary" onclick="openForm()">✦ Donner mon avis</button>
-    <a class="btn-secondary" href="#resultats">Voir les résultats →</a>
+  <h1>Consultez des <em>avis fiables</em> sur les banques,<br>fintechs et opérateurs GSM d'Afrique de l'Ouest</h1>
+  <p class="hero-sub">CXFI collecte et publie des avis clients réels sur les institutions financières de l'UEMOA — pour plus de transparence.</p>
+  <div class="hero-ctas">
+    <a class="btn-primary" href="#resultats">Voir les avis →</a>
+    <button class="btn-secondary" onclick="openForm()">Donner mon avis</button>
   </div>
   <div class="hero-proof">
     <div class="proof-item">
       <div class="proof-n" id="cntTot">–</div>
-      <div class="proof-l">Avis collectés</div>
+      <div class="proof-l">⭐ Avis collectés</div>
     </div>
     <div class="proof-item">
-      <div class="proof-n">40+</div>
-      <div class="proof-l">Institutions</div>
+      <div class="proof-n">50+</div>
+      <div class="proof-l">🏦 Institutions</div>
     </div>
     <div class="proof-item">
       <div class="proof-n">8</div>
-      <div class="proof-l">Pays UEMOA</div>
+      <div class="proof-l">🌍 Pays UEMOA</div>
     </div>
   </div>
 </section>

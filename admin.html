@@ -753,7 +753,7 @@ const CFG = {
   siteUrl: 'https://cxfi-uemoa.netlify.app',
 };
 
-let supabase, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
+let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
 
 const COUNTRY_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
 
@@ -841,8 +841,8 @@ function getSentiment(avis) {
 // ═══════════════════════════════════════════════════════════════════
 
 async function initSupabase() {
-  supabase = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
-  const session = await supabase.auth.getSession();
+  sbClient = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+  const session = await sbClient.auth.getSession();
   if (session.data.session) {
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
@@ -856,7 +856,7 @@ async function unlock() {
   const email = document.getElementById('lockEmail').value;
   const pwd = document.getElementById('lockCode').value;
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    const { data, error } = await sbClient.auth.signInWithPassword({ email, password: pwd });
     if (error) throw error;
     document.getElementById('lockErr').style.display = 'none';
     document.getElementById('lockScreen').style.display = 'none';
@@ -870,19 +870,19 @@ async function unlock() {
 }
 
 function signOut() {
-  supabase.auth.signOut();
+  sbClient.auth.signOut();
   location.reload();
 }
 
 function initRealtime() {
-  supabase.channel('avis').on('postgres_changes', {event:'*', schema:'public', table:'avis'}, () => {
+  sbClient.channel('avis').on('postgres_changes', {event:'*', schema:'public', table:'avis'}, () => {
     loadData();
   }).subscribe();
   document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('fr-FR');
 }
 
 async function loadData() {
-  const { data, error } = await supabase.from('avis').select('*');
+  const { data, error } = await sbClient.from('avis').select('*');
   if (error) { console.error(error); return; }
   globalData = data || [];
   updateDashboard();
