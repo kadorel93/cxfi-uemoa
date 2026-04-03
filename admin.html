@@ -339,6 +339,38 @@ tr:hover td{background:rgba(15,14,12,.02);}
 .alert-txt{color:var(--ink);line-height:1.5;}
 .alert-txt b{font-weight:600;}
 
+/* ── DATE RANGE FILTER ── */
+.date-bar{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:12px 18px;margin-bottom:20px;
+}
+.date-bar label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.date-inp{
+  border:1.5px solid var(--sand);border-radius:8px;padding:7px 10px;
+  font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--ink);
+  background:var(--cream);outline:none;cursor:pointer;
+}
+.date-inp:focus{border-color:var(--accent);}
+.date-sep{color:var(--muted);font-size:12px;}
+.btn-filter{
+  background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;
+  transition:opacity .2s;
+}
+.btn-filter:hover{opacity:.85;}
+.btn-clear{
+  background:none;border:1.5px solid var(--sand);color:var(--muted);
+  border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;
+  display:none;
+}
+.btn-clear:hover{border-color:var(--red);color:var(--red);}
+.date-badge{
+  margin-left:auto;background:rgba(26,63,255,.08);border:1px solid rgba(26,63,255,.2);
+  color:var(--accent);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;
+  display:none;
+}
+
 /* ── EXPORT SECTION ── */
 .export-section{margin-top:20px;padding:16px;background:var(--cream);border-radius:12px;}
 .export-section-title{font-size:13px;font-weight:600;margin-bottom:10px;}
@@ -437,6 +469,17 @@ tr:hover td{background:rgba(15,14,12,.02);}
 
     <!-- PAGE : DASHBOARD -->
     <div class="content on" id="page-dashboard">
+
+      <!-- DATE RANGE FILTER -->
+      <div class="date-bar">
+        <label>Période</label>
+        <input type="date" class="date-inp" id="dfFrom" onchange="onDateChange()">
+        <span class="date-sep">→</span>
+        <input type="date" class="date-inp" id="dfTo" onchange="onDateChange()">
+        <button class="btn-filter" onclick="applyDateFilter()">Filtrer</button>
+        <button class="btn-clear" id="dfClear" onclick="clearDateFilter()">✕ Effacer</button>
+        <span class="date-badge" id="dfBadge"></span>
+      </div>
 
       <div class="alert-banner">
         <span class="alert-ico">💡</span>
@@ -779,6 +822,54 @@ const CFG = {
 
 let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
 let loginAttempts = 0, lockUntil = 0;
+let dateFilter = { from: null, to: null };
+
+function getFilteredData() {
+  if (!dateFilter.from && !dateFilter.to) return globalData;
+  return globalData.filter(d => {
+    const dt = new Date(d.created_at);
+    if (dateFilter.from && dt < dateFilter.from) return false;
+    if (dateFilter.to   && dt > dateFilter.to)   return false;
+    return true;
+  });
+}
+
+function onDateChange() {
+  // Active le bouton Filtrer visuellement si une date est renseignée
+  const from = document.getElementById('dfFrom').value;
+  const to   = document.getElementById('dfTo').value;
+  document.querySelector('.btn-filter').style.background = (from || to) ? 'var(--accent)' : '';
+}
+
+function applyDateFilter() {
+  const from = document.getElementById('dfFrom').value;
+  const to   = document.getElementById('dfTo').value;
+  dateFilter.from = from ? new Date(from + 'T00:00:00') : null;
+  dateFilter.to   = to   ? new Date(to   + 'T23:59:59') : null;
+
+  const clearBtn = document.getElementById('dfClear');
+  const badge    = document.getElementById('dfBadge');
+
+  if (from || to) {
+    clearBtn.style.display = 'inline-block';
+    const label = [from ? `Du ${from}` : '', to ? `Au ${to}` : ''].filter(Boolean).join(' ');
+    badge.textContent = label;
+    badge.style.display = 'inline-block';
+  } else {
+    clearBtn.style.display = 'none';
+    badge.style.display = 'none';
+  }
+  updateDashboard();
+}
+
+function clearDateFilter() {
+  document.getElementById('dfFrom').value = '';
+  document.getElementById('dfTo').value   = '';
+  dateFilter = { from: null, to: null };
+  document.getElementById('dfClear').style.display = 'none';
+  document.getElementById('dfBadge').style.display = 'none';
+  updateDashboard();
+}
 
 const COUNTRY_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
 
@@ -947,7 +1038,8 @@ async function loadData() {
 // ═══════════════════════════════════════════════════════════════════
 
 function updateDashboard() {
-  const metrics = calcMetrics(globalData);
+  const data = getFilteredData();
+  const metrics = calcMetrics(data);
 
   // Primary KPIs
   document.getElementById('wTot').textContent = metrics.total;
@@ -960,34 +1052,30 @@ function updateDashboard() {
   document.getElementById('wResol').textContent = metrics.resolRate + '%';
 
   // Institutions couvertes
-  const instCount = new Set(globalData.map(d => d.institution)).size;
+  const instCount = new Set(data.map(d => d.institution)).size;
   document.getElementById('wInst').textContent = instCount;
 
   // Canal dominant
   const canalFreq = {};
-  globalData.forEach(d => {
-    canalFreq[d.canal] = (canalFreq[d.canal] || 0) + 1;
-  });
-  const canalDom = Object.keys(canalFreq).reduce((a,b) => canalFreq[a] > canalFreq[b] ? a : b, 'N/A');
+  data.forEach(d => { if (d.canal) canalFreq[d.canal] = (canalFreq[d.canal] || 0) + 1; });
+  const canalDom = Object.keys(canalFreq).length
+    ? Object.keys(canalFreq).reduce((a,b) => canalFreq[a] > canalFreq[b] ? a : b)
+    : 'N/A';
   document.getElementById('wCanal').textContent = canalDom;
 
-  // Trend 7j
+  // Trend 7j (toujours sur les données complètes, pas filtrées)
   const now = new Date();
-  const last7 = globalData.filter(d => {
-    const dt = new Date(d.created_at);
-    return (now - dt) <= 7 * 24 * 60 * 60 * 1000;
-  }).length;
+  const last7 = globalData.filter(d => (now - new Date(d.created_at)) <= 7*24*60*60*1000).length;
   const prev7 = globalData.filter(d => {
-    const dt = new Date(d.created_at);
-    const diff = now - dt;
-    return diff > 7 * 24 * 60 * 60 * 1000 && diff <= 14 * 24 * 60 * 60 * 1000;
+    const diff = now - new Date(d.created_at);
+    return diff > 7*24*60*60*1000 && diff <= 14*24*60*60*1000;
   }).length;
   const delta = last7 - prev7;
   const trendEl = document.getElementById('wTotTrend');
   trendEl.className = 'kpi-w-trend ' + (delta > 0 ? 'trend-up' : delta < 0 ? 'trend-dn' : 'trend-eq');
   trendEl.textContent = (delta > 0 ? '+' : '') + delta;
 
-  updateCharts();
+  updateCharts(data);
   updateShareCard(metrics);
 }
 
@@ -1006,9 +1094,10 @@ const CHART_DEFAULTS = {
   }
 };
 
-function updateCharts() {
+function updateCharts(data) {
+  data = data || getFilteredData();
   // ── 1. Évolution (line) ─────────────────────────────────────────
-  const lineData = buildLineData(globalData, currentPeriod);
+  const lineData = buildLineData(data, currentPeriod);
   if (charts.line) charts.line.destroy();
   const lineCtx = document.getElementById('lineChart').getContext('2d');
   charts.line = new Chart(lineCtx, {
@@ -1045,7 +1134,7 @@ function updateCharts() {
 
   // ── 2. Pays (doughnut) ──────────────────────────────────────────
   const countryData = {};
-  globalData.forEach(d => { countryData[d.pays] = (countryData[d.pays] || 0) + 1; });
+  data.forEach(d => { countryData[d.pays] = (countryData[d.pays] || 0) + 1; });
   const sorted = Object.entries(countryData).sort((a,b) => b[1]-a[1]);
   const PALETTE = ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981'];
   if (charts.doughnut) charts.doughnut.destroy();
@@ -1077,7 +1166,7 @@ function updateCharts() {
   const starFields = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance'];
   const criteriaLabels = ['Rapidité','Facilité','Frais','Support','Confiance'];
   const criteriaData = starFields.map(f => {
-    const vals = globalData.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
+    const vals = data.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
     return vals.length > 0 ? parseFloat((vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2)) : 0;
   });
   const criteriaColors = criteriaData.map(v => v >= 4 ? '#1A7A4A' : v >= 3 ? '#C47A1A' : '#C8352A');
@@ -1104,7 +1193,7 @@ function updateCharts() {
   });
 
   // ── 4. NPS Distribution (bar avec zones colorées) ───────────────
-  const npsData = globalData.filter(d => !isNaN(parseInt(d.nps)));
+  const npsData = data.filter(d => !isNaN(parseInt(d.nps)));
   const npsCount = Array(11).fill(0);
   npsData.forEach(d => npsCount[parseInt(d.nps)]++);
   const npsColors = npsCount.map((_,i) => i <= 6 ? 'rgba(200,53,42,0.85)' : i <= 8 ? 'rgba(196,122,26,0.85)' : 'rgba(26,122,74,0.85)');
@@ -1134,7 +1223,7 @@ function updateCharts() {
 
   // ── 5. FCR par institution (horizontal bar, top 10 trié) ─────────
   const instMetrics = {};
-  globalData.forEach(d => {
+  data.forEach(d => {
     if (!instMetrics[d.institution]) instMetrics[d.institution] = {fcr:0, tot:0};
     if (d.fcr === 'oui') instMetrics[d.institution].fcr++;
     instMetrics[d.institution].tot++;
@@ -1176,7 +1265,7 @@ function updateCharts() {
 
   // ── 6. Top frictions (horizontal bar) ───────────────────────────
   const frictionMap = {};
-  globalData.forEach(d => {
+  data.forEach(d => {
     if (d.friction) d.friction.split('|').forEach(f => {
       const k = f.trim(); if (k) frictionMap[k] = (frictionMap[k] || 0) + 1;
     });

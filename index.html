@@ -263,9 +263,19 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 }
 .hero-badge{opacity:0;animation:heroFadeUp .6s ease .1s forwards;}
 .hero h1{opacity:0;animation:heroFadeUp .7s ease .25s forwards;}
-.hero-sub{opacity:0;animation:heroFadeUp .6s ease .45s forwards;}
+.hero-sub{opacity:0;}/* géré par typewriterSubtitle() */
 .hero-ctas{opacity:0;animation:heroFadeUp .6s ease .6s forwards;}
 .hero-proof{opacity:0;animation:heroFadeUp .6s ease .75s forwards;}
+
+/* ── KEYWORDS COLORÉS ─────────────────────────────────────────── */
+@keyframes kwPop{
+  0%  {transform:translateY(5px) scale(.95);filter:brightness(.5);}
+  65% {transform:translateY(-2px) scale(1.04);filter:brightness(1.2);}
+  100%{transform:none;filter:brightness(1);}
+}
+.kw-b{color:var(--accent);font-style:normal;display:inline-block;animation:kwPop .55s cubic-bezier(.22,1,.36,1) 1.05s both;}
+.kw-g{color:#1A7A4A;font-style:normal;display:inline-block;animation:kwPop .55s cubic-bezier(.22,1,.36,1) 1.2s both;}
+.kw-o{color:#C47A1A;font-style:normal;display:inline-block;animation:kwPop .55s cubic-bezier(.22,1,.36,1) 1.35s both;}
 
 /* ── SCROLL REVEAL ────────────────────────────────────────── */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1);}
@@ -304,8 +314,8 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 <section class="hero" id="home">
   <canvas id="heroBg"></canvas>
   <div class="hero-badge"><span></span> Baromètre UEMOA 2026 · Édition 1</div>
-  <h1>Consultez des <em>avis fiables</em> sur les banques,<br>fintechs et opérateurs GSM d'Afrique de l'Ouest</h1>
-  <p class="hero-sub">CXFI collecte et publie des avis clients réels sur les institutions financières de l'UEMOA — pour plus de transparence.</p>
+  <h1>Consultez des <em>avis fiables</em> sur les <em class="kw-b">Banques,</em> <em class="kw-g">Fintech</em><br>et <em class="kw-o">Opérateurs Mobile Money</em> d'Afrique de l'Ouest</h1>
+  <p class="hero-sub" id="heroSub"></p>
   <div class="hero-ctas">
     <a class="btn-primary" href="#resultats">Voir les avis →</a>
     <button class="btn-secondary" onclick="openForm()">Donner mon avis</button>
@@ -524,14 +534,19 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
     <div class="srch-wrap"><span class="srch-ico">🔍</span><input class="srch-inp" type="text" id="instQ" placeholder="Rechercher…" oninput="filterInst(this.value)"></div>
     <div class="inst-list" id="instList"></div>
     <div style="margin-top:6px;font-size:10px;color:var(--muted)">Introuvable ? <a href="#" onclick="openSugFromForm(event)" style="color:var(--accent);font-weight:600">Suggérer →</a></div>
-    <div class="step-lbl" style="margin-top:12px">Canal utilisé</div>
-    <div class="g3">
-      <button class="sel-btn" onclick="pick('canal','app',this)"><span class="ico">📱</span><span class="lbl">App</span></button>
-      <button class="sel-btn" onclick="pick('canal','ussd',this)"><span class="ico">#️⃣</span><span class="lbl">USSD</span></button>
-      <button class="sel-btn" onclick="pick('canal','agence',this)"><span class="ico">🏦</span><span class="lbl">Agence</span></button>
-      <button class="sel-btn" onclick="pick('canal','web',this)"><span class="ico">💻</span><span class="lbl">Web</span></button>
-      <button class="sel-btn" onclick="pick('canal','whatsapp',this)"><span class="ico">💬</span><span class="lbl">WhatsApp</span></button>
-      <button class="sel-btn" onclick="pick('canal','api',this)"><span class="ico">⚙️</span><span class="lbl">API</span></button>
+    <div class="step-lbl" style="margin-top:12px">Canal(aux) utilisé(s) <span style="font-weight:400;color:var(--muted);font-size:10px;">— plusieurs choix possibles</span></div>
+    <div class="g3" id="canalBtns">
+      <button class="sel-btn" onclick="toggleCanal('app',this)"><span class="ico">📱</span><span class="lbl">App</span></button>
+      <button class="sel-btn" onclick="toggleCanal('ussd',this)"><span class="ico">#️⃣</span><span class="lbl">USSD</span></button>
+      <button class="sel-btn" onclick="toggleCanal('agence',this)"><span class="ico">🏦</span><span class="lbl">Agence</span></button>
+      <button class="sel-btn" onclick="toggleCanal('web',this)"><span class="ico">💻</span><span class="lbl">Web</span></button>
+      <button class="sel-btn" onclick="toggleCanal('whatsapp',this)"><span class="ico">💬</span><span class="lbl">WhatsApp</span></button>
+      <button class="sel-btn" onclick="toggleCanal('api',this)"><span class="ico">⚙️</span><span class="lbl">API</span></button>
+    </div>
+    <!-- Section résolution — visible si ≥2 canaux sélectionnés -->
+    <div id="canalResolSec" style="display:none;margin-top:14px;padding:12px 14px;background:var(--cream);border-radius:10px;border:1px solid var(--border);">
+      <div class="step-lbl" style="margin:0 0 8px">Sur quel canal avez-vous finalement abouti ?</div>
+      <div class="g3" id="canalResolBtns"></div>
     </div>
     <div id="s2Err" style="display:none;margin-top:8px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:var(--red);border:1px solid #FECACA"></div>
     <div class="form-nav"><button class="btn-back" onclick="goStep(1)">← Retour</button><button class="btn-next" onclick="tryGoStep3()">Continuer →</button></div>
@@ -733,7 +748,7 @@ const INSTS = [
   {n:'INTOUCH Guinée-Bissau',ref:'EP.GB.001/2025',cat:'fintech',pays:['GW'],ico:'IG',bg:'linear-gradient(135deg,#67E8F9,#0369A1)',agr:true,agr_pays:['GW'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   // ══ MALI ══
   {n:'INTOUCH Mali',ref:'EP.ML.001/2025',cat:'fintech',pays:['ML'],ico:'IM',bg:'linear-gradient(135deg,#67E8F9,#0E7490)',agr:true,agr_pays:['ML'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
-  {n:'CAURIDOR',ref:'EP.ML.002/2025',cat:'fintech',pays:['ML'],ico:'CA',bg:'linear-gradient(135deg,#FCA5A5,#7F1D1D)',agr:true,agr_pays:['ML'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
+  {n:'Cauridor/BNB',ref:'EP.ML.002/2025',cat:'fintech',pays:['ML'],ico:'CA',bg:'linear-gradient(135deg,#FCA5A5,#7F1D1D)',agr:true,agr_pays:['ML'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   // ══ NIGER ══
   {n:'iFUTUR',ref:'EP.NG.001/2025',cat:'fintech',pays:['NE'],ico:'IF',bg:'linear-gradient(135deg,#A78BFA,#312E81)',agr:true,agr_pays:['NE'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   // ══ SÉNÉGAL ══
@@ -752,6 +767,9 @@ const INSTS = [
   {n:'INTOUCH Togo',ref:'EP.TG.001/2025',cat:'fintech',pays:['TG'],ico:'IT2',bg:'linear-gradient(135deg,#67E8F9,#155E75)',agr:true,agr_pays:['TG'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   {n:'OLLO AFRICA',ref:'EP.TG.002/2025',cat:'fintech',pays:['TG'],ico:'OA',bg:'linear-gradient(135deg,#67E8F9,#164E63)',agr:true,agr_pays:['TG'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   {n:'SEMOA Togo',ref:'EP.TG.003/2026',cat:'fintech',pays:['TG'],ico:'SE',bg:'linear-gradient(135deg,#FDE68A,#B45309)',agr:true,agr_pays:['TG'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
+  // ══ DIASPORA / REMITTANCES ══
+  {n:'Tap-Tap Send',ref:null,cat:'fintech',pays:['SN','CI','ML','BF','TG','BJ','GW'],ico:'TT',bg:'linear-gradient(135deg,#FB923C,#C2410C)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
+  {n:'LemFi',ref:null,cat:'fintech',pays:['SN','CI','ML','GW'],ico:'LF',bg:'linear-gradient(135deg,#818CF8,#3730A3)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
   // ══ ACTEURS MAJEURS ══
   {n:'Wave Mobile Money',cat:'mobile',pays:['SN','CI','ML','BF','GW'],ico:'W',bg:'linear-gradient(135deg,#4ADE80,#16A34A)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
   {n:'Orange Money',cat:'mobile',pays:['SN','CI','ML','BF','GW','NE'],ico:'OM',bg:'linear-gradient(135deg,#FB923C,#EA580C)',agr:false,agr_pays:[],agr_type:null,pispi:true,fcr:null,rv:0,cxfi:null},
@@ -862,12 +880,13 @@ function animCount(target) {
 
 /* ── FORMULAIRE OUVERTURE / FERMETURE ───────────────────────────  */
 function resetFd() {
-  fd = {profile:null,pays:null,inst:null,canal:null,op:null,fcr:null,resolu:null,stars:{},nps:null,verbatim:''};
+  fd = {profile:null,pays:null,inst:null,canaux:[],canal:null,op:null,fcr:null,resolu:null,stars:{},nps:null,verbatim:''};
 }
 function openForm() {
   resetFd();
   const ov = document.getElementById('formOv');
   ov.querySelectorAll('.sel-btn,.inst-item,.fr-item').forEach(el => el.classList.remove('active'));
+  const resSec = document.getElementById('canalResolSec'); if (resSec) resSec.style.display = 'none';
   ov.querySelectorAll('.yn-btn').forEach(b => b.className = 'yn-btn');
   ov.querySelectorAll('.star').forEach(s => s.className = 'star');
   ov.querySelectorAll('.nps-btn').forEach(b => b.classList.remove('active'));
@@ -943,8 +962,9 @@ function tryGoStep2() {
 }
 function tryGoStep3() {
   hideStepErr('s2Err');
-  if (!fd.inst)  { showStepErr('s2Err','🏦 Sélectionnez l\'institution dans la liste.'); return; }
-  if (!fd.canal) { showStepErr('s2Err','📱 Sélectionnez le canal utilisé.'); return; }
+  if (!fd.inst)              { showStepErr('s2Err','🏦 Sélectionnez l\'institution dans la liste.'); return; }
+  if (fd.canaux.length === 0){ showStepErr('s2Err','📱 Sélectionnez au moins un canal utilisé.'); return; }
+  if (fd.canaux.length >= 2 && !fd.canal) { showStepErr('s2Err','📍 Précisez le canal sur lequel votre opération a finalement abouti.'); return; }
   // Anti-abus
   try {
     const key = `cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
@@ -969,6 +989,38 @@ function pick(field, val, btn) {
   btn.classList.add('active');
   fd[field] = val;
   if (field === 'pays') renderInstList(INSTS.filter(i => i.pays.includes(val)));
+}
+
+// Multi-select canal
+const CANAL_LABELS = {app:'📱 App',ussd:'#️⃣ USSD',agence:'🏦 Agence',web:'💻 Web',whatsapp:'💬 WhatsApp',api:'⚙️ API'};
+function toggleCanal(val, btn) {
+  btn.classList.toggle('active');
+  const idx = fd.canaux.indexOf(val);
+  if (idx === -1) fd.canaux.push(val); else fd.canaux.splice(idx, 1);
+
+  // Si 1 seul canal sélectionné → canal = celui-ci directement
+  if (fd.canaux.length === 1) {
+    fd.canal = fd.canaux[0];
+    document.getElementById('canalResolSec').style.display = 'none';
+  } else if (fd.canaux.length >= 2) {
+    // Afficher la section résolution avec les canaux sélectionnés
+    fd.canal = null;
+    const resolBtns = document.getElementById('canalResolBtns');
+    resolBtns.innerHTML = fd.canaux.map(c =>
+      `<button class="sel-btn" onclick="pickCanalResol('${c}',this)">
+        <span class="lbl">${CANAL_LABELS[c]||c}</span>
+      </button>`
+    ).join('');
+    document.getElementById('canalResolSec').style.display = 'block';
+  } else {
+    fd.canal = null;
+    document.getElementById('canalResolSec').style.display = 'none';
+  }
+}
+function pickCanalResol(val, btn) {
+  document.getElementById('canalResolBtns').querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  fd.canal = val;
 }
 function renderInstList(list) {
   const sorted = [...list].sort((a,b) => a.n.localeCompare(b.n));
@@ -1034,7 +1086,8 @@ async function sendForm() {
   const payload = {
     timestamp: new Date().toISOString(),
     profile: fd.profile||'', pays: fd.pays||'', institution: fd.inst||'',
-    canal: fd.canal||'', operation: fd.op||'',
+    canal: fd.canal||'', /* canaux_tentes: fd.canaux.join('|') — activer après: ALTER TABLE avis ADD COLUMN canaux_tentes TEXT; */
+    operation: fd.op||'',
     fcr: fd.fcr ? 'oui' : 'non',
     resolu: fd.resolu===null ? '' : (fd.resolu ? 'oui' : 'non'),
     friction: frictions.join(' | '),
@@ -1207,12 +1260,29 @@ function initNavScroll() {
 }
 
 /* ── INIT ────────────────────────────────────────────────────── */
+function typewriterSubtitle() {
+  const el = document.getElementById('heroSub');
+  if (!el) return;
+  const text = 'CXFI collecte et publie des avis clients réels sur les institutions financières de l\'UEMOA — pour plus de transparence.';
+  el.textContent = '';
+  el.style.opacity = '1';
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(type, i < 40 ? 28 : 14); // ralentit au départ puis accélère
+    }
+  }
+  setTimeout(type, 950); // décalé après l'apparition du h1
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initCanvas();
   initReveal();
   initNavScroll();
   renderLB();
   loadStats();
+  typewriterSubtitle();
 });
 </script>
 </body>
