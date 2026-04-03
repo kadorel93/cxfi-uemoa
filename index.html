@@ -267,17 +267,20 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 .hero-ctas{opacity:0;animation:heroFadeUp .6s ease .6s forwards;}
 .hero-proof{opacity:0;animation:heroFadeUp .6s ease .75s forwards;}
 
-/* ── KEYWORDS — palette sobre, éditoriale ─────────────────────── */
-@keyframes kwPop{
-  0%  {opacity:0;transform:translateY(6px);}
-  100%{opacity:1;transform:none;}
+/* ── KEYWORDS — Vert · Or · Rouge, palette Pan-Africaine sobre ── */
+@keyframes kwSlide{
+  0%  {opacity:0;transform:translateY(8px);}
+  100%{opacity:1;transform:translateY(0);}
 }
-/* Bleu nuit — Banques */
-.kw-b{color:#1E3A8A;font-style:normal;display:inline-block;animation:kwPop .5s ease 1.05s both;}
-/* Vert forêt — Fintech */
-.kw-g{color:#14532D;font-style:normal;display:inline-block;animation:kwPop .5s ease 1.2s both;}
-/* Terre brûlée — Opérateurs Mobile Money */
-.kw-o{color:#92400E;font-style:normal;display:inline-block;animation:kwPop .5s ease 1.35s both;}
+/* Vert émeraude profond — Banques */
+.kw-b{color:#166534;font-style:normal;display:inline-block;
+  animation:kwSlide .5s cubic-bezier(.22,1,.36,1) 1.05s both;}
+/* Or ancien — Fintech */
+.kw-g{color:#92400E;font-style:normal;display:inline-block;
+  animation:kwSlide .5s cubic-bezier(.22,1,.36,1) 1.2s both;}
+/* Grenat sombre — Opérateurs Mobile Money */
+.kw-o{color:#991B1B;font-style:normal;display:inline-block;
+  animation:kwSlide .5s cubic-bezier(.22,1,.36,1) 1.35s both;}
 
 /* ── SCROLL REVEAL ────────────────────────────────────────── */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1);}
