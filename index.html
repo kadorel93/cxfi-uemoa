@@ -248,8 +248,40 @@ footer a:hover{color:var(--accent);}
 .btn-sug{width:100%;background:var(--accent);color:#fff;border-radius:8px;padding:11px;font-size:13px;font-weight:600;margin-top:4px;}
 
 /* Canvas bg */
-#heroBg{position:absolute;inset:0;z-index:0;opacity:.35;}
+#heroBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity 1.2s ease;}
+#heroBg.ready{opacity:.4;}
 .hero>*:not(#heroBg){position:relative;z-index:1;}
+
+/* ── NAV SCROLL ────────────────────────────────────────────── */
+nav{transition:box-shadow .25s,background .25s;}
+nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
+
+/* ── ANIMATIONS HERO ──────────────────────────────────────── */
+@keyframes heroFadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.hero-badge{opacity:0;animation:heroFadeUp .6s ease .1s forwards;}
+.hero h1{opacity:0;animation:heroFadeUp .7s ease .25s forwards;}
+.hero-sub{opacity:0;animation:heroFadeUp .6s ease .45s forwards;}
+.hero-ctас{opacity:0;animation:heroFadeUp .6s ease .6s forwards;}
+.hero-proof{opacity:0;animation:heroFadeUp .6s ease .75s forwards;}
+
+/* ── SCROLL REVEAL ────────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1);}
+.reveal.on{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:.08s;}
+.reveal-d2{transition-delay:.18s;}
+.reveal-d3{transition-delay:.28s;}
+.reveal-d4{transition-delay:.38s;}
+
+/* ── STAT COUNTER PULSE ───────────────────────────────────── */
+@keyframes statPop{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.06);}
+  100%{transform:scale(1);}
+}
+.stat-n.pop{animation:statPop .4s ease;}
 </style>
 </head>
 <body>
@@ -295,19 +327,19 @@ footer a:hover{color:var(--accent);}
 </section>
 
 <!-- ═══ STATS DARK ══════════════════════════════════════════════ -->
-<div class="stats-sec">
+<div class="stats-sec reveal">
   <div class="stats-inner">
-    <div class="stat-card">
+    <div class="stat-card reveal reveal-d1">
       <div class="stat-n" id="hKpi">–</div>
       <div class="stat-l">Expériences collectées</div>
       <div class="stat-sub">En cours · objectif 30/institution</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card reveal reveal-d2">
       <div class="stat-n">31</div>
       <div class="stat-l">EDP agréés BCEAO</div>
       <div class="stat-sub">Source : bceao.int · 28/02/2026</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card reveal reveal-d3">
       <div class="stat-n">8</div>
       <div class="stat-l">Pays couverts</div>
       <div class="stat-sub">Bénin · Sénégal · CI · Togo · +4</div>
@@ -318,23 +350,23 @@ footer a:hover{color:var(--accent);}
 <!-- ═══ COMMENT ÇA MARCHE ═══════════════════════════════════════ -->
 <div id="comment">
 <div class="how-sec">
-  <div class="sec-eyebrow">Simple & rapide</div>
-  <div class="sec-h">Comment ça marche ?</div>
-  <p class="sec-sub">Trois étapes, deux minutes, zéro compte à créer.</p>
+  <div class="sec-eyebrow reveal">Simple & rapide</div>
+  <div class="sec-h reveal reveal-d1">Comment ça marche ?</div>
+  <p class="sec-sub reveal reveal-d2">Trois étapes, deux minutes, zéro compte à créer.</p>
   <div class="steps">
-    <div class="step-card">
+    <div class="step-card reveal reveal-d1">
       <div class="step-num">ÉTAPE 01</div>
       <div class="step-ico">🔍</div>
       <div class="step-title">Choisissez une institution</div>
       <p class="step-desc">Banque, fintech, mobile money, établissement de paiement — sélectionnez celle que vous avez utilisée récemment.</p>
     </div>
-    <div class="step-card">
+    <div class="step-card reveal reveal-d2">
       <div class="step-num">ÉTAPE 02</div>
       <div class="step-ico">⭐</div>
       <div class="step-title">Notez votre expérience</div>
       <p class="step-desc">Rapidité, frais, support, résolution au premier contact — quelques clics suffisent. Tout est anonyme.</p>
     </div>
-    <div class="step-card">
+    <div class="step-card reveal reveal-d3">
       <div class="step-num">ÉTAPE 03</div>
       <div class="step-ico">📊</div>
       <div class="step-title">Les scores sont publiés</div>
@@ -347,8 +379,8 @@ footer a:hover{color:var(--accent);}
 <!-- ═══ CLASSEMENT ══════════════════════════════════════════════ -->
 <div class="rank-sec" id="resultats">
   <div class="rank-inner">
-    <div class="sec-eyebrow">Données live</div>
-    <div class="sec-h" style="margin-bottom:8px">Classement des institutions</div>
+    <div class="sec-eyebrow reveal">Données live</div>
+    <div class="sec-h reveal reveal-d1" style="margin-bottom:8px">Classement des institutions</div>
     <p style="color:var(--muted);font-size:14px;margin-bottom:28px">Les scores se débloquent à partir de 30 avis vérifiés par institution.</p>
 
     <div class="rank-controls">
@@ -390,7 +422,7 @@ footer a:hover{color:var(--accent);}
 <!-- ═══ SECTION INSTITUTIONS ═══════════════════════════════════ -->
 <div id="institutions">
 <div class="biz-sec">
-  <div class="biz-content">
+  <div class="biz-content reveal">
     <div class="sec-eyebrow">Pour les institutions financières</div>
     <div class="sec-h">Vos clients vous notent.<br>Accédez à leurs retours.</div>
     <p style="color:var(--muted);font-size:15px;margin-top:14px;line-height:1.7">
@@ -399,9 +431,9 @@ footer a:hover{color:var(--accent);}
     <a class="biz-cta" href="#" onclick="downloadDataCTA();return false">
       Contacter Naxari pour accéder aux données →
     </a>
-    <p style="font-size:11px;color:var(--muted);margin-top:12px">Réponse sous 48h · mrkpatinde@gmail.com</p>
+    <p style="font-size:11px;color:var(--muted);margin-top:12px">Réponse sous 48h · contact@naxari.co</p>
   </div>
-  <div class="biz-visual">
+  <div class="biz-visual reveal reveal-d2">
     <p style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Exemples de données disponibles</p>
     <div class="biz-metric">
       <div class="biz-metric-ico" style="background:#D1FAE5">📈</div>
@@ -746,56 +778,67 @@ const INSTS = [
 ];
 
 /* ── CANVAS HERO ──────────────────────────────────────────────── */
-(function initCanvas() {
+function initCanvas() {
   const canvas = document.getElementById('heroBg');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const dots = [];
+  let W = 0, H = 0;
+
   function resize() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-  for (let i = 0; i < 60; i++) {
-    dots.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 2 + 1,
-      dx: (Math.random() - 0.5) * 0.4,
-      dy: (Math.random() - 0.5) * 0.4,
+    const hero = canvas.parentElement;
+    W = canvas.width  = hero ? hero.offsetWidth  : window.innerWidth;
+    H = canvas.height = hero ? hero.offsetHeight : window.innerHeight;
+    dots.forEach(d => {
+      d.x = Math.random() * W;
+      d.y = Math.random() * H;
     });
   }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 65; i++) {
+    dots.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.8 + 0.8,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+    });
+  }
+
   function draw() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, W, H);
     dots.forEach(d => {
       d.x += d.dx; d.y += d.dy;
-      if (d.x < 0 || d.x > canvas.width) d.dx *= -1;
-      if (d.y < 0 || d.y > canvas.height) d.dy *= -1;
+      if (d.x < 0 || d.x > W) d.dx *= -1;
+      if (d.y < 0 || d.y > H) d.dy *= -1;
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(26,63,255,0.25)';
+      ctx.fillStyle = 'rgba(26,63,255,0.45)';
       ctx.fill();
     });
     dots.forEach((d, i) => {
-      dots.slice(i + 1).forEach(d2 => {
+      for (let j = i + 1; j < dots.length; j++) {
+        const d2 = dots[j];
         const dist = Math.hypot(d.x - d2.x, d.y - d2.y);
-        if (dist < 120) {
+        if (dist < 130) {
           ctx.beginPath();
           ctx.moveTo(d.x, d.y);
           ctx.lineTo(d2.x, d2.y);
-          ctx.strokeStyle = `rgba(26,63,255,${0.08 * (1 - dist / 120)})`;
-          ctx.lineWidth = 0.8;
+          ctx.strokeStyle = `rgba(26,63,255,${0.12 * (1 - dist / 130)})`;
+          ctx.lineWidth = 0.7;
           ctx.stroke();
         }
-      });
+      }
     });
     requestAnimationFrame(draw);
   }
   draw();
-})();
+  // Fade-in canvas après la première frame
+  requestAnimationFrame(() => canvas.classList.add('ready'));
+}
 
 /* ── COMPTEURS ──────────────────────────────────────────────────  */
 function setCount(n) {
@@ -1115,24 +1158,59 @@ function downloadDataCTA() {
 /* ── STATS LIVE ──────────────────────────────────────────────── */
 async function loadStats() {
   try {
-    const countRes = await sbFetch('avis?select=institution', {
+    const res = await sbFetch('avis?select=institution&limit=10000', {
       method: 'GET',
-      headers: {'Prefer':'count=exact','Range-Unit':'items','Range':'0-0'}
+      headers: {'Prefer':'return=representation'}
     });
-    const total = parseInt(countRes.headers.get('content-range')?.split('/')[1]||'0', 10);
-    if (total > totalCount) animCount(total);
-    const res = await sbFetch('avis?select=institution&limit=10000', {method:'GET', headers:{'Prefer':'return=representation'}});
-    if (!res.ok) return;
+    if (!res.ok) { animCount(0); return; }
     const rows = await res.json();
+    // Compter par institution
     const counts = {};
-    rows.forEach(row => { const nom=(row.institution||'').trim(); if(nom) counts[nom]=(counts[nom]||0)+1; });
-    Object.entries(counts).forEach(([nom,rv]) => { const inst=INSTS.find(i=>i.n===nom); if(inst && rv>=inst.rv) inst.rv=rv; });
+    rows.forEach(row => {
+      const nom = (row.institution || '').trim();
+      if (nom) counts[nom] = (counts[nom] || 0) + 1;
+    });
+    Object.entries(counts).forEach(([nom, rv]) => {
+      const inst = INSTS.find(i => i.n === nom);
+      if (inst && rv > inst.rv) inst.rv = rv;
+    });
+    // Toujours mettre à jour le compteur (même si 0)
+    const total = rows.length;
+    animCount(total);
     renderLB();
-  } catch(e) { console.warn('loadStats:', e); animCount(0); }
+  } catch(e) {
+    console.warn('loadStats:', e);
+    animCount(0);
+  }
+}
+
+/* ── SCROLL REVEAL ────────────────────────────────────────────── */
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('on');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+/* ── NAV SCROLL SHADOW ────────────────────────────────────────── */
+function initNavScroll() {
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
 }
 
 /* ── INIT ────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  initCanvas();
+  initReveal();
+  initNavScroll();
   renderLB();
   loadStats();
 });
