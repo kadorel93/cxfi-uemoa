@@ -96,8 +96,13 @@ exports.handler = async (event) => {
     });
   }
 
-  // Insertion avec ip_hash (jamais exposé au client)
-  const record = { ...body, ip_hash: ipHash };
+  // Whitelist stricte des champs autorisés — aucun champ arbitraire du client
+  const ALLOWED = ['institution','pays','profile','note','rapidite','facilite','frais','support','confiance','canal','canaux','fcr','commentaire'];
+  const record = {};
+  for (const key of ALLOWED) {
+    if (body[key] !== undefined) record[key] = body[key];
+  }
+  record.ip_hash = ipHash;
   const { status: insertStatus, data: insertData } = await sbReq('avis', {
     method: 'POST',
     headers: { Prefer: 'return=minimal' },

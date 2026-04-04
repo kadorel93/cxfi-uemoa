@@ -922,18 +922,28 @@ function updatePaysage() {
   const mode = document.getElementById('psMode').value;
   document.getElementById('psInstRow').style.display = mode === 'inst' ? 'flex' : 'none';
   document.getElementById('psMilestoneRow').style.display = mode === 'milestone' ? 'flex' : 'none';
+  const hl = document.getElementById('ps-headline');
   if (mode === 'default') {
-    document.getElementById('ps-headline').innerHTML = 'Votre banque<br>mérite <em>quoi ?</em>';
+    hl.innerHTML = 'Votre banque<br>mérite <em>quoi ?</em>';
     document.getElementById('ps-sub').textContent = 'Avis indépendants sur les banques, fintechs et Mobile Money d\'Afrique de l\'Ouest.';
     document.getElementById('ps-eyebrow').textContent = 'Afrique de l\'Ouest · UEMOA';
   } else if (mode === 'inst') {
     const inst = document.getElementById('psInst').value || 'votre institution';
-    document.getElementById('ps-headline').innerHTML = `<em>${inst}</em><br>— votre verdict ?`;
+    // Construire le DOM sans innerHTML pour éviter toute injection
+    const em = document.createElement('em');
+    em.textContent = inst;
+    hl.innerHTML = '';
+    hl.appendChild(em);
+    hl.appendChild(document.createTextNode('\u00A0— votre verdict ?'));
     document.getElementById('ps-sub').textContent = `Notez votre expérience avec ${inst} en 2 minutes. Anonyme, gratuit, indépendant.`;
     document.getElementById('ps-eyebrow').textContent = inst + ' · Baromètre Goxen';
   } else if (mode === 'milestone') {
     const n = document.getElementById('psMilestone').value || '500';
-    document.getElementById('ps-headline').innerHTML = `<em>${n} avis</em><br>collectés 🎉`;
+    const em = document.createElement('em');
+    em.textContent = n + ' avis';
+    hl.innerHTML = '';
+    hl.appendChild(em);
+    hl.appendChild(document.createTextNode('\u00A0collectés 🎉'));
     document.getElementById('ps-sub').textContent = `${n} voix pour plus de transparence financière en Afrique de l\'Ouest. Rejoins le mouvement.`;
     document.getElementById('ps-eyebrow').textContent = 'MILESTONE · Baromètre UEMOA 2026';
   }
