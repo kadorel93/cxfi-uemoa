@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goxen Admin — Dashboard naxari</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
+  --muted:#6B6560;--accent:#1A4D2E;--green:#1A7A4A;--amber:#C47A1A;
+  --red:#C8352A;--border:rgba(15,14,12,0.1);--card:#FFFFFF;
+  --score:#4ADE80;--sidebar:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);height:100%;}
+a{color:inherit;text-decoration:none;}
+button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
+
+/* ── LOCK SCREEN ── */
+#lockScreen{
+  position:fixed;inset:0;z-index:999;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+}
+.lock-box{
+  background:var(--paper);border-radius:20px;padding:40px;
+  width:100%;max-width:380px;text-align:center;
+}
+.lock-logo{
+  font-family:'Syne',sans-serif;font-size:24px;font-weight:800;
+  letter-spacing:-1px;margin-bottom:6px;
+}
+.lock-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.lock-label{
+  display:block;text-align:left;font-size:11px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:6px;
+}
+.lock-inp{
+  width:100%;padding:11px 14px;border:1.5px solid var(--sand);
+  border-radius:10px;font-size:15px;font-family:'IBM Plex Mono',monospace;
+  background:var(--cream);color:var(--ink);outline:none;
+  letter-spacing:.2em;text-align:center;
+}
+.lock-inp:focus{border-color:var(--ink);}
+.lock-err{
+  font-size:12px;color:var(--red);margin-top:8px;display:none;
+}
+.lock-btn{
+  width:100%;margin-top:16px;padding:13px;
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;font-size:14px;font-weight:600;
+  transition:background .2s;
+}
+.lock-btn:hover{background:var(--accent);}
+.lock-reset{
+  display:block;margin-top:12px;font-size:12px;color:var(--muted);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+  background:none;border:none;width:100%;
+}
+.lock-reset:hover{color:var(--ink);}
+.lock-ok{
+  font-size:13px;color:var(--accent);margin-top:10px;
+  display:none;font-weight:600;
+}
+
+/* ── APP SHELL ── */
+#app{display:none;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);
+  background:var(--ink);color:var(--paper);
+  display:flex;flex-direction:column;
+  padding:24px 0;z-index:50;
+}
+.sb-logo{
+  padding:0 20px 20px;
+  border-bottom:1px solid rgba(247,244,238,.08);
+  margin-bottom:16px;
+}
+.sb-logo-txt{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  letter-spacing:-0.5px;
+}
+.sb-logo-txt em{color:var(--score);font-style:normal;}
+.sb-badge{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(247,244,238,.35);margin-top:3px;
+}
+.sb-nav{flex:1;padding:0 12px;}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(247,244,238,.3);padding:12px 8px 6px;}
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;font-size:13px;font-weight:500;
+  color:rgba(247,244,238,.65);cursor:pointer;transition:all .15s;
+  margin-bottom:2px;
+}
+.sb-link:hover{background:rgba(247,244,238,.07);color:var(--paper);}
+.sb-link.on{background:rgba(79,142,247,.18);color:#7EB8FF;}
+.sb-link .ico{font-size:15px;width:20px;text-align:center;}
+.sb-foot{
+  padding:16px 20px;border-top:1px solid rgba(247,244,238,.08);
+}
+.sb-site-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;background:rgba(247,244,238,.06);
+  border:1px solid rgba(247,244,238,.1);border-radius:8px;
+  color:rgba(247,244,238,.65);font-size:12px;font-weight:500;
+  transition:all .2s;
+}
+.sb-site-btn:hover{background:rgba(247,244,238,.1);color:var(--paper);}
+
+/* ── MAIN ── */
+.main{
+  margin-left:var(--sidebar);
+  height:100vh;overflow-y:auto;
+  background:var(--paper);
+}
+
+/* ── TOP BAR ── */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(247,244,238,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.live-dot{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;color:var(--green);
+}
+.live-dot::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--green);
+  animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.btn-share{
+  padding:7px 16px;background:var(--ink);color:var(--paper);
+  border:none;border-radius:8px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:background .2s;
+}
+.btn-share:hover{background:var(--accent);}
+
+/* ── CONTENT ── */
+.content{padding:28px 32px;display:none;}
+.content.on{display:block;}
+
+/* ── KPI WIDGETS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
+.kpi-w{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:20px;position:relative;overflow:hidden;
+}
+.kpi-w::before{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:80px;height:80px;border-radius:50%;
+  opacity:.06;
+}
+.kpi-w.blue::before{background:var(--accent);}
+.kpi-w.green::before{background:var(--green);}
+.kpi-w.amber::before{background:var(--amber);}
+.kpi-w.red::before{background:var(--red);}
+.kpi-w-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.kpi-w-val{font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:500;line-height:1;margin-bottom:6px;}
+.kpi-w-val.blue{color:var(--accent);}
+.kpi-w-val.green{color:var(--green);}
+.kpi-w-val.amber{color:var(--amber);}
+.kpi-w-val.red{color:var(--red);}
+.kpi-w-sub{font-size:11px;color:var(--muted);}
+.kpi-w-trend{
+  position:absolute;top:18px;right:18px;
+  font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;
+}
+.trend-up{background:#ECFDF5;color:var(--green);}
+.trend-dn{background:#FEF2F2;color:var(--red);}
+.trend-eq{background:var(--cream);color:var(--muted);}
+
+/* ── SECONDARY KPIs ── */
+.kpi-row-secondary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-w-secondary{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:14px;
+}
+.kpi-w-secondary-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;}
+.kpi-w-secondary-val{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;line-height:1;margin-bottom:3px;}
+.kpi-w-secondary-sub{font-size:10px;color:var(--muted);}
+
+/* ── CHART GRID ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.chart-grid.full{grid-template-columns:1fr;}
+.chart-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:22px;
+}
+.chart-box.full{grid-column:1/-1;}
+.chart-title{
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  margin-bottom:4px;
+}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.chart-canvas-wrap{position:relative;height:220px;}
+.chart-section-label{
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;margin-top:4px;padding-left:2px;
+}
+
+/* ── TABLE ── */
+.table-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin-bottom:24px;
+}
+.table-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--border);
+}
+.table-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;}
+.table-actions{display:flex;gap:8px;}
+.btn-xs{
+  padding:5px 12px;border:1.5px solid var(--sand);background:none;
+  border-radius:6px;font-size:11px;font-weight:600;color:var(--muted);
+  transition:all .15s;
+}
+.btn-xs:hover{border-color:var(--ink);color:var(--ink);}
+.btn-xs.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+table{width:100%;border-collapse:collapse;}
+th{
+  padding:10px 18px;font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);text-align:left;
+  background:var(--cream);border-bottom:1px solid var(--border);
+}
+td{padding:12px 18px;font-size:12px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(15,14,12,.02);}
+.td-inst{font-weight:600;display:flex;align-items:center;gap:8px;}
+.td-logo{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;}
+.badge{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:9px;font-weight:700;
+}
+.badge-pos{background:#ECFDF5;color:var(--green);}
+.badge-neg{background:#FEF2F2;color:var(--red);}
+.badge-neu{background:var(--cream);color:var(--muted);}
+.badge-green{background:#ECFDF5;color:var(--green);}
+.badge-amber{background:#FEF5E8;color:var(--amber);}
+.badge-red{background:#FEF2F2;color:var(--red);}
+
+/* ── SHARE MODAL ── */
+#shareModal{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(15,14,12,.6);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;
+}
+#shareModal.open{display:flex;}
+.share-box{
+  background:var(--paper);border-radius:20px;
+  width:100%;max-width:520px;padding:28px;
+  max-height:90vh;overflow-y:auto;
+}
+.share-title{
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:800;
+  margin-bottom:4px;
+}
+.share-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+
+/* ── SHARE CARD ── */
+#shareCard{
+  background:var(--ink);border-radius:16px;padding:22px;
+  color:var(--paper);margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+#shareCard::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(26,77,46,.15);
+}
+.sc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.sc-logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;}
+.sc-logo em{color:var(--score);font-style:normal;}
+.sc-date{font-size:9px;color:rgba(247,244,238,.4);margin-top:3px;}
+.sc-tag{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(74,222,128,.15);color:var(--score);
+  padding:3px 10px;border-radius:20px;
+}
+.sc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:rgba(247,244,238,.08);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+.sc-cell{background:#0D1A2E;padding:12px 8px;text-align:center;}
+.sc-val{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;}
+.sc-lbl{font-size:8px;color:rgba(247,244,238,.35);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+.sc-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:8px;color:var(--paper);}
+.sc-bars{display:flex;flex-direction:column;gap:6px;}
+.sc-bar-row{display:flex;align-items:center;gap:8px;}
+.sc-bar-label{font-size:8px;color:rgba(247,244,238,.5);width:50px;flex-shrink:0;}
+.sc-bar-track{flex:1;height:3px;background:rgba(247,244,238,.1);border-radius:99px;overflow:hidden;}
+.sc-bar-fill{height:100%;border-radius:99px;}
+.sc-bar-val{font-family:'IBM Plex Mono',monospace;font-size:8px;color:rgba(247,244,238,.6);width:26px;text-align:right;flex-shrink:0;}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(247,244,238,.08);}
+.sc-url{font-size:9px;color:rgba(247,244,238,.3);}
+
+.share-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.btn-soc{
+  padding:10px 12px;border:none;border-radius:10px;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:opacity .2s;
+}
+.btn-soc:hover{opacity:.85;}
+.btn-wa{background:#25D366;color:#fff;}
+.btn-li{background:#0A66C2;color:#fff;}
+.btn-copy{
+  grid-column:1/-1;padding:10px;background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;font-size:12px;font-weight:600;
+  transition:background .2s;
+}
+.btn-copy:hover{background:var(--accent);}
+.btn-close-modal{
+  position:absolute;top:16px;right:16px;background:var(--cream);
+  border:none;border-radius:8px;padding:6px 10px;
+  font-size:12px;color:var(--muted);cursor:pointer;
+}
+
+/* ── PERIOD TABS ── */
+.period-tabs{display:flex;gap:4px;background:var(--cream);border-radius:8px;padding:3px;}
+.ptab{
+  padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;
+  background:none;border:none;color:var(--muted);transition:all .15s;
+}
+.ptab.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(15,14,12,.08);}
+
+/* ── ALERT BANNER ── */
+.alert-banner{
+  background:linear-gradient(135deg,rgba(26,77,46,.08),rgba(26,77,46,.04));
+  border:1px solid rgba(26,77,46,.2);border-radius:12px;
+  padding:14px 18px;margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;font-size:13px;
+}
+.alert-ico{font-size:18px;flex-shrink:0;}
+.alert-txt{color:var(--ink);line-height:1.5;}
+.alert-txt b{font-weight:600;}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px 18px;margin-bottom:20px;
+}
+.filter-bar-top{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  margin-bottom:0;
+}
+.filter-bar-top.has-rows{margin-bottom:12px;}
+.filter-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  padding-top:10px;border-top:1px solid var(--border);
+}
+.filter-label{
+  font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+  min-width:52px;
+}
+.date-inp{
+  border:1.5px solid var(--sand);border-radius:8px;padding:7px 10px;
+  font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--ink);
+  background:var(--cream);outline:none;cursor:pointer;
+}
+.date-inp:focus{border-color:var(--accent);}
+.date-sep{color:var(--muted);font-size:12px;}
+
+/* pill filters */
+.fpill-group{display:flex;flex-wrap:wrap;gap:5px;}
+.fpill{
+  border:1.5px solid var(--sand);border-radius:99px;
+  padding:4px 11px;font-size:11px;font-weight:500;
+  color:var(--muted);background:var(--cream);cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.fpill:hover{border-color:var(--ink);color:var(--ink);}
+.fpill.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.btn-filter{
+  background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;
+  transition:opacity .2s;
+}
+.btn-filter:hover{opacity:.85;}
+.btn-reset-all{
+  background:none;border:1.5px solid var(--sand);color:var(--muted);
+  border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;
+  display:none;transition:all .18s;
+}
+.btn-reset-all:hover{border-color:var(--red);color:var(--red);}
+.filter-badge{
+  margin-left:auto;background:rgba(26,77,46,.08);border:1px solid rgba(26,77,46,.2);
+  color:var(--accent);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;
+  display:none;
+}
+
+/* ── EXPORT SECTION ── */
+.export-section{margin-top:20px;padding:16px;background:var(--cream);border-radius:12px;}
+.export-section-title{font-size:13px;font-weight:600;margin-bottom:10px;}
+.export-btns{display:flex;gap:8px;}
+
+@media(max-width:900px){
+  :root{--sidebar:0px;}
+  .sidebar{transform:translateX(-220px);transition:transform .3s;}
+  .sidebar.open{transform:none;--sidebar:220px;}
+  .main{margin-left:0;}
+  .kpi-row,.kpi-row-secondary{grid-template-columns:1fr 1fr;}
+  .chart-grid{grid-template-columns:1fr;}
+  .topbar{padding:0 18px;}
+  .content{padding:18px;}
+}
+@media(max-width:540px){
+  .kpi-row,.kpi-row-secondary{grid-template-columns:1fr;}
+}
+
+/* ── ANIMATIONS DASHBOARD ── */
+@keyframes gxFadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes gxShimmer {
+  0%   { background-position:-600px 0; }
+  100% { background-position: 600px 0; }
+}
+.gx-anim { opacity:0; transform:translateY(16px); }
+.gx-anim.in { animation:gxFadeUp .5s cubic-bezier(.22,1,.36,1) forwards; }
+
+.gx-sk {
+  display:inline-block;border-radius:5px;
+  background:linear-gradient(90deg,var(--sand) 25%,var(--cream) 50%,var(--sand) 75%);
+  background-size:1200px 100%;
+  animation:gxShimmer 1.4s infinite linear;
+  color:transparent !important;min-width:56px;height:.85em;
+  vertical-align:middle;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOCK SCREEN ══ -->
+<div id="lockScreen">
+  <div class="lock-box">
+    <div class="lock-logo"><span style="color:var(--accent)">Go</span>xen Admin</div>
+    <div class="lock-sub">Tableau de bord · Accès sécurisé Supabase</div>
+    <label class="lock-label" for="lockEmail">Email</label>
+    <input class="lock-inp" type="email" id="lockEmail" placeholder="admin@exemple.com"
+      autocomplete="email" style="margin-bottom:10px;"
+      onkeydown="if(event.key==='Enter')document.getElementById('lockCode').focus()">
+    <label class="lock-label" for="lockCode">Mot de passe</label>
+    <input class="lock-inp" type="password" id="lockCode" placeholder="••••••••"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')unlock()">
+    <div class="lock-err" id="lockErr">Email ou mot de passe incorrect.</div>
+    <button class="lock-btn" id="lockBtn" onclick="unlock()">Entrer →</button>
+    <button class="lock-reset" id="lockReset" onclick="sendReset()">Mot de passe oublié ?</button>
+    <div class="lock-ok" id="lockOk">✓ Email de réinitialisation envoyé — vérifiez votre boîte mail.</div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-txt">CX<em>FI</em> Admin</div>
+      <div class="sb-badge">naxari · v2.0</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Analyse</div>
+      <div class="sb-link on" onclick="showPage('dashboard')">
+        <span class="ico">📊</span> Dashboard
+      </div>
+      <div class="sb-link" onclick="showPage('avis')">
+        <span class="ico">💬</span> Avis reçus
+      </div>
+      <div class="sb-link" onclick="showPage('institutions')">
+        <span class="ico">🏦</span> Institutions
+      </div>
+      <div class="sb-section">Export</div>
+      <div class="sb-link" onclick="showPage('rapport')">
+        <span class="ico">📋</span> Rapport
+      </div>
+      <div class="sb-section">Admin</div>
+      <div class="sb-link" onclick="showPage('config')">
+        <span class="ico">⚙️</span> Configuration
+      </div>
+    </nav>
+    <div class="sb-foot">
+      <a href="https://goxen.co" target="_blank" class="sb-site-btn">
+        <span>🌐</span> Voir le site
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button id="menuBtn" style="display:none;background:none;border:none;font-size:20px;cursor:pointer;"
+          onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <div class="topbar-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="live-dot">Temps réel</div>
+        <span id="userEmail" style="font-size:12px;color:var(--muted);"></span>
+        <button class="btn-share" onclick="openShare()">
+          <span>📤</span> Partager
+        </button>
+        <button onclick="signOut()" style="background:none;border:1.5px solid var(--sand);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--muted);" title="Déconnexion">⏻</button>
+      </div>
+    </header>
+
+    <!-- PAGE : DASHBOARD -->
+    <div class="content on" id="page-dashboard">
+
+      <!-- FILTER BAR COMPLET -->
+      <div class="filter-bar" id="filterBar">
+
+        <!-- Ligne 1 : date + actions -->
+        <div class="filter-bar-top has-rows">
+          <span class="filter-label">Période</span>
+          <input type="date" class="date-inp" id="dfFrom" onchange="onFilterChange()">
+          <span class="date-sep">→</span>
+          <input type="date" class="date-inp" id="dfTo" onchange="onFilterChange()">
+          <button class="btn-filter" onclick="applyFilters()">Appliquer</button>
+          <button class="btn-reset-all" id="btnResetAll" onclick="resetAllFilters()">✕ Réinitialiser</button>
+          <span class="filter-badge" id="filterBadge"></span>
+        </div>
+
+        <!-- Ligne 2 : pays -->
+        <div class="filter-row">
+          <span class="filter-label">Pays</span>
+          <div class="fpill-group" id="fpPays">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'pays')">Tous</button>
+            <button class="fpill" data-val="SN" onclick="toggleFpill(this,'pays')">🇸🇳 SN</button>
+            <button class="fpill" data-val="CI" onclick="toggleFpill(this,'pays')">🇨🇮 CI</button>
+            <button class="fpill" data-val="ML" onclick="toggleFpill(this,'pays')">🇲🇱 ML</button>
+            <button class="fpill" data-val="BF" onclick="toggleFpill(this,'pays')">🇧🇫 BF</button>
+            <button class="fpill" data-val="TG" onclick="toggleFpill(this,'pays')">🇹🇬 TG</button>
+            <button class="fpill" data-val="BJ" onclick="toggleFpill(this,'pays')">🇧🇯 BJ</button>
+            <button class="fpill" data-val="NE" onclick="toggleFpill(this,'pays')">🇳🇪 NE</button>
+            <button class="fpill" data-val="GW" onclick="toggleFpill(this,'pays')">🇬🇼 GW</button>
+          </div>
+        </div>
+
+        <!-- Ligne 3 : canal -->
+        <div class="filter-row">
+          <span class="filter-label">Canal</span>
+          <div class="fpill-group" id="fpCanal">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'canal')">Tous</button>
+            <button class="fpill" data-val="app" onclick="toggleFpill(this,'canal')">📱 App</button>
+            <button class="fpill" data-val="agence" onclick="toggleFpill(this,'canal')">🏢 Agence</button>
+            <button class="fpill" data-val="telephone" onclick="toggleFpill(this,'canal')">📞 Téléphone</button>
+            <button class="fpill" data-val="web" onclick="toggleFpill(this,'canal')">🌐 Web</button>
+            <button class="fpill" data-val="ussd" onclick="toggleFpill(this,'canal')">🔢 USSD</button>
+          </div>
+        </div>
+
+        <!-- Ligne 5 : profil -->
+        <div class="filter-row">
+          <span class="filter-label">Profil</span>
+          <div class="fpill-group" id="fpProfil">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'profil')">Tous</button>
+            <button class="fpill" data-val="particulier" onclick="toggleFpill(this,'profil')">👤 Particulier</button>
+            <button class="fpill" data-val="entrepreneur" onclick="toggleFpill(this,'profil')">🚀 Entrepreneur</button>
+            <button class="fpill" data-val="pme" onclick="toggleFpill(this,'profil')">🏭 PME</button>
+            <button class="fpill" data-val="corporate" onclick="toggleFpill(this,'profil')">🏛 Corporate</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="alert-banner">
+        <span class="alert-ico">💡</span>
+        <div class="alert-txt"><b>Dashboard data science Goxen.</b> Métriques composites naxari calculées en temps réel depuis Supabase. Publication officielle : décembre 2026.</div>
+      </div>
+
+      <!-- PRIMARY KPIs -->
+      <div class="kpi-row">
+        <div class="kpi-w blue">
+          <div class="kpi-w-label"><span>💬</span> Total avis</div>
+          <div class="kpi-w-val blue" id="wTot">—</div>
+          <div class="kpi-w-sub">Collecté</div>
+          <div class="kpi-w-trend" id="wTotTrend"></div>
+        </div>
+        <div class="kpi-w green">
+          <div class="kpi-w-label"><span>✅</span> FCR Rate</div>
+          <div class="kpi-w-val green" id="wFCR">—</div>
+          <div class="kpi-w-sub">First Contact Resolution</div>
+        </div>
+        <div class="kpi-w amber">
+          <div class="kpi-w-label"><span>⭐</span> Goxen Score</div>
+          <div class="kpi-w-val amber" id="wCXFI">—</div>
+          <div class="kpi-w-sub">Score composite /100</div>
+        </div>
+        <div class="kpi-w" style="border-color:var(--accent);">
+          <div class="kpi-w-label"><span>📈</span> NPS Net</div>
+          <div class="kpi-w-val" id="wNPS" style="color:var(--accent);">—</div>
+          <div class="kpi-w-sub">-100 à +100</div>
+        </div>
+        <div class="kpi-w" style="border-color:#7C3AED;">
+          <div class="kpi-w-label"><span>👁️</span> Visites site</div>
+          <div class="kpi-w-val" id="wViews" style="color:#7C3AED;">—</div>
+          <div class="kpi-w-sub">Pages vues totales</div>
+        </div>
+      </div>
+
+      <!-- SECONDARY KPIs -->
+      <div class="kpi-row-secondary">
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Satisfaction</div>
+          <div class="kpi-w-secondary-val" id="wSat">—</div>
+          <div class="kpi-w-secondary-sub">/100 (avg stars)</div>
+        </div>
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Résolution</div>
+          <div class="kpi-w-secondary-val" id="wResol">—</div>
+          <div class="kpi-w-secondary-sub">% (quand FCR=non)</div>
+        </div>
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Institutions</div>
+          <div class="kpi-w-secondary-val" id="wInst">—</div>
+          <div class="kpi-w-secondary-sub">Couvertes</div>
+        </div>
+        <div class="kpi-w-secondary">
+          <div class="kpi-w-secondary-label">Canal dominant</div>
+          <div class="kpi-w-secondary-val" id="wCanal" style="font-size:16px;">—</div>
+          <div class="kpi-w-secondary-sub">Mode</div>
+        </div>
+      </div>
+
+      <!-- CHARTS — ordre data-science : Volume → Qualité → Performance → Friction -->
+
+      <!-- BLOC 1 : Volume & Couverture géographique -->
+      <div class="chart-section-label">📈 Volume & couverture</div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <div>
+              <div class="chart-title">Évolution des avis</div>
+              <div class="chart-sub">Collecte quotidienne — tendance globale</div>
+            </div>
+            <div class="period-tabs">
+              <button class="ptab on" onclick="setPeriod('7d',this)">7j</button>
+              <button class="ptab" onclick="setPeriod('30d',this)">30j</button>
+              <button class="ptab" onclick="setPeriod('all',this)">Tout</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Répartition par pays</div>
+          <div class="chart-sub">Poids de chaque pays UEMOA dans l'échantillon</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="doughnutChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOC 2 : Qualité de l'expérience -->
+      <div class="chart-section-label">⭐ Qualité de l'expérience client</div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-title">Score moyen par critère</div>
+          <div class="chart-sub">Moyennes /5 — Rapidité, Facilité, Frais, Support, Confiance</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="criteriaChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Distribution NPS</div>
+          <div class="chart-sub">
+            <span style="color:#C8352A;">■ Détracteurs 0–6</span> &nbsp;
+            <span style="color:#C47A1A;">■ Passifs 7–8</span> &nbsp;
+            <span style="color:#1A7A4A;">■ Promoteurs 9–10</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="npsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOC 3 : Performance par institution -->
+      <div class="chart-section-label">🏦 Performance par institution</div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-title">FCR par institution</div>
+          <div class="chart-sub">% First Contact Resolution · <span style="color:#1A7A4A;">≥75% ✓</span> · <span style="color:#C47A1A;">50–74% ~</span> · <span style="color:#C8352A;">&lt;50% ✗</span></div>
+          <div class="chart-canvas-wrap">
+            <canvas id="fcrChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Top frictions signalées</div>
+          <div class="chart-sub">Points de douleur les plus fréquents dans les verbatims</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="frictionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE : AVIS REÇUS -->
+    <div class="content" id="page-avis">
+
+      <div class="table-box">
+        <div class="table-head">
+          <div class="table-title">Avis reçus</div>
+          <div class="table-actions">
+            <button class="btn-xs" onclick="reloadPage()">↺ Actualiser</button>
+            <button class="btn-xs primary" onclick="exportCSV()">⬇ CSV</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Institution</th>
+                <th>Pays</th>
+                <th>Profil</th>
+                <th>Canal</th>
+                <th>Opération</th>
+                <th>FCR</th>
+                <th>Résolu</th>
+                <th>Note /5</th>
+                <th>NPS</th>
+                <th>Sentiment</th>
+                <th>Verbatim</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="avisTable">
+              <tr><td colspan="12" style="text-align:center;color:var(--muted);">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE : INSTITUTIONS -->
+    <div class="content" id="page-institutions">
+
+      <div class="table-box">
+        <div class="table-head">
+          <div class="table-title">Institutions</div>
+          <div class="table-actions">
+            <button class="btn-xs" onclick="reloadPage()">↺ Actualiser</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Institution</th>
+                <th>Avis</th>
+                <th>FCR %</th>
+                <th>Sat /100</th>
+                <th>NPS net</th>
+                <th>CXFI /100</th>
+                <th>Top Friction</th>
+                <th>Canal dominant</th>
+                <th>Trend 7j</th>
+              </tr>
+            </thead>
+            <tbody id="instTable">
+              <tr><td colspan="10" style="text-align:center;color:var(--muted);">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE : RAPPORT -->
+    <div class="content" id="page-rapport">
+
+      <div class="chart-box" style="margin-bottom:24px;">
+        <div class="chart-title">Export rapport</div>
+        <div class="chart-sub">Téléchargez vos données dans le format souhaité</div>
+
+        <div style="margin-top:20px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:12px;">Share Card (image)</div>
+          <button class="btn-xs primary" onclick="downloadShareCard()" style="margin-bottom:20px;">📸 Télécharger comme image</button>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:20px;">
+          <div style="font-size:12px;font-weight:600;margin-bottom:12px;">Données complètes</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn-xs primary" onclick="exportCSV()">📄 CSV (tableur)</button>
+            <button class="btn-xs primary" onclick="exportJSON()">🔗 JSON (API)</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGE : CONFIGURATION -->
+    <div class="content" id="page-config">
+
+      <div class="chart-box">
+        <div class="chart-title">Configuration</div>
+        <div style="margin-top:16px;line-height:1.8;">
+          <p><strong>Environnement:</strong> Production Supabase</p>
+          <p><strong>Base de données:</strong> <code style="background:var(--cream);padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono';font-size:11px;">avis</code></p>
+          <p><strong>Authentification:</strong> JWT (Supabase)</p>
+          <p><strong>Mise à jour:</strong> Temps réel (Realtime API)</p>
+          <p><strong>Dernière synchronisation:</strong> <span id="lastSync">—</span></p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ══ SHARE MODAL ══ -->
+<div id="shareModal">
+  <button class="btn-close-modal" onclick="closeShare()">✕</button>
+  <div class="share-box">
+    <div class="share-title">Partager le rapport</div>
+    <div class="share-sub">Exportez et partagez les performances</div>
+
+    <div id="shareCard">
+      <div class="sc-header">
+        <div>
+          <div class="sc-logo">CX<em>FI</em></div>
+          <div class="sc-date" id="scDate"></div>
+        </div>
+        <div class="sc-tag">RAPPORT CXFI</div>
+      </div>
+
+      <div class="sc-grid">
+        <div class="sc-cell">
+          <div class="sc-val" id="scTotal">—</div>
+          <div class="sc-lbl">Avis</div>
+        </div>
+        <div class="sc-cell">
+          <div class="sc-val" id="scFCR">—</div>
+          <div class="sc-lbl">FCR %</div>
+        </div>
+        <div class="sc-cell">
+          <div class="sc-val" id="scSat">—</div>
+          <div class="sc-lbl">Sat</div>
+        </div>
+        <div class="sc-cell">
+          <div class="sc-val" id="scCXFI">—</div>
+          <div class="sc-lbl">CXFI</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div class="sc-title">Score par critère</div>
+        <div class="sc-bars">
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Rapidité</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar1" style="width:0%;background:#6366F1;"></div></div>
+            <div class="sc-bar-val" id="scBarVal1">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Facilité</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar2" style="width:0%;background:#8B5CF6;"></div></div>
+            <div class="sc-bar-val" id="scBarVal2">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Frais</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar3" style="width:0%;background:#EC4899;"></div></div>
+            <div class="sc-bar-val" id="scBarVal3">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Support</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar4" style="width:0%;background:#F59E0B;"></div></div>
+            <div class="sc-bar-val" id="scBarVal4">—</div>
+          </div>
+          <div class="sc-bar-row">
+            <div class="sc-bar-label">Confiance</div>
+            <div class="sc-bar-track"><div class="sc-bar-fill" id="scBar5" style="width:0%;background:#10B981;"></div></div>
+            <div class="sc-bar-val" id="scBarVal5">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sc-footer">
+        <div class="sc-url">goxen.co</div>
+        <div class="sc-season" id="scSeason">2026</div>
+      </div>
+    </div>
+
+    <div class="share-btns">
+      <button class="btn-soc btn-li" onclick="shareLinkedIn()">in Partager</button>
+      <button class="btn-soc btn-wa" onclick="shareWhatsApp()">Partager</button>
+    </div>
+    <button class="btn-copy" onclick="copyShareLink()">📋 Copier le lien</button>
+
+    <div class="export-section">
+      <div class="export-section-title">Télécharger les données</div>
+      <div class="export-btns">
+        <button class="btn-xs primary" onclick="exportCSV()" style="flex:1;">📄 CSV</button>
+        <button class="btn-xs primary" onclick="exportJSON()" style="flex:1;">🔗 JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CFG = {
+  supabaseUrl: 'https://yyrjbrwrywbcusiivsgy.supabase.co',
+  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cmpicndyeXdiY3VzaWl2c2d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTYzNDQsImV4cCI6MjA4OTA5MjM0NH0.PYK_Fiby1t4YIR36HGylDnBKHbu5iGfooF-WHIAlUmQ',
+  siteUrl: 'https://goxen.co',
+};
+
+let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
+
+// BRUTE-FORCE PROTECTION — persisted across page reloads
+const BF_KEY_ATTEMPTS = 'gx_bf_attempts';
+const BF_KEY_UNTIL    = 'gx_bf_until';
+function bfGet() {
+  return {
+    attempts: parseInt(localStorage.getItem(BF_KEY_ATTEMPTS) || '0', 10),
+    until:    parseInt(localStorage.getItem(BF_KEY_UNTIL)    || '0', 10),
+  };
+}
+function bfSet(attempts, until) {
+  localStorage.setItem(BF_KEY_ATTEMPTS, attempts);
+  localStorage.setItem(BF_KEY_UNTIL, until);
+}
+function bfReset() {
+  localStorage.removeItem(BF_KEY_ATTEMPTS);
+  localStorage.removeItem(BF_KEY_UNTIL);
+}
+
+// ── FILTRE COMPLET ─────────────────────────────────────────────────
+let activeFilters = { from: null, to: null, pays: '', canal: '', profil: '' };
+
+function getFilteredData() {
+  return globalData.filter(d => {
+    if (activeFilters.from || activeFilters.to) {
+      const dt = new Date(d.created_at);
+      if (activeFilters.from && dt < activeFilters.from) return false;
+      if (activeFilters.to   && dt > activeFilters.to)   return false;
+    }
+    if (activeFilters.pays   && d.pays   !== activeFilters.pays)   return false;
+    if (activeFilters.canal  && d.canal  !== activeFilters.canal)  return false;
+    if (activeFilters.profil && d.profil !== activeFilters.profil) return false;
+    return true;
+  });
+}
+
+function toggleFpill(btn, key) {
+  btn.closest('.fpill-group').querySelectorAll('.fpill').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  activeFilters[key] = btn.dataset.val;
+  _syncFilterUI();
+  updateDashboard();
+}
+
+function onFilterChange() {
+  // pas de apply automatique sur date — attend le bouton
+}
+
+function applyFilters() {
+  const from = document.getElementById('dfFrom').value;
+  const to   = document.getElementById('dfTo').value;
+  activeFilters.from = from ? new Date(from + 'T00:00:00') : null;
+  activeFilters.to   = to   ? new Date(to   + 'T23:59:59') : null;
+  _syncFilterUI();
+  updateDashboard();
+}
+
+function _syncFilterUI() {
+  const from = document.getElementById('dfFrom').value;
+  const to   = document.getElementById('dfTo').value;
+  const parts = [];
+  if (from || to) parts.push([from ? `Du ${from}` : '', to ? `Au ${to}` : ''].filter(Boolean).join(' '));
+  if (activeFilters.pays)   parts.push(activeFilters.pays);
+  if (activeFilters.canal)  parts.push(activeFilters.canal);
+  if (activeFilters.profil) parts.push(activeFilters.profil);
+  const badge    = document.getElementById('filterBadge');
+  const resetBtn = document.getElementById('btnResetAll');
+  if (parts.length) {
+    badge.textContent = parts.join(' · ');
+    badge.style.display = 'inline-block';
+    resetBtn.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+    resetBtn.style.display = 'none';
+  }
+}
+
+function resetAllFilters() {
+  document.getElementById('dfFrom').value = '';
+  document.getElementById('dfTo').value   = '';
+  activeFilters = { from: null, to: null, pays: '', canal: '', profil: '' };
+  document.querySelectorAll('.fpill-group').forEach(grp => {
+    grp.querySelectorAll('.fpill').forEach(p => p.classList.remove('on'));
+    const allBtn = grp.querySelector('.fpill[data-val=""]');
+    if (allBtn) allBtn.classList.add('on');
+  });
+  document.getElementById('filterBadge').style.display = 'none';
+  document.getElementById('btnResetAll').style.display = 'none';
+  updateDashboard();
+}
+
+const COUNTRY_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
+
+// ═══════════════════════════════════════════════════════════════════
+// SECURITY — XSS SANITIZATION
+// ═══════════════════════════════════════════════════════════════════
+
+function htmlEscape(s) {
+  if (s == null) return '—';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// DATA SCIENCE FORMULAS
+// ═══════════════════════════════════════════════════════════════════
+
+function calcMetrics(data) {
+  const n = data.length;
+  if (n === 0) return {total:0, fcrRate:0, satScore:0, npsScore:0, resolRate:0, cxfiScore:0};
+
+  // FCR Rate
+  const fcrCount = data.filter(d => d.fcr === 'oui').length;
+  const fcrRate = (fcrCount / n);
+
+  // Satisfaction Score
+  const starFields = ['star_rapidite', 'star_facilite', 'star_frais', 'star_support', 'star_confiance'];
+  let totalStars = 0, starCount = 0;
+  data.forEach(d => {
+    starFields.forEach(f => {
+      const v = parseInt(d[f]);
+      if (!isNaN(v) && v >= 1 && v <= 5) {
+        totalStars += v;
+        starCount++;
+      }
+    });
+  });
+  const satScore = starCount > 0 ? (totalStars / starCount) / 5 : 0;
+
+  // NPS Normalisé
+  const npsData = data.filter(d => !isNaN(parseInt(d.nps)));
+  let npsNorm = 0;
+  if (npsData.length > 0) {
+    const promo = npsData.filter(d => parseInt(d.nps) >= 9).length;
+    const detra = npsData.filter(d => parseInt(d.nps) <= 6).length;
+    npsNorm = (promo - detra) / npsData.length;
+    npsNorm = (npsNorm + 1) / 2;
+  }
+
+  // Resolution Rate
+  const noFcr = data.filter(d => d.fcr === 'non');
+  const resolRate = noFcr.length > 0 ? noFcr.filter(d => d.resolu === 'oui').length / noFcr.length : 0.5;
+
+  // Goxen Score = FCR×35 + Sat×35 + NPS×20 + Resol×10
+  const cxfiScore = Math.round(fcrRate * 35 + satScore * 35 + npsNorm * 20 + resolRate * 10);
+
+  // NPS Net (-100 à +100)
+  let npsNet = 0;
+  if (npsData.length > 0) {
+    const promo = npsData.filter(d => parseInt(d.nps) >= 9).length / npsData.length;
+    const detra = npsData.filter(d => parseInt(d.nps) <= 6).length / npsData.length;
+    npsNet = Math.round((promo - detra) * 100);
+  }
+
+  return {
+    total: n,
+    fcrRate: Math.round(fcrRate * 100),
+    satScore: Math.round(satScore * 100),
+    npsScore: npsNet,
+    resolRate: Math.round(resolRate * 100),
+    cxfiScore
+  };
+}
+
+function getAvgStars(avis) {
+  const stars = ['star_rapidite', 'star_facilite', 'star_frais', 'star_support', 'star_confiance']
+    .map(f => parseInt(avis[f]))
+    .filter(v => !isNaN(v) && v >= 1 && v <= 5);
+  return stars.length > 0 ? (stars.reduce((a,b) => a+b,0) / stars.length).toFixed(1) : '—';
+}
+
+function getSentiment(avis) {
+  const avgStars = getAvgStars(avis);
+  const fcr = avis.fcr === 'oui';
+  const resolved = avis.resolu === 'oui';
+  const starVal = parseFloat(avgStars);
+
+  if (fcr && starVal >= 4) return {text:'Positif', class:'badge-pos'};
+  if (!fcr && (!resolved || starVal <= 2)) return {text:'Négatif', class:'badge-neg'};
+  return {text:'Neutre', class:'badge-neu'};
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// AUTH & REALTIME
+// ═══════════════════════════════════════════════════════════════════
+
+async function initSupabase() {
+  sbClient = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+  // Toujours effacer la session stockée — chaque visite exige une authentification fraîche
+  await sbClient.auth.signOut();
+}
+
+async function unlock() {
+  const now = Date.now();
+  const errEl = document.getElementById('lockErr');
+  const btn = document.getElementById('lockBtn');
+  const bf = bfGet();
+
+  // Vérifier le verrouillage temporaire (persisté — survit aux recharges)
+  if (now < bf.until) {
+    const secs = Math.ceil((bf.until - now) / 1000);
+    errEl.textContent = `Trop de tentatives. Réessayez dans ${secs}s.`;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const email = document.getElementById('lockEmail').value.trim();
+  const pwd = document.getElementById('lockCode').value;
+
+  if (!email || !pwd) {
+    errEl.textContent = 'Veuillez renseigner email et mot de passe.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Vérification…';
+  errEl.style.display = 'none';
+
+  try {
+    const { data, error } = await sbClient.auth.signInWithPassword({ email, password: pwd });
+    if (error) throw error;
+
+    bfReset();
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('userEmail').textContent = email;
+    await loadData();
+    initRealtime();
+  } catch (e) {
+    const newAttempts = bf.attempts + 1;
+    if (newAttempts >= 3) {
+      const lockUntil = Date.now() + 30000;
+      bfSet(0, lockUntil);
+      errEl.textContent = 'Trop de tentatives (3/3). Accès bloqué 30 secondes.';
+    } else {
+      bfSet(newAttempts, 0);
+      errEl.textContent = `Identifiants incorrects — tentative ${newAttempts}/3.`;
+    }
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Entrer →';
+  }
+}
+
+function signOut() {
+  sbClient.auth.signOut();
+  location.reload();
+}
+
+async function sendReset() {
+  const email = document.getElementById('lockEmail').value.trim();
+  const errEl = document.getElementById('lockErr');
+  const okEl  = document.getElementById('lockOk');
+  const btn   = document.getElementById('lockReset');
+
+  if (!email) {
+    errEl.textContent = 'Entrez votre email ci-dessus avant de réinitialiser.';
+    errEl.style.display = 'block';
+    okEl.style.display = 'none';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+  errEl.style.display = 'none';
+
+  try {
+    const { error } = await sbClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href,
+    });
+    if (error) throw error;
+    okEl.style.display = 'block';
+    errEl.style.display = 'none';
+  } catch (e) {
+    errEl.textContent = 'Erreur lors de l\'envoi. Vérifiez l\'email et réessayez.';
+    errEl.style.display = 'block';
+    okEl.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Mot de passe oublié ?';
+  }
+}
+
+function initRealtime() {
+  sbClient.channel('avis').on('postgres_changes', {event:'*', schema:'public', table:'avis'}, () => {
+    loadData();
+  }).subscribe();
+  document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('fr-FR');
+}
+
+async function loadData() {
+  if (_firstLoad) showSkeletons();
+  const banner = document.getElementById('dbBanner');
+  if (banner) { banner.style.display='none'; }
+
+  const { data, error } = await sbClient.from('avis').select('*').order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Supabase error:', error);
+    if (banner) {
+      banner.style.display = 'flex';
+      banner.innerHTML = `<span class="alert-ico">⚠️</span><div class="alert-txt"><b>Erreur de chargement</b> — ${error.message} (code: ${error.code || '?'}). Vérifiez la connexion Supabase.</div>`;
+    }
+    return;
+  }
+
+  globalData = data || [];
+
+  if (globalData.length === 0 && banner) {
+    banner.style.display = 'flex';
+    banner.innerHTML = `<span class="alert-ico">📭</span><div class="alert-txt"><b>Aucun avis collecté pour l'instant.</b> Les données apparaîtront ici dès qu'un avis sera soumis via le site public.</div>`;
+  }
+
+  // Compteur de visites
+  try {
+    const { count } = await sbClient.from('page_views').select('*', {count:'exact', head:true});
+    const wv = document.getElementById('wViews');
+    if (wv) wv.textContent = count !== null ? count.toLocaleString('fr') : '—';
+  } catch(e) { /* table pas encore créée */ }
+
+  updateDashboard();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+
+// ── ANIMATION HELPERS ─────────────────────────────────────────────
+let _firstLoad = true;
+
+function showSkeletons() {
+  const ids = ['wTot','wFCR','wCXFI','wNPS','wViews','wSat','wResol','wInst','wCanal'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.innerHTML = '<span class="gx-sk">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'; }
+  });
+}
+
+function countUp(el, target, suffix, duration) {
+  if (!el || isNaN(target)) return;
+  const sign = (suffix === '' && target > 0) ? '+' : '';
+  const t0 = performance.now();
+  function tick(ts) {
+    const p = Math.min((ts - t0) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(ease * target);
+    el.textContent = (val > 0 ? sign : (val < 0 ? '' : '')) + val + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = (target > 0 ? sign : '') + target + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+
+function animateDashboard(metrics) {
+  // Stagger cards in groups
+  const allCards = [
+    ...document.querySelectorAll('.kpi-w'),
+    ...document.querySelectorAll('.kpi-w-secondary'),
+    ...document.querySelectorAll('.chart-box'),
+    ...document.querySelectorAll('.table-box'),
+  ];
+  allCards.forEach((el, i) => {
+    el.classList.add('gx-anim');
+    setTimeout(() => el.classList.add('in'), i * 55);
+  });
+
+  // Count-up on numeric KPIs (after a short delay so skeleton is gone)
+  setTimeout(() => {
+    const dur = 900;
+    countUp(document.getElementById('wTot'),  metrics.total,     '',  dur);
+    countUp(document.getElementById('wFCR'),  metrics.fcrRate,   '%', dur);
+    countUp(document.getElementById('wCXFI'), metrics.cxfiScore, '',  dur);
+    countUp(document.getElementById('wNPS'),  metrics.npsScore,  '',  dur);
+    countUp(document.getElementById('wSat'),  metrics.satScore,  '',  dur);
+    countUp(document.getElementById('wResol'),metrics.resolRate, '%', dur);
+  }, 120);
+}
+
+function updateDashboard() {
+  const data = getFilteredData();
+  const metrics = calcMetrics(data);
+
+  // Primary KPIs
+  document.getElementById('wTot').textContent = metrics.total;
+  document.getElementById('wFCR').textContent = metrics.fcrRate + '%';
+  document.getElementById('wCXFI').textContent = metrics.cxfiScore;
+  document.getElementById('wNPS').textContent = metrics.npsScore > 0 ? '+' + metrics.npsScore : metrics.npsScore;
+
+  // Secondary KPIs
+  document.getElementById('wSat').textContent = metrics.satScore;
+  document.getElementById('wResol').textContent = metrics.resolRate + '%';
+
+  // Institutions couvertes
+  const instCount = new Set(data.map(d => d.institution)).size;
+  document.getElementById('wInst').textContent = instCount;
+
+  // Canal dominant
+  const canalFreq = {};
+  data.forEach(d => { if (d.canal) canalFreq[d.canal] = (canalFreq[d.canal] || 0) + 1; });
+  const canalDom = Object.keys(canalFreq).length
+    ? Object.keys(canalFreq).reduce((a,b) => canalFreq[a] > canalFreq[b] ? a : b)
+    : 'N/A';
+  document.getElementById('wCanal').textContent = canalDom;
+
+  // Trend 7j (toujours sur les données complètes, pas filtrées)
+  const now = new Date();
+  const last7 = globalData.filter(d => (now - new Date(d.created_at)) <= 7*24*60*60*1000).length;
+  const prev7 = globalData.filter(d => {
+    const diff = now - new Date(d.created_at);
+    return diff > 7*24*60*60*1000 && diff <= 14*24*60*60*1000;
+  }).length;
+  const delta = last7 - prev7;
+  const trendEl = document.getElementById('wTotTrend');
+  trendEl.className = 'kpi-w-trend ' + (delta > 0 ? 'trend-up' : delta < 0 ? 'trend-dn' : 'trend-eq');
+  trendEl.textContent = (delta > 0 ? '+' : '') + delta;
+
+  updateCharts(data);
+  updateShareCard(metrics);
+
+  if (_firstLoad) {
+    _firstLoad = false;
+    animateDashboard(metrics);
+  }
+}
+
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#0F0E0C',
+      titleColor: '#F7F4EE',
+      bodyColor: '#F7F4EE',
+      padding: 10,
+      cornerRadius: 8
+    }
+  }
+};
+
+function updateCharts(data) {
+  data = data || getFilteredData();
+  // ── 1. Évolution (line) ─────────────────────────────────────────
+  try {
+  const lineData = buildLineData(data, currentPeriod);
+  if (charts.line) charts.line.destroy();
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  charts.line = new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: lineData.labels.length ? lineData.labels : ['Aucune donnée'],
+      datasets: [{
+        label: 'Avis',
+        data: lineData.data.length ? lineData.data : [0],
+        borderColor: '#1A4D2E',
+        backgroundColor: 'rgba(26,77,46,0.08)',
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#1A4D2E',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.parsed.y} avis` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+  } catch(e) { console.warn('lineChart error:', e); }
+
+  // ── 2. Pays (doughnut) ──────────────────────────────────────────
+  try {
+  const countryData = {};
+  data.forEach(d => { countryData[d.pays] = (countryData[d.pays] || 0) + 1; });
+  const sorted = Object.entries(countryData).sort((a,b) => b[1]-a[1]);
+  const PALETTE = ['#1A4D2E','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981'];
+  if (charts.doughnut) charts.doughnut.destroy();
+  const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+  charts.doughnut = new Chart(doughnutCtx, {
+    type: 'doughnut',
+    data: {
+      labels: sorted.map(([p]) => (COUNTRY_FLAGS[p] || '') + ' ' + p),
+      datasets: [{ data: sorted.map(([,v]) => v), backgroundColor: PALETTE, hoverOffset: 6, borderWidth: 2 }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      cutout: '62%',
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: { display: true, position: 'bottom', labels: { font: { size: 11 }, padding: 12, boxWidth: 12 } },
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+            const pct = total ? Math.round(ctx.parsed/total*100) : 0;
+            return ` ${ctx.parsed} avis (${pct}%)`;
+          }
+        }}
+      }
+    }
+  });
+  } catch(e) { console.warn('doughnutChart error:', e); }
+
+  // ── 3. Score par critère (horizontal bar) ───────────────────────
+  try {
+  const starFields = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance'];
+  const criteriaLabels = ['Rapidité','Facilité','Frais','Support','Confiance'];
+  const criteriaData = starFields.map(f => {
+    const vals = data.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
+    return vals.length > 0 ? parseFloat((vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2)) : 0;
+  });
+  const criteriaColors = criteriaData.map(v => v >= 4 ? '#1A7A4A' : v >= 3 ? '#C47A1A' : '#C8352A');
+  if (charts.criteria) charts.criteria.destroy();
+  const criteriaCtx = document.getElementById('criteriaChart').getContext('2d');
+  charts.criteria = new Chart(criteriaCtx, {
+    type: 'bar',
+    data: {
+      labels: criteriaLabels,
+      datasets: [{ label: '/5', data: criteriaData, backgroundColor: criteriaColors, borderRadius: 8, barThickness: 20 }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.parsed.x.toFixed(1)}/5` } }
+      },
+      scales: {
+        x: { max: 5, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+  } catch(e) { console.warn('criteriaChart error:', e); }
+
+  // ── 4. NPS Distribution (bar avec zones colorées) ───────────────
+  try {
+  const npsData = data.filter(d => !isNaN(parseInt(d.nps)));
+  const npsCount = Array(11).fill(0);
+  npsData.forEach(d => npsCount[parseInt(d.nps)]++);
+  const npsColors = npsCount.map((_,i) => i <= 6 ? 'rgba(200,53,42,0.85)' : i <= 8 ? 'rgba(196,122,26,0.85)' : 'rgba(26,122,74,0.85)');
+  if (charts.nps) charts.nps.destroy();
+  const npsCtx = document.getElementById('npsChart').getContext('2d');
+  charts.nps = new Chart(npsCtx, {
+    type: 'bar',
+    data: {
+      labels: ['0','1','2','3','4','5','6','7','8','9','10'],
+      datasets: [{ label: 'Répondants', data: npsCount, backgroundColor: npsColors, borderRadius: 5 }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+          label: ctx => ` ${ctx.parsed.y} répondant${ctx.parsed.y > 1 ? 's' : ''}`,
+          title: ctx => `Score ${ctx[0].label} — ${parseInt(ctx[0].label) <= 6 ? 'Détracteur' : parseInt(ctx[0].label) <= 8 ? 'Passif' : 'Promoteur'}`
+        }}
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { beginAtZero: true, ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+  } catch(e) { console.warn('npsChart error:', e); }
+
+  // ── 5. FCR par institution (horizontal bar, top 10 trié) ─────────
+  try {
+    const instMetrics = {};
+    data.forEach(d => {
+      const inst = (d.institution || '').trim();
+      if (!inst) return; // ignorer les entrées sans institution
+      if (!instMetrics[inst]) instMetrics[inst] = {fcr:0, tot:0};
+      if (d.fcr === 'oui') instMetrics[inst].fcr++;
+      instMetrics[inst].tot++;
+    });
+    const instEntries = Object.entries(instMetrics)
+      .filter(([, m]) => m.tot > 0)
+      .map(([name, m]) => ({ name, pct: Math.round(100 * m.fcr / m.tot), n: m.tot }))
+      .sort((a,b) => b.pct - a.pct)
+      .slice(0, 10);
+    if (charts.fcr) { charts.fcr.destroy(); charts.fcr = null; }
+    const fcrWrap = document.getElementById('fcrChart').parentElement;
+    // Retirer l'éventuel état vide précédent
+    const prevEmpty = fcrWrap.querySelector('.chart-empty');
+    if (prevEmpty) prevEmpty.remove();
+    if (instEntries.length === 0) {
+      document.getElementById('fcrChart').style.display = 'none';
+      const empty = document.createElement('div');
+      empty.className = 'chart-empty';
+      empty.style.cssText = 'height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);';
+      empty.textContent = 'Pas encore assez de données par institution';
+      fcrWrap.appendChild(empty);
+    } else {
+      document.getElementById('fcrChart').style.display = '';
+      const fcrCtx = document.getElementById('fcrChart').getContext('2d');
+      const canvasH = Math.max(180, instEntries.length * 36);
+      document.getElementById('fcrChart').parentElement.style.height = canvasH + 'px';
+      // Plugin inline pour afficher le label % sur chaque barre (y compris 0%)
+      const fcrLabelPlugin = {
+        id: 'fcrLabel',
+        afterDatasetsDraw(chart) {
+          const { ctx, scales } = chart;
+          const meta = chart.getDatasetMeta(0);
+          ctx.save();
+          ctx.font = '600 11px IBM Plex Mono, monospace';
+          ctx.textBaseline = 'middle';
+          meta.data.forEach((bar, i) => {
+            const realPct = instEntries[i].pct;
+            const n = instEntries[i].n;
+            const label = `${realPct}% · ${n} avis`;
+            const xPos = Math.max(bar.x + 6, scales.x.getPixelForValue(0) + 6);
+            ctx.fillStyle = realPct >= 75 ? '#065F46' : realPct >= 50 ? '#92400E' : '#991B1B';
+            ctx.fillText(label, xPos, bar.y);
+          });
+          ctx.restore();
+        }
+      };
+      charts.fcr = new Chart(fcrCtx, {
+        plugins: [fcrLabelPlugin],
+        type: 'bar',
+        data: {
+          labels: instEntries.map(e => e.name),
+          datasets: [{
+            label: 'FCR %',
+            // Minimum 4% pour rendre les barres à 0% visibles
+            data: instEntries.map(e => Math.max(e.pct, e.pct === 0 ? 4 : e.pct)),
+            backgroundColor: instEntries.map(e => e.pct >= 75 ? 'rgba(26,122,74,0.85)' : e.pct >= 50 ? 'rgba(196,122,26,0.85)' : 'rgba(200,53,42,0.85)'),
+            borderRadius: 6,
+            barThickness: 20
+          }]
+        },
+        options: {
+          ...CHART_DEFAULTS,
+          indexAxis: 'y',
+          layout: { padding: { right: 80 } },
+          plugins: {
+            ...CHART_DEFAULTS.plugins,
+            tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+              label: ctx => ` FCR ${instEntries[ctx.dataIndex].pct}%`,
+              afterLabel: ctx => ` (${instEntries[ctx.dataIndex].n} avis)`
+            }}
+          },
+          scales: {
+            x: { max: 100, display: false },
+            y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
+    }
+  } catch(e) { console.warn('fcrChart error:', e); }
+
+  // ── 6. Top frictions (horizontal bar) ───────────────────────────
+  try {
+  const frictionMap = {};
+  data.forEach(d => {
+    if (d.friction) d.friction.split('|').forEach(f => {
+      const k = f.trim(); if (k) frictionMap[k] = (frictionMap[k] || 0) + 1;
+    });
+  });
+  const topFrictions = Object.entries(frictionMap).sort((a,b) => b[1]-a[1]).slice(0,8);
+  if (charts.friction) charts.friction.destroy();
+  const frictionCtx = document.getElementById('frictionChart').getContext('2d');
+  charts.friction = new Chart(frictionCtx, {
+    type: 'bar',
+    data: {
+      labels: topFrictions.map(f => f[0]),
+      datasets: [{ label: 'Mentions', data: topFrictions.map(f => f[1]),
+        backgroundColor: 'rgba(139,92,246,0.8)', borderRadius: 8, barThickness: 18 }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` ${ctx.parsed.x} mention${ctx.parsed.x > 1 ? 's' : ''}` } }
+      },
+      scales: {
+        x: { ticks: { precision: 0, font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+  } catch(e) { console.warn('frictionChart error:', e); }
+}
+
+function buildLineData(data, period) {
+  const now = new Date();
+  let startDate, labelFormat;
+
+  if (period === '7d') {
+    startDate = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    labelFormat = (d) => d.toLocaleDateString('fr-FR', {month:'short', day:'numeric'});
+  } else if (period === '30d') {
+    startDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    labelFormat = (d) => d.toLocaleDateString('fr-FR', {month:'short', day:'numeric'});
+  } else {
+    startDate = new Date(0);
+    labelFormat = (d) => d.toLocaleDateString('fr-FR', {month:'short', year:'2-digit'});
+  }
+
+  const filtered = data.filter(d => new Date(d.created_at) >= startDate);
+  const grouped = {};
+  filtered.forEach(d => {
+    const dt = new Date(d.created_at);
+    const key = dt.toISOString().split('T')[0];
+    grouped[key] = (grouped[key] || 0) + 1;
+  });
+
+  const sorted = Object.entries(grouped).sort((a,b) => new Date(a[0]) - new Date(b[0]));
+  return {
+    labels: sorted.map(([k]) => labelFormat(new Date(k))),
+    data: sorted.map(([,v]) => v)
+  };
+}
+
+function setPeriod(p, el) {
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  currentPeriod = p;
+  updateCharts();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════════════════════════
+
+function showPage(page) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('on'));
+  document.getElementById('page-' + page).classList.add('on');
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('on'));
+  event.target.closest('.sb-link').classList.add('on');
+
+  const titles = {dashboard:'Dashboard', avis:'Avis reçus', institutions:'Institutions', rapport:'Rapport', config:'Configuration'};
+  document.getElementById('pageTitle').textContent = titles[page];
+
+  if (page === 'avis') buildAvisPage();
+  if (page === 'institutions') buildInstitutionsPage();
+}
+
+function buildAvisPage() {
+  const tbody = document.getElementById('avisTable');
+  tbody.innerHTML = globalData.map(d => `
+    <tr>
+      <td>${htmlEscape(d.institution)}</td>
+      <td>${COUNTRY_FLAGS[d.pays]} ${htmlEscape(d.pays)}</td>
+      <td>${htmlEscape(d.profil)}</td>
+      <td>${htmlEscape(d.canal)}</td>
+      <td>${htmlEscape(d.operation)}</td>
+      <td>${d.fcr === 'oui' ? '✓' : '✗'}</td>
+      <td>${d.resolu === 'oui' ? '✓' : '✗'}</td>
+      <td>${getAvgStars(d)}</td>
+      <td>${d.nps != null ? parseInt(d.nps) : '—'}</td>
+      <td><span class="badge ${getSentiment(d).class}">${getSentiment(d).text}</span></td>
+      <td>${htmlEscape((d.verbatim || '').substring(0,40))}…</td>
+      <td>${new Date(d.created_at).toLocaleDateString('fr-FR')}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="12" style="text-align:center;color:var(--muted);">Aucun avis.</td></tr>';
+}
+
+function buildInstitutionsPage() {
+  const instData = {};
+  globalData.forEach(d => {
+    if (!instData[d.institution]) {
+      instData[d.institution] = [];
+    }
+    instData[d.institution].push(d);
+  });
+
+  const tbody = document.getElementById('instTable');
+  // Trier par score CXFI décroissant (meilleure institution en tête)
+  const sorted = Object.entries(instData).sort(([,a],[,b]) => calcMetrics(b).cxfiScore - calcMetrics(a).cxfiScore);
+  tbody.innerHTML = sorted.map(([inst, avis], idx) => {
+    const m = calcMetrics(avis);
+    const satAvg = avis.reduce((sum,d) => {
+      const stars = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance']
+        .map(f=>parseInt(d[f])).filter(v=>!isNaN(v)&&v>=1&&v<=5);
+      return sum + (stars.length ? stars.reduce((a,b)=>a+b)/stars.length : 0);
+    }, 0) / avis.length * 20;
+
+    const canalFreq = {};
+    avis.forEach(d => canalFreq[d.canal] = (canalFreq[d.canal]||0)+1);
+    const canalDom = Object.keys(canalFreq).reduce((a,b) => canalFreq[a] > canalFreq[b] ? a : b, 'N/A');
+
+    const frictionMap = {};
+    avis.forEach(d => {
+      if (d.friction) d.friction.split('|').forEach(f => { const k=f.trim(); if(k) frictionMap[k]=(frictionMap[k]||0)+1; });
+    });
+    const topFriction = Object.entries(frictionMap).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+
+    const now = new Date();
+    const last7 = avis.filter(d => (now - new Date(d.created_at)) <= 7*24*60*60*1000).length;
+    const prev7 = avis.filter(d => {
+      const diff = now - new Date(d.created_at);
+      return diff > 7*24*60*60*1000 && diff <= 14*24*60*60*1000;
+    }).length;
+    const trend = last7 - prev7;
+
+    const satColor = m.satScore >= 75 ? 'green' : m.satScore >= 50 ? 'amber' : 'red';
+    const cxfiColor = m.cxfiScore >= 75 ? 'green' : m.cxfiScore >= 50 ? 'amber' : 'red';
+    const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx+1}`;
+
+    return `
+      <tr>
+        <td style="font-weight:700;color:var(--muted);text-align:center;">${rank}</td>
+        <td class="td-inst"><span style="font-weight:600;">${htmlEscape(inst)}</span></td>
+        <td style="font-variant-numeric:tabular-nums;">${avis.length}</td>
+        <td><span class="badge badge-${m.fcrRate >= 75 ? 'green' : m.fcrRate >= 50 ? 'amber' : 'red'}">${m.fcrRate}%</span></td>
+        <td><span class="badge badge-${satColor}">${Math.round(satAvg)}</span></td>
+        <td style="font-variant-numeric:tabular-nums;font-weight:600;color:${m.npsScore>=0?'var(--green)':'var(--red)'};">${m.npsScore > 0 ? '+' : ''}${m.npsScore}</td>
+        <td><span class="badge badge-${cxfiColor}" style="font-size:13px;font-weight:700;">${m.cxfiScore}</span></td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${htmlEscape(topFriction)}">${htmlEscape(topFriction)}</td>
+        <td>${htmlEscape(canalDom)}</td>
+        <td style="color:${trend>0?'var(--green)':trend<0?'var(--red)':'var(--muted)'};font-weight:600;">${trend>0?'+':''}${trend}</td>
+      </tr>
+    `;
+  }).join('') || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px;">Aucune donnée disponible.</td></tr>';
+}
+
+function reloadPage() {
+  loadData();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SHARE & EXPORT
+// ═══════════════════════════════════════════════════════════════════
+
+function updateShareCard(metrics) {
+  document.getElementById('scDate').textContent = new Date().toLocaleDateString('fr-FR');
+  document.getElementById('scTotal').textContent = metrics.total;
+  document.getElementById('scFCR').textContent = metrics.fcrRate + '%';
+  document.getElementById('scSat').textContent = metrics.satScore;
+  document.getElementById('scCXFI').textContent = metrics.cxfiScore;
+
+  const starFields = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance'];
+  starFields.forEach((f, i) => {
+    const vals = globalData.map(d => parseInt(d[f])).filter(v => !isNaN(v) && v >= 1 && v <= 5);
+    const avg = vals.length > 0 ? (vals.reduce((a,b)=>a+b,0)/vals.length)/5*100 : 0;
+    document.getElementById('scBar' + (i+1)).style.width = avg + '%';
+    document.getElementById('scBarVal' + (i+1)).textContent = Math.round(avg) + '%';
+  });
+
+  document.getElementById('scSeason').textContent = new Date().getFullYear();
+}
+
+function openShare() {
+  document.getElementById('shareModal').classList.add('open');
+}
+
+function closeShare() {
+  document.getElementById('shareModal').classList.remove('open');
+}
+
+function shareLinkedIn() {
+  const url = encodeURIComponent(CFG.siteUrl);
+  const text = encodeURIComponent('📊 Rapport Goxen: ' + document.getElementById('wCXFI').textContent + '/100 score composite naxari');
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+}
+
+function shareWhatsApp() {
+  const text = encodeURIComponent('📊 Rapport Goxen naxari\nScore: ' + document.getElementById('wCXFI').textContent + '/100\nFCR: ' + document.getElementById('wFCR').textContent);
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+function copyShareLink() {
+  navigator.clipboard.writeText(CFG.siteUrl);
+  alert('Lien copié!');
+}
+
+function exportCSV() {
+  const headers = ['Institution','Pays','Profil','Canal','Operation','FCR','Resolu','Friction','Star_Rapidite','Star_Facilite','Star_Frais','Star_Support','Star_Confiance','Note_Moy','NPS','CXFI_ind','Verbatim','Date'];
+  const rows = globalData.map(d => {
+    const noteAvg = getAvgStars(d);
+    const m = calcMetrics([d]);
+    return [
+      d.institution, d.pays, d.profil, d.canal, d.operation || '', d.fcr, d.resolu, d.friction || '',
+      d.star_rapidite || '', d.star_facilite || '', d.star_frais || '', d.star_support || '', d.star_confiance || '',
+      noteAvg, d.nps || '', m.cxfiScore, (d.verbatim||'').replace(/"/g,'""'), new Date(d.created_at).toLocaleDateString('fr-FR')
+    ];
+  });
+  const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cxfi_avis_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+function exportJSON() {
+  const json = JSON.stringify(globalData, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cxfi_avis_' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+}
+
+function downloadShareCard() {
+  alert('Fonction en développement — utilisez Print (Cmd+P) pour exporter en PDF.');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+
+initSupabase();
+</script>
+
+</body>
+</html>
