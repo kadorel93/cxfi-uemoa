@@ -1142,7 +1142,7 @@ async function sendForm() {
   const frictions = Array.from(document.getElementById('frictionGrid').querySelectorAll('.fr-item.active')).map(el => el.textContent.trim());
   const payload = {
     timestamp: new Date().toISOString(),
-    profile: fd.profile||'', pays: fd.pays||'', institution: fd.inst||'',
+    profil: fd.profile||'', pays: fd.pays||'', institution: fd.inst||'',
     canal: fd.canal||'',
     canaux_tentes: fd.canaux.length > 1 ? fd.canaux.join('|') : (fd.canal||''),
     operation: fd.op||'',
@@ -1155,42 +1155,67 @@ async function sendForm() {
     nps: fd.nps!==null ? fd.nps : null,
     verbatim: fd.verbatim||'', lang: 'fr'
   };
-  // Anti-abus
-  try { localStorage.setItem(`goxen_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`, Date.now().toString()); } catch(e) {}
-  // Confirmation immédiate
-  const newCount = totalCount + 1;
-  setCount(newCount);
-  const instData = INSTS.find(i => i.n === fd.inst);
-  if (instData) instData.rv = (instData.rv||0) + 1;
-  const instName = fd.inst || 'ce service';
-  const micros = [
-    `Votre expérience avec ${instName} contribue au classement 2026.`,
-    `En décembre 2026, votre contribution fera partie du rapport officiel Goxen.`,
-    `${instName} et ses futurs clients vous remercient de votre transparence.`
-  ];
-  document.getElementById('confMicro').textContent = micros[Math.floor(Math.random() * micros.length)];
-  // Emojis via Unicode explicite pour garantir l'affichage sur toutes plateformes
-  const chart  = '\uD83D\uDCCA'; // 📊
-  const point  = '\uD83D\uDC49'; // 👉
-  const shareMsg = `J'ai not\u00e9 ${instName} sur Goxen \u2014 le barom\u00e8tre des banques & fintechs d'Afrique de l'Ouest ${chart} Ton avis compte aussi ${point} ${CFG.siteUrl}`;
-  document.getElementById('confMsg').textContent = shareMsg;
-  // Boutons de partage
-  document.getElementById('confWA').onclick = () =>
-    window.open('https://wa.me/?text=' + encodeURIComponent(shareMsg), '_blank');
-  document.getElementById('confIG').onclick = () => {
-    if (navigator.share) {
-      navigator.share({ text: shareMsg }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(shareMsg).then(() =>
-        alert('Message copié \u2714 — Colle-le dans ta story ou bio Instagram !')
-      ).catch(() => alert('Copie manuelle : ' + shareMsg));
+
+  try {
+    // Envoi via Netlify Function — rate limiting IP côté serveur
+    const res = await fetch('/.netlify/functions/submit-avis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.status === 429) {
+      const { error } = await res.json().catch(() => ({}));
+      isSubmitting = false;
+      if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Envoyer mon avis \u2192'; }
+      goStep(2);
+      showStepErr('s2Err', '\u23F1 ' + (error || 'Avis déjà soumis pour cette institution récemment.'));
+      return;
     }
-  };
-  document.getElementById('confLI').onclick = () =>
-    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(CFG.siteUrl) + '&summary=' + encodeURIComponent(shareMsg), '_blank');
-  goStep('OK');
-  renderLB();
-  sbFetch('avis', {method:'POST', body:JSON.stringify(payload)}).catch(e => console.warn('Goxen err:', e));
+    if (!res.ok) throw new Error('Erreur serveur ' + res.status);
+
+    // Succès — mémoriser localement pour retour UX instantané
+    try { localStorage.setItem(`goxen_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`, Date.now().toString()); } catch(e) {}
+
+    // Confirmation
+    const newCount = totalCount + 1;
+    setCount(newCount);
+    const instData = INSTS.find(i => i.n === fd.inst);
+    if (instData) instData.rv = (instData.rv||0) + 1;
+    const instName = fd.inst || 'ce service';
+    const micros = [
+      `Votre expérience avec ${instName} contribue au classement 2026.`,
+      `En décembre 2026, votre contribution fera partie du rapport officiel Goxen.`,
+      `${instName} et ses futurs clients vous remercient de votre transparence.`
+    ];
+    document.getElementById('confMicro').textContent = micros[Math.floor(Math.random() * micros.length)];
+    const chart  = '\uD83D\uDCCA';
+    const point  = '\uD83D\uDC49';
+    const shareMsg = `J'ai not\u00e9 ${instName} sur Goxen \u2014 le barom\u00e8tre des banques & fintechs d'Afrique de l'Ouest ${chart} Ton avis compte aussi ${point} ${CFG.siteUrl}`;
+    document.getElementById('confMsg').textContent = shareMsg;
+    document.getElementById('confWA').onclick = () =>
+      window.open('https://wa.me/?text=' + encodeURIComponent(shareMsg), '_blank');
+    document.getElementById('confIG').onclick = () => {
+      if (navigator.share) {
+        navigator.share({ text: shareMsg }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(shareMsg).then(() =>
+          alert('Message copié \u2714 — Colle-le dans ta story ou bio Instagram !')
+        ).catch(() => alert('Copie manuelle : ' + shareMsg));
+      }
+    };
+    document.getElementById('confLI').onclick = () =>
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(CFG.siteUrl) + '&summary=' + encodeURIComponent(shareMsg), '_blank');
+    goStep('OK');
+    renderLB();
+
+  } catch(e) {
+    console.warn('Goxen submit err:', e);
+    isSubmitting = false;
+    if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Envoyer mon avis \u2192'; }
+    showStepErr('s5Err', 'Erreur de connexion. Vérifiez votre réseau et réessayez.');
+    goStep(5);
+  }
 }
 
 /* ── SUGGESTION ──────────────────────────────────────────────── */
