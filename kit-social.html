@@ -340,6 +340,44 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c5.cream .pill{background:rgba(15,14,12,0.06) !important;border-color:rgba(15,14,12,0.12) !important;color:#0F0E0C !important;}
 #c5.cream .url{color:rgba(15,14,12,0.2) !important;}
 
+/* ── CARDS LOGO / PROFIL ── */
+#cp1,#cp2{
+  width:400px;height:400px;
+  background:#0F0E0C;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  gap:0;
+}
+.cp-glow{
+  position:absolute;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(26,122,74,0.22) 0%,transparent 68%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+}
+.cp-wordmark{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:60px;letter-spacing:-2.5px;color:#fff;line-height:1;
+  position:relative;text-align:center;
+}
+.cp-wordmark em{color:#1A7A4A;font-style:normal;}
+.cp-mono{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:110px;letter-spacing:-5px;color:#fff;line-height:1;
+  position:relative;text-align:center;
+}
+.cp-mono em{color:#1A7A4A;font-style:normal;}
+.cp-url{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;
+  letter-spacing:2.5px;color:rgba(255,255,255,0.28);
+  margin-top:14px;position:relative;text-transform:uppercase;
+}
+#cp1.cream,#cp2.cream{background:#F7F4EE;}
+#cp1.cream .cp-wordmark{color:#0F0E0C;}
+#cp1.cream .cp-wordmark em{color:#1A7A4A;}
+#cp2.cream .cp-mono{color:#0F0E0C;}
+#cp2.cream .cp-mono em{color:#1A7A4A;}
+#cp1.cream .cp-url,#cp2.cream .cp-url{color:rgba(15,14,12,0.25);}
+#cp1.cream .cp-glow,#cp2.cream .cp-glow{background:radial-gradient(circle,rgba(26,122,74,0.1) 0%,transparent 68%);}
+
 </style>
 </head>
 <body>
@@ -359,6 +397,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
     <button class="tab" onclick="showTab('defi',event)">🎯 Défi</button>
     <button class="tab" onclick="showTab('verdict',event)">⭐ Mon Verdict</button>
     <button class="tab" onclick="showTab('paysage',event)">🖼️ Paysage</button>
+    <button class="tab" onclick="showTab('logo',event)">🎨 Logo / Profil</button>
   </div>
   <div class="theme-toggle">
     <button class="theme-btn on" id="btnDark" onclick="setTheme('dark')">🌑 Fond sombre</button>
@@ -789,6 +828,50 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
       <button class="dl-btn jpg" onclick="download('c9','goxen-paysage','jpg')">
         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         JPEG 1200×630
+      </button>
+    </div>
+  </div>
+
+  <!-- ── CARD P1 : LOGO PROFIL WORDMARK ── -->
+  <div class="card-col" data-cat="logo" style="display:none;">
+    <div class="card-label">Logo Profil — Wordmark · 800×800</div>
+    <div class="card-preview">
+      <div class="card" id="cp1" data-export-w="400" data-export-h="400">
+        <div class="cp-glow"></div>
+        <div class="cp-wordmark"><em>Go</em>xen</div>
+        <div class="cp-url">goxen.co</div>
+      </div>
+    </div>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('cp1','goxen-logo-profil','png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG 800×800
+      </button>
+      <button class="dl-btn jpg" onclick="download('cp1','goxen-logo-profil','jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG 800×800
+      </button>
+    </div>
+  </div>
+
+  <!-- ── CARD P2 : LOGO PROFIL MONOGRAMME ── -->
+  <div class="card-col" data-cat="logo" style="display:none;">
+    <div class="card-label">Logo Profil — Monogramme GX · 800×800</div>
+    <div class="card-preview">
+      <div class="card" id="cp2" data-export-w="400" data-export-h="400">
+        <div class="cp-glow"></div>
+        <div class="cp-mono"><em>G</em>X</div>
+        <div class="cp-url">goxen.co</div>
+      </div>
+    </div>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('cp2','goxen-monogramme-profil','png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG 800×800
+      </button>
+      <button class="dl-btn jpg" onclick="download('cp2','goxen-monogramme-profil','jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG 800×800
       </button>
     </div>
   </div>
