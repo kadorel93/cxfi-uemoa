@@ -1142,7 +1142,7 @@ async function sendForm() {
   const frictions = Array.from(document.getElementById('frictionGrid').querySelectorAll('.fr-item.active')).map(el => el.textContent.trim());
   const payload = {
     timestamp: new Date().toISOString(),
-    profil: fd.profile||'', pays: fd.pays||'', institution: fd.inst||'',
+    profile: fd.profile||'', pays: fd.pays||'', institution: fd.inst||'',
     canal: fd.canal||'',
     canaux_tentes: fd.canaux.length > 1 ? fd.canaux.join('|') : (fd.canal||''),
     operation: fd.op||'',
