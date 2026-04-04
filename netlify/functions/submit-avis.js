@@ -10,7 +10,7 @@ const crypto = require('crypto');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const IP_SALT      = process.env.IP_SALT || 'goxen-fallback-salt';
+const IP_SALT      = process.env.IP_SALT;
 
 const CORS = {
   'Access-Control-Allow-Origin':  'https://goxen.co',
@@ -69,8 +69,8 @@ exports.handler = async (event) => {
   }
 
   // Config manquante (env vars non définies)
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error('submit-avis: SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant');
+  if (!SUPABASE_URL || !SUPABASE_KEY || !IP_SALT) {
+    console.error('submit-avis: variable d\'env manquante (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY ou IP_SALT)');
     return reply(500, { error: 'Configuration serveur incomplète.' });
   }
 
