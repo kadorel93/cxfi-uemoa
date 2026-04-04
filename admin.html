@@ -1417,6 +1417,7 @@ function updateCharts(data) {
   } catch(e) { console.warn('fcrChart error:', e); }
 
   // ── 6. Top frictions (horizontal bar) ───────────────────────────
+  try {
   const frictionMap = {};
   data.forEach(d => {
     if (d.friction) d.friction.split('|').forEach(f => {
