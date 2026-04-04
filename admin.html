@@ -10,7 +10,7 @@
 <style>
 :root{
   --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
-  --muted:#6B6560;--accent:#1A3FFF;--green:#1A7A4A;--amber:#C47A1A;
+  --muted:#6B6560;--accent:#1A4D2E;--green:#1A7A4A;--amber:#C47A1A;
   --red:#C8352A;--border:rgba(15,14,12,0.1);--card:#FFFFFF;
   --score:#4ADE80;--sidebar:220px;
 }
@@ -272,7 +272,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
 #shareCard::before{
   content:'';position:absolute;top:-40px;right:-40px;
   width:140px;height:140px;border-radius:50%;
-  background:rgba(26,63,255,.15);
+  background:rgba(26,77,46,.15);
 }
 .sc-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
 .sc-logo{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;}
@@ -330,8 +330,8 @@ tr:hover td{background:rgba(15,14,12,.02);}
 
 /* ── ALERT BANNER ── */
 .alert-banner{
-  background:linear-gradient(135deg,rgba(26,63,255,.08),rgba(26,63,255,.04));
-  border:1px solid rgba(26,63,255,.2);border-radius:12px;
+  background:linear-gradient(135deg,rgba(26,77,46,.08),rgba(26,77,46,.04));
+  border:1px solid rgba(26,77,46,.2);border-radius:12px;
   padding:14px 18px;margin-bottom:20px;
   display:flex;align-items:center;gap:12px;font-size:13px;
 }
@@ -390,7 +390,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
 }
 .btn-reset-all:hover{border-color:var(--red);color:var(--red);}
 .filter-badge{
-  margin-left:auto;background:rgba(26,63,255,.08);border:1px solid rgba(26,63,255,.2);
+  margin-left:auto;background:rgba(26,77,46,.08);border:1px solid rgba(26,77,46,.2);
   color:var(--accent);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;
   display:none;
 }
@@ -1215,14 +1215,14 @@ function updateCharts(data) {
       datasets: [{
         label: 'Avis',
         data: lineData.data.length ? lineData.data : [0],
-        borderColor: '#1A3FFF',
-        backgroundColor: 'rgba(26,63,255,0.08)',
+        borderColor: '#1A4D2E',
+        backgroundColor: 'rgba(26,77,46,0.08)',
         borderWidth: 2.5,
         fill: true,
         tension: 0.4,
         pointRadius: 4,
         pointHoverRadius: 6,
-        pointBackgroundColor: '#1A3FFF',
+        pointBackgroundColor: '#1A4D2E',
         pointBorderColor: '#fff',
         pointBorderWidth: 2
       }]
@@ -1244,7 +1244,7 @@ function updateCharts(data) {
   const countryData = {};
   data.forEach(d => { countryData[d.pays] = (countryData[d.pays] || 0) + 1; });
   const sorted = Object.entries(countryData).sort((a,b) => b[1]-a[1]);
-  const PALETTE = ['#1A3FFF','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981'];
+  const PALETTE = ['#1A4D2E','#1A7A4A','#C47A1A','#C8352A','#8B5CF6','#EC4899','#F59E0B','#10B981'];
   if (charts.doughnut) charts.doughnut.destroy();
   const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
   charts.doughnut = new Chart(doughnutCtx, {

@@ -13,7 +13,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
-  --muted:#6B6560;--accent:#1A3FFF;--green:#1A7A4A;--amber:#C47A1A;
+  --muted:#6B6560;--accent:#1A4D2E;--green:#1A7A4A;--amber:#C47A1A;
   --red:#C8352A;--gold:#C8952A;--border:rgba(15,14,12,0.1);
   --card:#FFFFFF;--r:12px;--r-lg:20px;
 }
@@ -119,7 +119,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
 .dim-banner-btn{margin-left:auto;background:var(--ink);color:#fff;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;white-space:nowrap;}
 #searchEmpty{display:none;text-align:center;padding:32px;color:var(--muted);font-size:13px;}
 .tag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;letter-spacing:.02em;}
-.tag-ft{background:#EEF2FF;color:#3730A3;}
+.tag-ft{background:#E8F5EE;color:#1A4D2E;}
 .tag-bn{background:#FEF3C7;color:#92400E;}
 .tag-mm{background:#D1FAE5;color:#065F46;}
 .tag-imf{background:#FCE7F3;color:#9D174D;}
@@ -181,7 +181,7 @@ footer a:hover{color:var(--accent);}
 .sel-btn{background:var(--cream);border:1.5px solid transparent;border-radius:10px;padding:10px 8px;font-size:12px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;cursor:pointer;}
 .sel-btn .ico{font-size:22px;}
 .sel-btn .lbl{font-size:11px;font-weight:600;}
-.sel-btn.active{background:#EEF2FF;border-color:var(--accent);color:var(--accent);}
+.sel-btn.active{background:#E8F5EE;border-color:var(--accent);color:var(--accent);}
 .sel-btn:hover{border-color:var(--sand);}
 .srch-wrap{position:relative;margin-bottom:8px;}
 .srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;}
@@ -190,7 +190,7 @@ footer a:hover{color:var(--accent);}
 .inst-list{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;margin-bottom:4px;}
 .inst-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s;}
 .inst-item:hover{background:var(--cream);}
-.inst-item.active{background:#EEF2FF;}
+.inst-item.active{background:#E8F5EE;}
 .inst-ico{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;font-family:'IBM Plex Mono',monospace;position:relative;}
 .inst-dot{position:absolute;bottom:-1px;right:-1px;width:8px;height:8px;background:var(--green);border-radius:50%;border:1.5px solid #fff;}
 .inst-name{font-size:13px;font-weight:600;}
@@ -203,7 +203,7 @@ footer a:hover{color:var(--accent);}
 .yn-btn.no{background:#FEE2E2;border-color:var(--red);}
 .friction-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
 .fr-item{background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;transition:all .15s;}
-.fr-item.active{background:#EEF2FF;border-color:var(--accent);color:var(--accent);}
+.fr-item.active{background:#E8F5EE;border-color:var(--accent);color:var(--accent);}
 .stars-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);}
 .stars-lbl{font-size:13px;font-weight:500;}
 .stars-btns{display:flex;gap:4px;}
@@ -446,7 +446,7 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
       </div>
     </div>
     <div class="biz-metric">
-      <div class="biz-metric-ico" style="background:#EEF2FF">🎯</div>
+      <div class="biz-metric-ico" style="background:#E8F5EE">🎯</div>
       <div>
         <div class="biz-metric-label">Points de friction par canal</div>
         <div class="biz-metric-val" style="color:var(--accent)">App · USSD · Agence</div>
@@ -753,7 +753,7 @@ const INSTS = [
   {n:'VERSUS FINANCES TECH',ref:'EP.SN.006/2025',cat:'fintech',pays:['SN'],ico:'VF',bg:'linear-gradient(135deg,#6EE7B7,#0F766E)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   {n:'COPAY',ref:'EP.SN.007/2025',cat:'fintech',pays:['SN'],ico:'CY',bg:'linear-gradient(135deg,#C084FC,#6B21A8)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   {n:'SESA DIGITAL FINANCE',ref:'EP.SN.008/2025',cat:'fintech',pays:['SN'],ico:'SF',bg:'linear-gradient(135deg,#93C5FD,#1E40AF)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
-  {n:'JULAYA Sénégal',ref:'EP.SN.009/2025',cat:'fintech',pays:['SN'],ico:'JS',bg:'linear-gradient(135deg,#818CF8,#3730A3)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
+  {n:'JULAYA Sénégal',ref:'EP.SN.009/2025',cat:'fintech',pays:['SN'],ico:'JS',bg:'linear-gradient(135deg,#818CF8,#1A4D2E)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   {n:'DJAMO Sénégal',ref:'EP.SN.010/2025',cat:'fintech',pays:['SN'],ico:'D2',bg:'linear-gradient(135deg,#C084FC,#581C87)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   {n:'AFRICAN FINANCIAL AGENT',ref:'EP.SN.011/2025',cat:'fintech',pays:['SN'],ico:'AF',bg:'linear-gradient(135deg,#4ADE80,#14532D)',agr:true,agr_pays:['SN'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   // ══ TOGO ══
@@ -762,7 +762,7 @@ const INSTS = [
   {n:'SEMOA Togo',ref:'EP.TG.003/2026',cat:'fintech',pays:['TG'],ico:'SE',bg:'linear-gradient(135deg,#FDE68A,#B45309)',agr:true,agr_pays:['TG'],agr_type:'EDP',fcr:null,rv:0,cxfi:null},
   // ══ DIASPORA / REMITTANCES ══
   {n:'Tap-Tap Send',ref:null,cat:'fintech',pays:['SN','CI','ML','BF','TG','BJ','GW'],ico:'TT',bg:'linear-gradient(135deg,#FB923C,#C2410C)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
-  {n:'LemFi',ref:null,cat:'fintech',pays:['SN','CI','ML','GW'],ico:'LF',bg:'linear-gradient(135deg,#818CF8,#3730A3)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
+  {n:'LemFi',ref:null,cat:'fintech',pays:['SN','CI','ML','GW'],ico:'LF',bg:'linear-gradient(135deg,#818CF8,#1A4D2E)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
   // ══ ACTEURS MAJEURS ══
   {n:'Wave Mobile Money',cat:'mobile',pays:['SN','CI','ML','BF','GW'],ico:'W',bg:'linear-gradient(135deg,#4ADE80,#16A34A)',agr:false,agr_pays:[],agr_type:null,fcr:null,rv:0,cxfi:null},
   {n:'Orange Money',cat:'mobile',pays:['SN','CI','ML','BF','GW','NE'],ico:'OM',bg:'linear-gradient(135deg,#FB923C,#EA580C)',agr:false,agr_pays:[],agr_type:null,pispi:true,fcr:null,rv:0,cxfi:null},
@@ -827,7 +827,7 @@ function initCanvas() {
       if (d.y < 0 || d.y > H) d.dy *= -1;
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(26,63,255,0.45)';
+      ctx.fillStyle = 'rgba(26,77,46,0.45)';
       ctx.fill();
     });
     dots.forEach((d, i) => {
@@ -838,7 +838,7 @@ function initCanvas() {
           ctx.beginPath();
           ctx.moveTo(d.x, d.y);
           ctx.lineTo(d2.x, d2.y);
-          ctx.strokeStyle = `rgba(26,63,255,${0.12 * (1 - dist / 130)})`;
+          ctx.strokeStyle = `rgba(26,77,46,${0.12 * (1 - dist / 130)})`;
           ctx.lineWidth = 0.7;
           ctx.stroke();
         }
