@@ -41,6 +41,10 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 
 /* ── CARD CONTAINER ── */
 .card-preview{border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+.input-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
+.input-row label{font-size:12px;color:rgba(255,255,255,0.4);min-width:80px;}
+.mini-inp{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;font-family:'IBM Plex Sans',sans-serif;flex:1;}
+.mini-sel{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;font-family:'IBM Plex Sans',sans-serif;flex:1;}
 
 /* ══════════════════════════════════════════════
    CARDS  1080×1080 (affichées à 50% = 540px)
@@ -132,6 +136,57 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c5 .pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:500;color:#fff;}
 #c5 .url{position:absolute;top:44px;right:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:.05em;}
 
+/* ── CARD 6 : AMBASSADEUR ── */
+#c6{background:#0F0E0C;}
+#c6 .top-stripe{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#1A7A4A,#1A4D2E);}
+#c6 .logo{position:absolute;top:40px;left:44px;display:flex;align-items:center;}
+#c6 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.5px;}
+#c6 .logo-name em{color:#1A7A4A;font-style:normal;}
+#c6 .badge-pill{position:absolute;top:38px;right:44px;background:rgba(26,122,74,0.15);border:1px solid rgba(26,122,74,0.35);border-radius:99px;padding:4px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1A7A4A;}
+#c6 .center-block{position:absolute;top:50%;left:44px;right:44px;transform:translateY(-52%);}
+#c6 .mbr-eyebrow{font-family:'IBM Plex Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;}
+#c6 .mbr-action{font-family:'Syne',sans-serif;font-weight:800;font-size:34px;color:#fff;line-height:1.1;margin-bottom:10px;}
+#c6 .mbr-action em{color:#1A7A4A;font-style:normal;}
+#c6 .mbr-inst{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);margin-bottom:24px;letter-spacing:.02em;}
+#c6 .mbr-tags{display:flex;gap:8px;flex-wrap:wrap;}
+#c6 .mbr-tag{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;padding:4px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.5);}
+#c6 .mbr-cta{position:absolute;bottom:40px;left:44px;right:44px;display:flex;align-items:center;justify-content:space-between;}
+#c6 .mbr-cta-txt{font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.3);}
+#c6 .mbr-cta-url{font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(26,122,74,0.7);letter-spacing:.03em;}
+
+/* ── CARD 7 : DÉFI VIRAL ── */
+#c7{background:#F7F4EE;}
+#c7 .dfi-left-bar{position:absolute;top:44px;left:0;width:5px;height:80px;background:#1A4D2E;border-radius:0 4px 4px 0;}
+#c7 .logo{position:absolute;top:44px;left:24px;display:flex;align-items:center;}
+#c7 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#0F0E0C;letter-spacing:-0.5px;}
+#c7 .logo-name em{color:#1A4D2E;font-style:normal;}
+#c7 .dfi-body{position:absolute;top:50%;left:44px;right:44px;transform:translateY(-54%);}
+#c7 .dfi-intro{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(15,14,12,0.4);margin-bottom:10px;}
+#c7 .dfi-name{font-family:'Syne',sans-serif;font-weight:800;font-size:56px;line-height:1;color:#0F0E0C;margin-bottom:16px;letter-spacing:-2px;word-break:break-word;}
+#c7 .dfi-msg{font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:rgba(15,14,12,0.6);line-height:1.5;margin-bottom:24px;}
+#c7 .dfi-msg strong{color:#1A4D2E;}
+#c7 .dfi-pills{display:flex;gap:8px;flex-wrap:wrap;}
+#c7 .dfi-pill{background:rgba(15,14,12,0.06);border:1px solid rgba(15,14,12,0.1);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(15,14,12,0.6);}
+#c7 .dfi-footer{position:absolute;bottom:40px;left:44px;right:44px;display:flex;align-items:center;justify-content:space-between;}
+#c7 .dfi-footer-txt{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(15,14,12,0.3);}
+#c7 .dfi-footer-url{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1A4D2E;font-weight:500;}
+
+/* Thème crème pour card 6 */
+#c6.cream{background:#F7F4EE !important;}
+#c6.cream .logo-name{color:#0F0E0C !important;}
+#c6.cream .logo-name em{color:#1A4D2E !important;}
+#c6.cream .badge-pill{background:rgba(26,77,46,0.08) !important;border-color:rgba(26,77,46,0.2) !important;color:#1A4D2E !important;}
+#c6.cream .mbr-eyebrow{color:rgba(15,14,12,0.35) !important;}
+#c6.cream .mbr-action{color:#0F0E0C !important;}
+#c6.cream .mbr-action em{color:#1A4D2E !important;}
+#c6.cream .mbr-inst{color:rgba(15,14,12,0.5) !important;}
+#c6.cream .mbr-tag{background:rgba(15,14,12,0.05) !important;border-color:rgba(15,14,12,0.08) !important;color:rgba(15,14,12,0.45) !important;}
+#c6.cream .mbr-cta-txt{color:rgba(15,14,12,0.3) !important;}
+#c6.cream .mbr-cta-url{color:#1A4D2E !important;}
+
+/* Card 7 ne change pas sur fond crème (déjà crème) */
+#c7.cream{background:#EDE9E0 !important;}
+
 /* ══════════════════════════════════════════════
    THÈME CRÈME — overrides globaux
 ══════════════════════════════════════════════ */
@@ -207,6 +262,8 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
     <button class="tab" onclick="showTab('milestone',event)">Paliers</button>
     <button class="tab" onclick="showTab('unlock',event)">Score débloqué</button>
     <button class="tab" onclick="showTab('cta',event)">Appel à noter</button>
+    <button class="tab" onclick="showTab('ambassadeur',event)">🏆 Ambassadeur</button>
+    <button class="tab" onclick="showTab('defi',event)">🎯 Défi</button>
   </div>
   <div class="theme-toggle">
     <button class="theme-btn on" id="btnDark" onclick="setTheme('dark')">🌑 Fond sombre</button>
@@ -426,6 +483,97 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
     </div>
   </div>
 
+
+  <!-- ── CARD 6 : AMBASSADEUR ── -->
+  <div class="card-col" data-cat="ambassadeur">
+    <div class="card-label">🏆 Badge Ambassadeur</div>
+    <div class="card-preview">
+      <div class="card" id="c6">
+        <div class="top-stripe"></div>
+        <div class="logo"><span class="logo-name"><em>Go</em>xen</span></div>
+        <div class="badge-pill">Baromètre 2026</div>
+        <div class="center-block">
+          <div class="mbr-eyebrow">J'ai contribué</div>
+          <div class="mbr-action">J'ai noté<br><em id="mbr-inst-big">Wave</em></div>
+          <div class="mbr-inst" id="mbr-inst-sub">Wave Sénégal</div>
+          <div class="mbr-tags">
+            <span class="mbr-tag" id="mbr-tag-pays">🇸🇳 Sénégal</span>
+            <span class="mbr-tag" id="mbr-tag-profil">👤 Particulier</span>
+            <span class="mbr-tag">✅ Avis vérifié</span>
+          </div>
+        </div>
+        <div class="mbr-cta">
+          <div class="mbr-cta-txt">Et toi, ta banque mérite quoi ?</div>
+          <div class="mbr-cta-url">goxen.co</div>
+        </div>
+      </div>
+    </div>
+    <div class="input-row"><label>Institution :</label>
+      <input class="mini-inp" id="mbrInst" value="Wave Sénégal" oninput="updateAmbassadeur()"></div>
+    <div class="input-row"><label>Pays :</label>
+      <select class="mini-sel" id="mbrPays" onchange="updateAmbassadeur()">
+        <option>🇸🇳 Sénégal</option><option>🇨🇮 Côte d'Ivoire</option>
+        <option>🇧🇯 Bénin</option><option>🇧🇫 Burkina Faso</option>
+        <option>🇲🇱 Mali</option><option>🇹🇬 Togo</option>
+        <option>🇬🇼 Guinée-Bissau</option><option>🇳🇪 Niger</option>
+      </select>
+    </div>
+    <div class="input-row"><label>Profil :</label>
+      <select class="mini-sel" id="mbrProfil" onchange="updateAmbassadeur()">
+        <option>👤 Particulier</option><option>🏪 Commerçant</option>
+        <option>🏢 PME</option><option>🏗️ Entreprise</option>
+      </select>
+    </div>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c6','goxen-ambassadeur','png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c6','goxen-ambassadeur','jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
+  </div>
+
+  <!-- ── CARD 7 : DÉFI VIRAL ── -->
+  <div class="card-col" data-cat="defi">
+    <div class="card-label">🎯 Carte Défi</div>
+    <div class="card-preview">
+      <div class="card" id="c7">
+        <div class="dfi-left-bar"></div>
+        <div class="logo"><span class="logo-name"><em>Go</em>xen</span></div>
+        <div class="dfi-body">
+          <div class="dfi-intro">Je défie</div>
+          <div class="dfi-name" id="dfi-ami">Moussa</div>
+          <div class="dfi-msg">de noter sa banque sur <strong>Goxen</strong> — 2 minutes, anonyme, ça compte.</div>
+          <div class="dfi-pills">
+            <span class="dfi-pill">2 minutes ⏱</span>
+            <span class="dfi-pill">100% anonyme 🔒</span>
+            <span class="dfi-pill">Gratuit ✅</span>
+          </div>
+        </div>
+        <div class="dfi-footer">
+          <div class="dfi-footer-txt">Baromètre UEMOA 2026</div>
+          <div class="dfi-footer-url">goxen.co</div>
+        </div>
+      </div>
+    </div>
+    <div class="input-row"><label>Prénom ami :</label>
+      <input class="mini-inp" id="dfiAmi" value="Moussa" oninput="document.getElementById('dfi-ami').textContent=this.value||'?'">
+    </div>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c7','goxen-defi-'+document.getElementById('dfiAmi').value.toLowerCase(),'png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c7','goxen-defi-'+document.getElementById('dfiAmi').value.toLowerCase(),'jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -441,6 +589,19 @@ function showTab(cat,e) {
   document.querySelectorAll('[data-cat]').forEach(c=>{
     c.style.display = c.dataset.cat === cat ? 'flex' : 'none';
   });
+}
+
+/* ── AMBASSADEUR LIVE UPDATE ── */
+function updateAmbassadeur() {
+  const inst = document.getElementById('mbrInst').value || 'Mon institution';
+  const pays = document.getElementById('mbrPays').value;
+  const profil = document.getElementById('mbrProfil').value;
+  // Nom court = premier mot de l'institution
+  const shortName = inst.split(' ')[0];
+  document.getElementById('mbr-inst-big').textContent = shortName;
+  document.getElementById('mbr-inst-sub').textContent = inst;
+  document.getElementById('mbr-tag-pays').textContent = pays;
+  document.getElementById('mbr-tag-profil').textContent = profil;
 }
 
 /* ── THEME ── */
