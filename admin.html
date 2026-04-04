@@ -144,7 +144,7 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
 .content.on{display:block;}
 
 /* ── KPI WIDGETS ── */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
 .kpi-w{
   background:var(--card);border:1px solid var(--border);
   border-radius:14px;padding:20px;position:relative;overflow:hidden;
@@ -578,6 +578,11 @@ tr:hover td{background:rgba(15,14,12,.02);}
           <div class="kpi-w-label"><span>📈</span> NPS Net</div>
           <div class="kpi-w-val" id="wNPS" style="color:var(--accent);">—</div>
           <div class="kpi-w-sub">-100 à +100</div>
+        </div>
+        <div class="kpi-w" style="border-color:#7C3AED;">
+          <div class="kpi-w-label"><span>👁️</span> Visites site</div>
+          <div class="kpi-w-val" id="wViews" style="color:#7C3AED;">—</div>
+          <div class="kpi-w-sub">Pages vues totales</div>
         </div>
       </div>
 
@@ -1141,6 +1146,13 @@ async function loadData() {
     banner.style.display = 'flex';
     banner.innerHTML = `<span class="alert-ico">📭</span><div class="alert-txt"><b>Aucun avis collecté pour l'instant.</b> Les données apparaîtront ici dès qu'un avis sera soumis via le site public.</div>`;
   }
+
+  // Compteur de visites
+  try {
+    const { count } = await sbClient.from('page_views').select('*', {count:'exact', head:true});
+    const wv = document.getElementById('wViews');
+    if (wv) wv.textContent = count !== null ? count.toLocaleString('fr') : '—';
+  } catch(e) { /* table pas encore créée */ }
 
   updateDashboard();
 }
