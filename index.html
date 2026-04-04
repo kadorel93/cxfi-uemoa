@@ -1376,9 +1376,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bloquer le scroll pendant le preloader
     document.body.style.overflow = 'hidden';
     setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
       pre.classList.add('out');
       revealSite();
-      document.body.style.overflow = '';
       setTimeout(() => { try { pre.remove(); } catch(e){} }, 900);
     }, PRELOAD_MS);
   } else {
