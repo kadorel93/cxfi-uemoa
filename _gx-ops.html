@@ -56,6 +56,16 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;}
   transition:background .2s;
 }
 .lock-btn:hover{background:var(--accent);}
+.lock-reset{
+  display:block;margin-top:12px;font-size:12px;color:var(--muted);
+  cursor:pointer;text-decoration:underline;text-underline-offset:3px;
+  background:none;border:none;width:100%;
+}
+.lock-reset:hover{color:var(--ink);}
+.lock-ok{
+  font-size:13px;color:var(--accent);margin-top:10px;
+  display:none;font-weight:600;
+}
 
 /* ── APP SHELL ── */
 #app{display:none;height:100vh;overflow:hidden;}
@@ -432,6 +442,8 @@ tr:hover td{background:rgba(15,14,12,.02);}
       onkeydown="if(event.key==='Enter')unlock()">
     <div class="lock-err" id="lockErr">Email ou mot de passe incorrect.</div>
     <button class="lock-btn" id="lockBtn" onclick="unlock()">Entrer →</button>
+    <button class="lock-reset" id="lockReset" onclick="sendReset()">Mot de passe oublié ?</button>
+    <div class="lock-ok" id="lockOk">✓ Email de réinitialisation envoyé — vérifiez votre boîte mail.</div>
   </div>
 </div>
 
@@ -1148,6 +1160,40 @@ async function unlock() {
 function signOut() {
   sbClient.auth.signOut();
   location.reload();
+}
+
+async function sendReset() {
+  const email = document.getElementById('lockEmail').value.trim();
+  const errEl = document.getElementById('lockErr');
+  const okEl  = document.getElementById('lockOk');
+  const btn   = document.getElementById('lockReset');
+
+  if (!email) {
+    errEl.textContent = 'Entrez votre email ci-dessus avant de réinitialiser.';
+    errEl.style.display = 'block';
+    okEl.style.display = 'none';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+  errEl.style.display = 'none';
+
+  try {
+    const { error } = await sbClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href,
+    });
+    if (error) throw error;
+    okEl.style.display = 'block';
+    errEl.style.display = 'none';
+  } catch (e) {
+    errEl.textContent = 'Erreur lors de l\'envoi. Vérifiez l\'email et réessayez.';
+    errEl.style.display = 'block';
+    okEl.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Mot de passe oublié ?';
+  }
 }
 
 function initRealtime() {
