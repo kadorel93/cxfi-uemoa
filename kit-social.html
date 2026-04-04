@@ -154,22 +154,34 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c6 .mbr-cta-txt{font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.3);}
 #c6 .mbr-cta-url{font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(26,122,74,0.7);letter-spacing:.03em;}
 
-/* ── CARD 7 : DÉFI VIRAL ── */
-#c7{background:#F7F4EE;}
-#c7 .dfi-left-bar{position:absolute;top:44px;left:0;width:5px;height:80px;background:#1A4D2E;border-radius:0 4px 4px 0;}
+/* ── CARD 7 : DÉFI VIRAL — fond sombre par défaut ── */
+#c7{background:#0F0E0C;}
+#c7 .dfi-left-bar{position:absolute;top:44px;left:0;width:5px;height:80px;background:#1A7A4A;border-radius:0 4px 4px 0;}
 #c7 .logo{position:absolute;top:44px;left:24px;display:flex;align-items:center;}
-#c7 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#0F0E0C;letter-spacing:-0.5px;}
-#c7 .logo-name em{color:#1A4D2E;font-style:normal;}
+#c7 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#fff;letter-spacing:-0.5px;}
+#c7 .logo-name em{color:#1A7A4A;font-style:normal;}
 #c7 .dfi-body{position:absolute;top:50%;left:44px;right:44px;transform:translateY(-54%);}
-#c7 .dfi-intro{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(15,14,12,0.4);margin-bottom:10px;}
-#c7 .dfi-name{font-family:'Syne',sans-serif;font-weight:800;font-size:56px;line-height:1;color:#0F0E0C;margin-bottom:16px;letter-spacing:-2px;word-break:break-word;}
-#c7 .dfi-msg{font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:rgba(15,14,12,0.6);line-height:1.5;margin-bottom:24px;}
-#c7 .dfi-msg strong{color:#1A4D2E;}
+#c7 .dfi-intro{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;}
+#c7 .dfi-name{font-family:'Syne',sans-serif;font-weight:800;font-size:56px;line-height:1;color:#fff;margin-bottom:16px;letter-spacing:-2px;word-break:break-word;}
+#c7 .dfi-msg{font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:24px;}
+#c7 .dfi-msg strong{color:#1A7A4A;}
 #c7 .dfi-pills{display:flex;gap:8px;flex-wrap:wrap;}
-#c7 .dfi-pill{background:rgba(15,14,12,0.06);border:1px solid rgba(15,14,12,0.1);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(15,14,12,0.6);}
+#c7 .dfi-pill{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.45);}
 #c7 .dfi-footer{position:absolute;bottom:40px;left:44px;right:44px;display:flex;align-items:center;justify-content:space-between;}
-#c7 .dfi-footer-txt{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(15,14,12,0.3);}
-#c7 .dfi-footer-url{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1A4D2E;font-weight:500;}
+#c7 .dfi-footer-txt{font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.2);}
+#c7 .dfi-footer-url{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1A7A4A;font-weight:500;}
+/* Card 7 crème — bascule vers fond clair */
+#c7.cream{background:#F7F4EE !important;}
+#c7.cream .logo-name{color:#0F0E0C !important;}
+#c7.cream .logo-name em{color:#1A4D2E !important;}
+#c7.cream .dfi-left-bar{background:#1A4D2E !important;}
+#c7.cream .dfi-intro{color:rgba(15,14,12,0.4) !important;}
+#c7.cream .dfi-name{color:#0F0E0C !important;}
+#c7.cream .dfi-msg{color:rgba(15,14,12,0.6) !important;}
+#c7.cream .dfi-msg strong{color:#1A4D2E !important;}
+#c7.cream .dfi-pill{background:rgba(15,14,12,0.06) !important;border-color:rgba(15,14,12,0.1) !important;color:rgba(15,14,12,0.55) !important;}
+#c7.cream .dfi-footer-txt{color:rgba(15,14,12,0.3) !important;}
+#c7.cream .dfi-footer-url{color:#1A4D2E !important;}
 
 /* Thème crème pour card 6 */
 #c6.cream{background:#F7F4EE !important;}
@@ -184,8 +196,6 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c6.cream .mbr-cta-txt{color:rgba(15,14,12,0.3) !important;}
 #c6.cream .mbr-cta-url{color:#1A4D2E !important;}
 
-/* Card 7 ne change pas sur fond crème (déjà crème) */
-#c7.cream{background:#EDE9E0 !important;}
 
 /* ══════════════════════════════════════════════
    THÈME CRÈME — overrides globaux
@@ -269,6 +279,10 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
     <button class="theme-btn on" id="btnDark" onclick="setTheme('dark')">🌑 Fond sombre</button>
     <button class="theme-btn" id="btnCream" onclick="setTheme('cream')">☀️ Fond crème</button>
   </div>
+  <a href="https://goxen.co" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:rgba(26,122,74,0.15);border:1px solid rgba(26,122,74,0.3);border-radius:99px;padding:6px 16px;font-size:12px;font-weight:600;color:#6ee7a0;text-decoration:none;font-family:'IBM Plex Sans',sans-serif;transition:background .2s;" onmouseover="this.style.background='rgba(26,122,74,0.25)'" onmouseout="this.style.background='rgba(26,122,74,0.15)'">
+    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    Ouvrir goxen.co
+  </a>
 </div>
 
 <div class="card-wrap" id="cardWrap">
@@ -546,7 +560,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
         <div class="dfi-body">
           <div class="dfi-intro">Je défie</div>
           <div class="dfi-name" id="dfi-ami">Moussa</div>
-          <div class="dfi-msg">de noter sa banque sur <strong>Goxen</strong> — 2 minutes, anonyme, ça compte.</div>
+          <div class="dfi-msg">de noter <strong id="dfi-service">Wave Mobile Money</strong> sur <strong>Goxen</strong> — 2 min, anonyme, ça compte.</div>
           <div class="dfi-pills">
             <span class="dfi-pill">2 minutes ⏱</span>
             <span class="dfi-pill">100% anonyme 🔒</span>
@@ -561,6 +575,9 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
     </div>
     <div class="input-row"><label>Prénom ami :</label>
       <input class="mini-inp" id="dfiAmi" value="Moussa" oninput="document.getElementById('dfi-ami').textContent=this.value||'?'">
+    </div>
+    <div class="input-row"><label>Institution :</label>
+      <input class="mini-inp" id="dfiService" value="Wave Mobile Money" oninput="document.getElementById('dfi-service').textContent=this.value||'votre banque'">
     </div>
     <div class="dl-row">
       <button class="dl-btn" onclick="download('c7','goxen-defi-'+document.getElementById('dfiAmi').value.toLowerCase(),'png')">
