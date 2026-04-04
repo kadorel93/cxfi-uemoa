@@ -148,13 +148,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
 @media(max-width:760px){.biz-sec{grid-template-columns:1fr;gap:36px;}}
 
 /* ── FOOTER ──────────────────────────────────────────────── */
-footer{border-top:1px solid var(--border);padding:28px 32px;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);}
+footer{border-top:1px solid var(--border);padding:32px;
+  display:grid;grid-template-columns:1fr auto;align-items:start;gap:20px;font-size:12px;color:var(--muted);}
+.footer-left{display:flex;flex-direction:column;gap:14px;}
 .footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+.footer-legal{display:flex;gap:16px;flex-wrap:wrap;opacity:.6;}
 footer a{color:var(--muted);}
 footer a:hover{color:var(--accent);}
 .footer-admin{opacity:.25;font-size:10px;}
-@media(max-width:600px){footer{padding:20px;flex-direction:column;text-align:center;}}
+@media(max-width:640px){footer{grid-template-columns:1fr;}.footer-right{display:none;}}
 
 /* ── OVERLAY / MODALS ──────────────────────────────────────── */
 .ov{position:fixed;inset:0;background:rgba(15,14,12,0.55);z-index:500;display:flex;align-items:flex-end;justify-content:center;
@@ -472,18 +474,29 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 
 <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
 <footer>
-  <div style="display:flex;align-items:center;gap:8px">
-    <div class="logo-box" style="width:24px;height:24px;font-size:9px">GX</div>
-    <span style="font-weight:600;font-size:13px">Goxen · Un projet <a href="https://naxari.netlify.app/" target="_blank" style="color:var(--accent)">Naxari</a></span>
+  <div class="footer-left">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="logo-box" style="width:24px;height:24px;font-size:9px">GX</div>
+      <span style="font-weight:600;font-size:13px;color:var(--ink)">Goxen</span>
+      <span>· Un projet <a href="https://naxari.netlify.app/" target="_blank">Naxari</a></span>
+    </div>
+    <div class="footer-links">
+      <a href="#resultats">Classement</a>
+      <a href="#comment">Méthode</a>
+      <a href="#" onclick="openSug();return false">Suggérer une institution</a>
+      <a href="/admin.html" class="footer-admin">Admin</a>
+    </div>
+    <div class="footer-legal">
+      <a href="/CGU-Goxen-v1.0.docx">CGU</a>
+      <a href="mailto:contact@goxen.co">contact@goxen.co</a>
+      <span>© 2026 Naxari · UEMOA</span>
+    </div>
   </div>
-  <div class="footer-links">
-    <a href="#resultats">Classement</a>
-    <a href="#comment">Méthode</a>
-    <a href="mailto:contact@goxen.co">contact@goxen.co</a>
-    <a href="#" onclick="openSug();return false">Suggérer une institution</a>
-    <a href="/admin.html" class="footer-admin">· Admin</a>
+  <div class="footer-right" style="text-align:right;font-size:11px;line-height:1.8;">
+    <div style="font-weight:600;color:var(--ink);margin-bottom:4px;">Goxen Score</div>
+    <div>Indépendant · Transparent</div>
+    <div>Espace UEMOA</div>
   </div>
-  <span>© 2026 Naxari · UEMOA</span>
 </footer>
 
 <!-- ═══ MODAL FORMULAIRE ════════════════════════════════════════ -->

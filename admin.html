@@ -1121,9 +1121,27 @@ function initRealtime() {
 }
 
 async function loadData() {
-  const { data, error } = await sbClient.from('avis').select('*');
-  if (error) { console.error(error); return; }
+  const banner = document.getElementById('dbBanner');
+  if (banner) { banner.style.display='none'; }
+
+  const { data, error } = await sbClient.from('avis').select('*').order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Supabase error:', error);
+    if (banner) {
+      banner.style.display = 'flex';
+      banner.innerHTML = `<span class="alert-ico">⚠️</span><div class="alert-txt"><b>Erreur de chargement</b> — ${error.message} (code: ${error.code || '?'}). Vérifiez la connexion Supabase.</div>`;
+    }
+    return;
+  }
+
   globalData = data || [];
+
+  if (globalData.length === 0 && banner) {
+    banner.style.display = 'flex';
+    banner.innerHTML = `<span class="alert-ico">📭</span><div class="alert-txt"><b>Aucun avis collecté pour l'instant.</b> Les données apparaîtront ici dès qu'un avis sera soumis via le site public.</div>`;
+  }
+
   updateDashboard();
 }
 
