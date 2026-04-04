@@ -6,6 +6,7 @@
 <title>Goxen — Kit Réseaux Sociaux</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -135,6 +136,19 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c5 .pills{display:flex;gap:8px;flex-wrap:wrap;}
 #c5 .pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:500;color:#fff;}
 #c5 .url{position:absolute;top:44px;right:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:.05em;}
+
+/* ── QR CODE sur les cartes ── */
+.card-qr{
+  position:absolute;bottom:36px;right:36px;
+  width:64px;height:64px;
+  border-radius:8px;overflow:hidden;
+  background:#F7F4EE;padding:4px;
+  transition:background .2s;
+}
+.card.cream .card-qr{background:#0F0E0C;}
+.card-qr canvas,.card-qr img{width:56px!important;height:56px!important;display:block;}
+.card-wide .card-qr{bottom:24px;right:36px;width:52px;height:52px;padding:3px;}
+.card-wide .card-qr canvas,.card-wide .card-qr img{width:46px!important;height:46px!important;}
 
 /* ── CARD PAYSAGE (1200×630, affiché à 600×315) ── */
 .card-wide{width:600px;height:315px;}
@@ -591,6 +605,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
           <div class="mbr-cta-txt">Et toi, ta banque mérite quoi ?</div>
           <div class="mbr-cta-url">goxen.co</div>
         </div>
+        <div class="card-qr" id="qr-c6"></div>
       </div>
     </div>
     <div class="input-row"><label>Institution :</label>
@@ -642,6 +657,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
           <div class="dfi-footer-txt">Baromètre UEMOA 2026</div>
           <div class="dfi-footer-url">goxen.co</div>
         </div>
+        <div class="card-qr" id="qr-c7"></div>
       </div>
     </div>
     <div class="input-row"><label>Prénom ami :</label>
@@ -693,6 +709,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
           </div>
           <div class="vrd-url">goxen.co</div>
         </div>
+        <div class="card-qr" id="qr-c8"></div>
       </div>
     </div>
     <div class="input-row"><label>Institution :</label>
@@ -748,6 +765,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
           </div>
         </div>
         <div class="ps-url">goxen.co</div>
+        <div class="card-qr" id="qr-c9"></div>
       </div>
     </div>
     <div class="input-row" style="margin-top:4px;"><label>Accroche :</label>
@@ -851,6 +869,30 @@ function updateAmbassadeur() {
   document.getElementById('mbr-tag-profil').textContent = profil;
 }
 
+/* ── QR CODES ── */
+function initQRCodes() {
+  const cards = [
+    {id:'qr-c6', size:56},
+    {id:'qr-c7', size:56},
+    {id:'qr-c8', size:56},
+    {id:'qr-c9', size:46},
+  ];
+  const isDark = currentTheme === 'dark';
+  cards.forEach(({id, size}) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    new QRCode(el, {
+      text: 'https://goxen.co',
+      width: size,
+      height: size,
+      colorDark: isDark ? '#F7F4EE' : '#0F0E0C',
+      colorLight: isDark ? '#0F0E0C' : '#F7F4EE',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  });
+}
+
 /* ── THEME ── */
 let currentTheme = 'dark';
 function setTheme(theme) {
@@ -861,7 +903,10 @@ function setTheme(theme) {
   });
   document.getElementById('btnDark').classList.toggle('on', theme==='dark');
   document.getElementById('btnCream').classList.toggle('on', theme==='cream');
+  initQRCodes();
 }
+
+window.addEventListener('load', () => setTimeout(initQRCodes, 600));
 
 /* ── DOWNLOAD ── */
 async function download(id, filename, fmt) {
