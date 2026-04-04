@@ -26,7 +26,8 @@ button{font-family:'IBM Plex Sans',sans-serif;cursor:pointer;border:none;backgro
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
   display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:16px;
   background:rgba(247,244,238,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
-.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.5px;}
+.nav-logo em{color:var(--accent);font-style:normal;}
 .logo-box{width:34px;height:34px;background:var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;letter-spacing:-.5px;flex-shrink:0;}
 .nav-links{display:flex;align-items:center;gap:28px;font-size:13px;font-weight:500;}
 .nav-links a{color:var(--muted);transition:color .2s;}
@@ -326,7 +327,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
 <div id="gxPre">
   <div class="gxpre-inner">
     <div class="gxpre-box">GX</div>
-    <div class="gxpre-name">Goxen</div>
+    <div class="gxpre-name"><span style="color:var(--green)">Go</span>xen</div>
     <div class="gxpre-tag">Baromètre UEMOA 2026</div>
   </div>
 </div>
@@ -334,8 +335,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
 <!-- ═══ NAV ════════════════════════════════════════════════════ -->
 <nav>
   <div class="nav-logo">
-    <div class="logo-box">GX</div>
-    <span>Goxen</span>
+    <span><em>Go</em>xen</span>
   </div>
   <div class="nav-links">
     <a href="#resultats">Résultats</a>
@@ -520,8 +520,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
 <footer>
   <div class="footer-left">
     <div style="display:flex;align-items:center;gap:8px">
-      <div class="logo-box" style="width:24px;height:24px;font-size:9px">GX</div>
-      <span style="font-weight:600;font-size:13px;color:var(--ink)">Goxen</span>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.5px;color:var(--ink)"><em style="color:var(--accent);font-style:normal">Go</em>xen</span>
       <span>· Un projet du <a href="https://naxari.netlify.app/" target="_blank">cabinet Naxari</a></span>
     </div>
     <div class="footer-links">
