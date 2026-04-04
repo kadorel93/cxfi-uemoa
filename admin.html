@@ -1383,15 +1383,37 @@ function updateCharts(data) {
     } else {
       document.getElementById('fcrChart').style.display = '';
       const fcrCtx = document.getElementById('fcrChart').getContext('2d');
-      const canvasH = Math.max(180, instEntries.length * 32);
+      const canvasH = Math.max(180, instEntries.length * 36);
       document.getElementById('fcrChart').parentElement.style.height = canvasH + 'px';
+      // Plugin inline pour afficher le label % sur chaque barre (y compris 0%)
+      const fcrLabelPlugin = {
+        id: 'fcrLabel',
+        afterDatasetsDraw(chart) {
+          const { ctx, scales } = chart;
+          const meta = chart.getDatasetMeta(0);
+          ctx.save();
+          ctx.font = '600 11px IBM Plex Mono, monospace';
+          ctx.textBaseline = 'middle';
+          meta.data.forEach((bar, i) => {
+            const realPct = instEntries[i].pct;
+            const n = instEntries[i].n;
+            const label = `${realPct}% · ${n} avis`;
+            const xPos = Math.max(bar.x + 6, scales.x.getPixelForValue(0) + 6);
+            ctx.fillStyle = realPct >= 75 ? '#065F46' : realPct >= 50 ? '#92400E' : '#991B1B';
+            ctx.fillText(label, xPos, bar.y);
+          });
+          ctx.restore();
+        }
+      };
       charts.fcr = new Chart(fcrCtx, {
+        plugins: [fcrLabelPlugin],
         type: 'bar',
         data: {
           labels: instEntries.map(e => e.name),
           datasets: [{
             label: 'FCR %',
-            data: instEntries.map(e => e.pct),
+            // Minimum 4% pour rendre les barres à 0% visibles
+            data: instEntries.map(e => Math.max(e.pct, e.pct === 0 ? 4 : e.pct)),
             backgroundColor: instEntries.map(e => e.pct >= 75 ? 'rgba(26,122,74,0.85)' : e.pct >= 50 ? 'rgba(196,122,26,0.85)' : 'rgba(200,53,42,0.85)'),
             borderRadius: 6,
             barThickness: 20
@@ -1400,15 +1422,16 @@ function updateCharts(data) {
         options: {
           ...CHART_DEFAULTS,
           indexAxis: 'y',
+          layout: { padding: { right: 80 } },
           plugins: {
             ...CHART_DEFAULTS.plugins,
             tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
-              label: ctx => ` FCR ${ctx.parsed.x}%`,
+              label: ctx => ` FCR ${instEntries[ctx.dataIndex].pct}%`,
               afterLabel: ctx => ` (${instEntries[ctx.dataIndex].n} avis)`
             }}
           },
           scales: {
-            x: { max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+            x: { max: 100, display: false },
             y: { grid: { display: false }, ticks: { font: { size: 11 } } }
           }
         }
