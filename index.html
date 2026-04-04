@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CXFI — Notez votre banque ou fintech en Afrique de l'Ouest</title>
-<meta name="description" content="CXFI collecte les avis clients sur les banques, fintechs et établissements de paiement de l'UEMOA. Indépendant, gratuit, transparent.">
+<title>Goxen — Notez votre banque ou fintech en Afrique de l'Ouest</title>
+<meta name="description" content="Goxen collecte les avis clients sur les banques, fintechs et établissements de paiement de l'UEMOA. Indépendant, gratuit, transparent.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -292,8 +292,8 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 <!-- ═══ NAV ════════════════════════════════════════════════════ -->
 <nav>
   <div class="nav-logo">
-    <div class="logo-box">CX</div>
-    <span>CXFI</span>
+    <div class="logo-box">GX</div>
+    <span>Goxen</span>
   </div>
   <div class="nav-links">
     <a href="#resultats">Résultats</a>
@@ -429,7 +429,7 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
     <div class="sec-eyebrow">Pour les institutions financières</div>
     <div class="sec-h">Vos clients vous notent.<br>Accédez à leurs retours.</div>
     <p style="color:var(--muted);font-size:15px;margin-top:14px;line-height:1.7">
-      CXFI collecte en continu des avis sur votre institution — FCR, satisfaction, points de friction par canal. Ces données sont disponibles pour les institutions qui souhaitent comprendre leur positionnement réel.
+      Goxen collecte en continu des avis sur votre institution — FCR, satisfaction, points de friction par canal. Ces données sont disponibles pour les institutions qui souhaitent comprendre leur positionnement réel.
     </p>
     <a class="biz-cta" href="#" onclick="downloadDataCTA();return false">
       Contacter Naxari pour accéder aux données →
@@ -473,14 +473,13 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
 <footer>
   <div style="display:flex;align-items:center;gap:8px">
-    <div class="logo-box" style="width:24px;height:24px;font-size:9px">CX</div>
-    <span style="font-weight:600;font-size:13px">CXFI · Un projet <a href="https://naxari.netlify.app/" target="_blank" style="color:var(--accent)">Naxari</a></span>
+    <div class="logo-box" style="width:24px;height:24px;font-size:9px">GX</div>
+    <span style="font-weight:600;font-size:13px">Goxen · Un projet <a href="https://naxari.netlify.app/" target="_blank" style="color:var(--accent)">Naxari</a></span>
   </div>
   <div class="footer-links">
     <a href="#resultats">Classement</a>
     <a href="#comment">Méthode</a>
-    <a href="/privacy.html">Confidentialité</a>
-    <a href="mailto:mrkpatinde@gmail.com">contact@naxari.co</a>
+    <a href="mailto:contact@goxen.co">contact@goxen.co</a>
     <a href="#" onclick="openSug();return false">Suggérer une institution</a>
     <a href="/admin.html" class="footer-admin">· Admin</a>
   </div>
@@ -622,10 +621,10 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
     <div class="conf">
       <div class="conf-ico">🎉</div>
       <div class="conf-h">Merci !</div>
-      <div class="conf-sub">Votre expérience est enregistrée dans le Baromètre CXFI 2026.</div>
+      <div class="conf-sub">Votre expérience est enregistrée dans le Baromètre Goxen 2026.</div>
       <div class="conf-micro" id="confMicro"></div>
       <div class="conf-msg" id="confMsg"></div>
-      <div class="conf-badge">🏆 Contributeur Baromètre CXFI 2026</div>
+      <div class="conf-badge">🏆 Contributeur Baromètre Goxen 2026</div>
       <div class="conf-btns">
         <button class="btn-wa" id="confWA">📱 WhatsApp</button>
         <button class="btn-li" onclick="shareLI()">💼 LinkedIn</button>
@@ -683,7 +682,7 @@ nav.scrolled{box-shadow:0 2px 20px rgba(15,14,12,0.08);}
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   CXFI — Customer Experience Financial Index
+   Goxen — Customer Experience Financial Index
    Version 9.0 · Naxari 2026 · Refonte UX
    ═══════════════════════════════════════════════════════════════ */
 
@@ -960,7 +959,7 @@ function tryGoStep3() {
   if (fd.canaux.length >= 2 && !fd.canal) { showStepErr('s2Err','📍 Précisez le canal sur lequel votre opération a finalement abouti.'); return; }
   // Anti-abus
   try {
-    const key = `cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
+    const key = `goxen_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`;
     const last = localStorage.getItem(key);
     if (last) {
       const days = (Date.now() - parseInt(last,10)) / 86400000;
@@ -1092,7 +1091,7 @@ async function sendForm() {
     verbatim: fd.verbatim||'', lang: 'fr'
   };
   // Anti-abus
-  try { localStorage.setItem(`cxfi_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`, Date.now().toString()); } catch(e) {}
+  try { localStorage.setItem(`goxen_avis_${(fd.inst||'').replace(/\s+/g,'_')}_${fd.pays||''}`, Date.now().toString()); } catch(e) {}
   // Confirmation immédiate
   const newCount = totalCount + 1;
   setCount(newCount);
@@ -1102,15 +1101,15 @@ async function sendForm() {
   const micros = [
     `Vous venez de contribuer au score de ${instName}.`,
     `Votre expérience avec ${instName} est dans le Baromètre 2026.`,
-    `Merci. En décembre 2026, votre contribution sera dans le rapport officiel CXFI.`
+    `Merci. En décembre 2026, votre contribution sera dans le rapport officiel Goxen.`
   ];
   document.getElementById('confMicro').textContent = micros[Math.floor(Math.random() * micros.length)];
-  const shareMsg = `Je viens de noter ${instName} sur le Baromètre CXFI 2026 📊 Votre avis aussi compte 👉 ${CFG.siteUrl}`;
+  const shareMsg = `Je viens de noter ${instName} sur le Baromètre Goxen 2026 📊 Votre avis aussi compte 👉 ${CFG.siteUrl}`;
   document.getElementById('confMsg').textContent = shareMsg;
   document.getElementById('confWA').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(shareMsg)}`, '_blank');
   goStep('OK');
   renderLB();
-  sbFetch('avis', {method:'POST', body:JSON.stringify(payload)}).catch(e => console.warn('CXFI err:', e));
+  sbFetch('avis', {method:'POST', body:JSON.stringify(payload)}).catch(e => console.warn('Goxen err:', e));
 }
 
 /* ── SUGGESTION ──────────────────────────────────────────────── */
@@ -1197,8 +1196,8 @@ function shareLI() { window.open(`https://www.linkedin.com/sharing/share-offsite
 
 /* ── DATA CTA (pour les institutions) ───────────────────────────  */
 function downloadDataCTA() {
-  const subject = encodeURIComponent('CXFI 2026 — Demande d\'accès aux données · [Institution]');
-  const body = encodeURIComponent(`Bonjour,\n\nJe représente [NOM DE L'INSTITUTION] et je souhaite accéder aux données CXFI nous concernant.\n\nCe qui m'intéresse :\n— Score FCR réel\n— Verbatims clients collectés\n— Points de friction par canal\n— Notre position dans le benchmark sectoriel\n\nCordialement,\n[Nom · Titre · Institution]`);
+  const subject = encodeURIComponent('Goxen 2026 — Demande d\'accès aux données · [Institution]');
+  const body = encodeURIComponent(`Bonjour,\n\nJe représente [NOM DE L'INSTITUTION] et je souhaite accéder aux données Goxen nous concernant concernant.\n\nCe qui m'intéresse :\n— Score FCR réel\n— Verbatims clients collectés\n— Points de friction par canal\n— Notre position dans le benchmark sectoriel\n\nCordialement,\n[Nom · Titre · Institution]`);
   window.open(`mailto:mrkpatinde@gmail.com?subject=${subject}&body=${body}`, '_blank');
 }
 
@@ -1257,7 +1256,7 @@ function initNavScroll() {
 function typewriterSubtitle() {
   const el = document.getElementById('heroSub');
   if (!el) return;
-  const text = 'CXFI collecte et publie des avis clients réels sur les institutions financières de l\'UEMOA — pour plus de transparence.';
+  const text = 'Goxen collecte et publie des avis clients réels sur les institutions financières de l\'UEMOA — pour plus de transparence.';
   el.textContent = '';
   el.style.opacity = '1';
   let i = 0;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CXFI Admin — Dashboard naxari</title>
+<title>Goxen Admin — Dashboard naxari</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -420,7 +420,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
 <!-- ══ LOCK SCREEN ══ -->
 <div id="lockScreen">
   <div class="lock-box">
-    <div class="lock-logo">CX<em style="color:var(--accent)">FI</em> Admin</div>
+    <div class="lock-logo"><span style="color:var(--accent)">Go</span>xen Admin</div>
     <div class="lock-sub">Tableau de bord · Accès sécurisé Supabase</div>
     <label class="lock-label" for="lockEmail">Email</label>
     <input class="lock-inp" type="email" id="lockEmail" placeholder="admin@exemple.com"
@@ -566,7 +566,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
 
       <div class="alert-banner">
         <span class="alert-ico">💡</span>
-        <div class="alert-txt"><b>Dashboard data science CXFI.</b> Métriques composites naxari calculées en temps réel depuis Supabase. Publication officielle : décembre 2026.</div>
+        <div class="alert-txt"><b>Dashboard data science Goxen.</b> Métriques composites naxari calculées en temps réel depuis Supabase. Publication officielle : décembre 2026.</div>
       </div>
 
       <!-- PRIMARY KPIs -->
@@ -583,7 +583,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
           <div class="kpi-w-sub">First Contact Resolution</div>
         </div>
         <div class="kpi-w amber">
-          <div class="kpi-w-label"><span>⭐</span> CXFI Score</div>
+          <div class="kpi-w-label"><span>⭐</span> Goxen Score</div>
           <div class="kpi-w-val amber" id="wCXFI">—</div>
           <div class="kpi-w-sub">Score composite /100</div>
         </div>
@@ -1021,7 +1021,7 @@ function calcMetrics(data) {
   const noFcr = data.filter(d => d.fcr === 'non');
   const resolRate = noFcr.length > 0 ? noFcr.filter(d => d.resolu === 'oui').length / noFcr.length : 0.5;
 
-  // CXFI Score = FCR×35 + Sat×35 + NPS×20 + Resol×10
+  // Goxen Score = FCR×35 + Sat×35 + NPS×20 + Resol×10
   const cxfiScore = Math.round(fcrRate * 35 + satScore * 35 + npsNorm * 20 + resolRate * 10);
 
   // NPS Net (-100 à +100)
