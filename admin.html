@@ -896,7 +896,24 @@ const CFG = {
 };
 
 let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
-let loginAttempts = 0, lockUntil = 0;
+
+// BRUTE-FORCE PROTECTION — persisted across page reloads
+const BF_KEY_ATTEMPTS = 'gx_bf_attempts';
+const BF_KEY_UNTIL    = 'gx_bf_until';
+function bfGet() {
+  return {
+    attempts: parseInt(localStorage.getItem(BF_KEY_ATTEMPTS) || '0', 10),
+    until:    parseInt(localStorage.getItem(BF_KEY_UNTIL)    || '0', 10),
+  };
+}
+function bfSet(attempts, until) {
+  localStorage.setItem(BF_KEY_ATTEMPTS, attempts);
+  localStorage.setItem(BF_KEY_UNTIL, until);
+}
+function bfReset() {
+  localStorage.removeItem(BF_KEY_ATTEMPTS);
+  localStorage.removeItem(BF_KEY_UNTIL);
+}
 
 // ── FILTRE COMPLET ─────────────────────────────────────────────────
 let activeFilters = { from: null, to: null, pays: '', canal: '', profil: '' };
@@ -1078,10 +1095,11 @@ async function unlock() {
   const now = Date.now();
   const errEl = document.getElementById('lockErr');
   const btn = document.getElementById('lockBtn');
+  const bf = bfGet();
 
-  // Vérifier le verrouillage temporaire
-  if (now < lockUntil) {
-    const secs = Math.ceil((lockUntil - now) / 1000);
+  // Vérifier le verrouillage temporaire (persisté — survit aux recharges)
+  if (now < bf.until) {
+    const secs = Math.ceil((bf.until - now) / 1000);
     errEl.textContent = `Trop de tentatives. Réessayez dans ${secs}s.`;
     errEl.style.display = 'block';
     return;
@@ -1104,20 +1122,21 @@ async function unlock() {
     const { data, error } = await sbClient.auth.signInWithPassword({ email, password: pwd });
     if (error) throw error;
 
-    loginAttempts = 0;
+    bfReset();
     document.getElementById('lockScreen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     document.getElementById('userEmail').textContent = email;
     await loadData();
     initRealtime();
   } catch (e) {
-    loginAttempts++;
-    if (loginAttempts >= 3) {
-      lockUntil = Date.now() + 30000;
+    const newAttempts = bf.attempts + 1;
+    if (newAttempts >= 3) {
+      const lockUntil = Date.now() + 30000;
+      bfSet(0, lockUntil);
       errEl.textContent = 'Trop de tentatives (3/3). Accès bloqué 30 secondes.';
-      loginAttempts = 0;
     } else {
-      errEl.textContent = `Identifiants incorrects — tentative ${loginAttempts}/3.`;
+      bfSet(newAttempts, 0);
+      errEl.textContent = `Identifiants incorrects — tentative ${newAttempts}/3.`;
     }
     errEl.style.display = 'block';
   } finally {
