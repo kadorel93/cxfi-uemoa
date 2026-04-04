@@ -339,13 +339,25 @@ tr:hover td{background:rgba(15,14,12,.02);}
 .alert-txt{color:var(--ink);line-height:1.5;}
 .alert-txt b{font-weight:600;}
 
-/* ── DATE RANGE FILTER ── */
-.date-bar{
-  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+/* ── FILTER BAR ── */
+.filter-bar{
   background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:12px 18px;margin-bottom:20px;
+  border-radius:14px;padding:14px 18px;margin-bottom:20px;
 }
-.date-bar label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.filter-bar-top{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  margin-bottom:0;
+}
+.filter-bar-top.has-rows{margin-bottom:12px;}
+.filter-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  padding-top:10px;border-top:1px solid var(--border);
+}
+.filter-label{
+  font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);white-space:nowrap;
+  min-width:52px;
+}
 .date-inp{
   border:1.5px solid var(--sand);border-radius:8px;padding:7px 10px;
   font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--ink);
@@ -353,19 +365,31 @@ tr:hover td{background:rgba(15,14,12,.02);}
 }
 .date-inp:focus{border-color:var(--accent);}
 .date-sep{color:var(--muted);font-size:12px;}
+
+/* pill filters */
+.fpill-group{display:flex;flex-wrap:wrap;gap:5px;}
+.fpill{
+  border:1.5px solid var(--sand);border-radius:99px;
+  padding:4px 11px;font-size:11px;font-weight:500;
+  color:var(--muted);background:var(--cream);cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.fpill:hover{border-color:var(--ink);color:var(--ink);}
+.fpill.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+
 .btn-filter{
   background:var(--accent);color:#fff;border:none;border-radius:8px;
   padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;
   transition:opacity .2s;
 }
 .btn-filter:hover{opacity:.85;}
-.btn-clear{
+.btn-reset-all{
   background:none;border:1.5px solid var(--sand);color:var(--muted);
   border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;
-  display:none;
+  display:none;transition:all .18s;
 }
-.btn-clear:hover{border-color:var(--red);color:var(--red);}
-.date-badge{
+.btn-reset-all:hover{border-color:var(--red);color:var(--red);}
+.filter-badge{
   margin-left:auto;background:rgba(26,63,255,.08);border:1px solid rgba(26,63,255,.2);
   color:var(--accent);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;
   display:none;
@@ -470,15 +494,74 @@ tr:hover td{background:rgba(15,14,12,.02);}
     <!-- PAGE : DASHBOARD -->
     <div class="content on" id="page-dashboard">
 
-      <!-- DATE RANGE FILTER -->
-      <div class="date-bar">
-        <label>Période</label>
-        <input type="date" class="date-inp" id="dfFrom" onchange="onDateChange()">
-        <span class="date-sep">→</span>
-        <input type="date" class="date-inp" id="dfTo" onchange="onDateChange()">
-        <button class="btn-filter" onclick="applyDateFilter()">Filtrer</button>
-        <button class="btn-clear" id="dfClear" onclick="clearDateFilter()">✕ Effacer</button>
-        <span class="date-badge" id="dfBadge"></span>
+      <!-- FILTER BAR COMPLET -->
+      <div class="filter-bar" id="filterBar">
+
+        <!-- Ligne 1 : date + actions -->
+        <div class="filter-bar-top has-rows">
+          <span class="filter-label">Période</span>
+          <input type="date" class="date-inp" id="dfFrom" onchange="onFilterChange()">
+          <span class="date-sep">→</span>
+          <input type="date" class="date-inp" id="dfTo" onchange="onFilterChange()">
+          <button class="btn-filter" onclick="applyFilters()">Appliquer</button>
+          <button class="btn-reset-all" id="btnResetAll" onclick="resetAllFilters()">✕ Réinitialiser</button>
+          <span class="filter-badge" id="filterBadge"></span>
+        </div>
+
+        <!-- Ligne 2 : pays -->
+        <div class="filter-row">
+          <span class="filter-label">Pays</span>
+          <div class="fpill-group" id="fpPays">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'pays')">Tous</button>
+            <button class="fpill" data-val="SN" onclick="toggleFpill(this,'pays')">🇸🇳 SN</button>
+            <button class="fpill" data-val="CI" onclick="toggleFpill(this,'pays')">🇨🇮 CI</button>
+            <button class="fpill" data-val="ML" onclick="toggleFpill(this,'pays')">🇲🇱 ML</button>
+            <button class="fpill" data-val="BF" onclick="toggleFpill(this,'pays')">🇧🇫 BF</button>
+            <button class="fpill" data-val="TG" onclick="toggleFpill(this,'pays')">🇹🇬 TG</button>
+            <button class="fpill" data-val="BJ" onclick="toggleFpill(this,'pays')">🇧🇯 BJ</button>
+            <button class="fpill" data-val="NE" onclick="toggleFpill(this,'pays')">🇳🇪 NE</button>
+            <button class="fpill" data-val="GW" onclick="toggleFpill(this,'pays')">🇬🇼 GW</button>
+          </div>
+        </div>
+
+        <!-- Ligne 3 : catégorie -->
+        <div class="filter-row">
+          <span class="filter-label">Catégorie</span>
+          <div class="fpill-group" id="fpCat">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'cat')">Tous</button>
+            <button class="fpill" data-val="banque" onclick="toggleFpill(this,'cat')">🏦 Banque</button>
+            <button class="fpill" data-val="fintech" onclick="toggleFpill(this,'cat')">⚡ Fintech</button>
+            <button class="fpill" data-val="mobile" onclick="toggleFpill(this,'cat')">📱 Mobile Money</button>
+            <button class="fpill" data-val="imf" onclick="toggleFpill(this,'cat')">🤝 IMF</button>
+            <button class="fpill" data-val="ep" onclick="toggleFpill(this,'cat')">🔄 Étab. Paiement</button>
+          </div>
+        </div>
+
+        <!-- Ligne 4 : canal -->
+        <div class="filter-row">
+          <span class="filter-label">Canal</span>
+          <div class="fpill-group" id="fpCanal">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'canal')">Tous</button>
+            <button class="fpill" data-val="app" onclick="toggleFpill(this,'canal')">📱 App</button>
+            <button class="fpill" data-val="agence" onclick="toggleFpill(this,'canal')">🏢 Agence</button>
+            <button class="fpill" data-val="telephone" onclick="toggleFpill(this,'canal')">📞 Téléphone</button>
+            <button class="fpill" data-val="web" onclick="toggleFpill(this,'canal')">🌐 Web</button>
+            <button class="fpill" data-val="ussd" onclick="toggleFpill(this,'canal')">🔢 USSD</button>
+          </div>
+        </div>
+
+        <!-- Ligne 5 : profil -->
+        <div class="filter-row">
+          <span class="filter-label">Profil</span>
+          <div class="fpill-group" id="fpProfil">
+            <button class="fpill on" data-val="" onclick="toggleFpill(this,'profil')">Tous</button>
+            <button class="fpill" data-val="particulier" onclick="toggleFpill(this,'profil')">👤 Particulier</button>
+            <button class="fpill" data-val="entrepreneur" onclick="toggleFpill(this,'profil')">🚀 Entrepreneur</button>
+            <button class="fpill" data-val="pme" onclick="toggleFpill(this,'profil')">🏭 PME</button>
+            <button class="fpill" data-val="corporate" onclick="toggleFpill(this,'profil')">🏛 Corporate</button>
+          </div>
+        </div>
+
       </div>
 
       <div class="alert-banner">
@@ -822,52 +905,77 @@ const CFG = {
 
 let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [];
 let loginAttempts = 0, lockUntil = 0;
-let dateFilter = { from: null, to: null };
+
+// ── FILTRE COMPLET ─────────────────────────────────────────────────
+let activeFilters = { from: null, to: null, pays: '', cat: '', canal: '', profil: '' };
 
 function getFilteredData() {
-  if (!dateFilter.from && !dateFilter.to) return globalData;
   return globalData.filter(d => {
-    const dt = new Date(d.created_at);
-    if (dateFilter.from && dt < dateFilter.from) return false;
-    if (dateFilter.to   && dt > dateFilter.to)   return false;
+    if (activeFilters.from || activeFilters.to) {
+      const dt = new Date(d.created_at);
+      if (activeFilters.from && dt < activeFilters.from) return false;
+      if (activeFilters.to   && dt > activeFilters.to)   return false;
+    }
+    if (activeFilters.pays   && d.pays   !== activeFilters.pays)   return false;
+    if (activeFilters.cat    && d.cat    !== activeFilters.cat)    return false;
+    if (activeFilters.canal  && d.canal  !== activeFilters.canal)  return false;
+    if (activeFilters.profil && d.profil !== activeFilters.profil) return false;
     return true;
   });
 }
 
-function onDateChange() {
-  // Active le bouton Filtrer visuellement si une date est renseignée
-  const from = document.getElementById('dfFrom').value;
-  const to   = document.getElementById('dfTo').value;
-  document.querySelector('.btn-filter').style.background = (from || to) ? 'var(--accent)' : '';
+function toggleFpill(btn, key) {
+  // Désélectionne tous les pills du groupe
+  btn.closest('.fpill-group').querySelectorAll('.fpill').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  activeFilters[key] = btn.dataset.val;
 }
 
-function applyDateFilter() {
+function onFilterChange() {
+  // Highlight visuel si une date est renseignée
   const from = document.getElementById('dfFrom').value;
   const to   = document.getElementById('dfTo').value;
-  dateFilter.from = from ? new Date(from + 'T00:00:00') : null;
-  dateFilter.to   = to   ? new Date(to   + 'T23:59:59') : null;
+  document.querySelector('.btn-filter').style.opacity = (from || to) ? '1' : '.75';
+}
 
-  const clearBtn = document.getElementById('dfClear');
-  const badge    = document.getElementById('dfBadge');
+function applyFilters() {
+  const from = document.getElementById('dfFrom').value;
+  const to   = document.getElementById('dfTo').value;
+  activeFilters.from = from ? new Date(from + 'T00:00:00') : null;
+  activeFilters.to   = to   ? new Date(to   + 'T23:59:59') : null;
 
-  if (from || to) {
-    clearBtn.style.display = 'inline-block';
-    const label = [from ? `Du ${from}` : '', to ? `Au ${to}` : ''].filter(Boolean).join(' ');
-    badge.textContent = label;
+  // Badge résumé
+  const parts = [];
+  if (from || to) parts.push([from ? `Du ${from}` : '', to ? `Au ${to}` : ''].filter(Boolean).join(' '));
+  if (activeFilters.pays)   parts.push(activeFilters.pays);
+  if (activeFilters.cat)    parts.push(activeFilters.cat);
+  if (activeFilters.canal)  parts.push(activeFilters.canal);
+  if (activeFilters.profil) parts.push(activeFilters.profil);
+
+  const badge   = document.getElementById('filterBadge');
+  const resetBtn = document.getElementById('btnResetAll');
+  if (parts.length) {
+    badge.textContent = parts.join(' · ');
     badge.style.display = 'inline-block';
+    resetBtn.style.display = 'inline-block';
   } else {
-    clearBtn.style.display = 'none';
     badge.style.display = 'none';
+    resetBtn.style.display = 'none';
   }
   updateDashboard();
 }
 
-function clearDateFilter() {
+function resetAllFilters() {
   document.getElementById('dfFrom').value = '';
   document.getElementById('dfTo').value   = '';
-  dateFilter = { from: null, to: null };
-  document.getElementById('dfClear').style.display = 'none';
-  document.getElementById('dfBadge').style.display = 'none';
+  activeFilters = { from: null, to: null, pays: '', cat: '', canal: '', profil: '' };
+  // Remet tous les pills sur "Tous"
+  document.querySelectorAll('.fpill-group').forEach(grp => {
+    grp.querySelectorAll('.fpill').forEach(p => p.classList.remove('on'));
+    grp.querySelector('.fpill[data-val=""]').classList.add('on');
+  });
+  document.getElementById('filterBadge').style.display = 'none';
+  document.getElementById('btnResetAll').style.display = 'none';
   updateDashboard();
 }
 
