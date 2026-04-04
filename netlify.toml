@@ -1,3 +1,16 @@
+# Rediriger l'ancienne URL /admin vers 404 pour ne pas révéler l'existence d'un panneau
+[[redirects]]
+  from = "/admin"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/admin.html"
+  to = "/404"
+  status = 404
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
