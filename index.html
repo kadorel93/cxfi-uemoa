@@ -609,6 +609,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
         </span>
         <span class="lbl">WhatsApp</span>
       </button>
+      <button class="sel-btn" onclick="toggleCanal('appel',this)"><span class="ico">📞</span><span class="lbl">Appel</span></button>
       <button class="sel-btn" onclick="toggleCanal('mail',this)"><span class="ico">✉️</span><span class="lbl">Mail</span></button>
       <button class="sel-btn" onclick="toggleCanal('api',this)"><span class="ico">⚙️</span><span class="lbl">API</span></button>
     </div>
@@ -1066,7 +1067,7 @@ function pick(field, val, btn) {
 }
 
 // Multi-select canal
-const CANAL_LABELS = {app:'📱 App',ussd:'#️⃣ USSD',agence:'🏦 Agence',web:'💻 Web',whatsapp:'🟢 WhatsApp',mail:'✉️ Mail',api:'⚙️ API'};
+const CANAL_LABELS = {app:'📱 App',ussd:'#️⃣ USSD',agence:'🏦 Agence',web:'💻 Web',whatsapp:'🟢 WhatsApp',appel:'📞 Appel',mail:'✉️ Mail',api:'⚙️ API'};
 function toggleCanal(val, btn) {
   btn.classList.toggle('active');
   const idx = fd.canaux.indexOf(val);
