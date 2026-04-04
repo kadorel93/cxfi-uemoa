@@ -16,88 +16,76 @@ body{font-family:'IBM Plex Sans',sans-serif;background:#1a1a1a;color:#fff;paddin
 
 /* ── UI ── */
 h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;color:#fff;}
-.subtitle{color:rgba(255,255,255,0.45);font-size:14px;margin-bottom:36px;}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;}
+.subtitle{color:rgba(255,255,255,0.45);font-size:14px;margin-bottom:24px;}
+.toolbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;}
 .tab{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:7px 18px;font-size:13px;font-weight:500;cursor:pointer;color:rgba(255,255,255,0.6);transition:all .2s;font-family:'IBM Plex Sans',sans-serif;}
 .tab.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle{display:flex;gap:4px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:4px;}
+.theme-btn{border:none;border-radius:99px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif;background:transparent;color:rgba(255,255,255,0.5);}
+.theme-btn.on{background:#fff;color:#0F0E0C;}
+
 .card-wrap{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;}
-.card-col{display:flex;flex-direction:column;gap:16px;}
+.card-col{display:flex;flex-direction:column;gap:12px;}
 .card-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px;}
-.dl-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;color:#fff;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;width:100%;}
+
+/* ── DOWNLOAD BUTTONS ── */
+.dl-row{display:flex;gap:8px;}
+.dl-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:500;color:#fff;cursor:pointer;transition:all .2s;font-family:'IBM Plex Sans',sans-serif;display:inline-flex;align-items:center;gap:6px;flex:1;justify-content:center;}
 .dl-btn:hover{background:rgba(255,255,255,0.14);}
-.dl-btn svg{opacity:.6;}
+.dl-btn svg{opacity:.6;flex-shrink:0;}
+.dl-btn.jpg{background:rgba(26,122,74,0.15);border-color:rgba(26,122,74,0.3);color:#6ee7a0;}
+.dl-btn.jpg:hover{background:rgba(26,122,74,0.25);}
 
 /* ── CARD CONTAINER ── */
 .card-preview{border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6);}
 
 /* ══════════════════════════════════════════════
-   CARDS  1080×1080
+   CARDS  1080×1080 (affichées à 50% = 540px)
 ══════════════════════════════════════════════ */
 .card{
-  width:540px;height:540px; /* displayed at 50%, export at 1080x1080 */
+  width:540px;height:540px;
   position:relative;overflow:hidden;flex-shrink:0;
   font-family:'Syne',sans-serif;
 }
 
 /* ── CARD 1 : INTRO ── */
 #c1{background:#0F0E0C;}
-#c1 .bg-circle{
-  position:absolute;width:480px;height:480px;border-radius:50%;
-  border:1.5px solid rgba(26,63,255,0.18);
-  top:-120px;right:-120px;
-}
-#c1 .bg-circle2{
-  position:absolute;width:280px;height:280px;border-radius:50%;
-  border:1.5px solid rgba(26,63,255,0.1);
-  bottom:-80px;left:-60px;
-}
-#c1 .bg-dot{
-  position:absolute;width:6px;height:6px;border-radius:50%;background:var(--accent);
-  top:72px;right:72px;
-}
-#c1 .logo{
-  position:absolute;top:44px;left:44px;
-  display:flex;align-items:center;gap:10px;
-}
+#c1 .bg-circle{position:absolute;width:480px;height:480px;border-radius:50%;border:1.5px solid rgba(26,77,46,0.2);top:-120px;right:-120px;}
+#c1 .bg-circle2{position:absolute;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(26,77,46,0.12);bottom:-80px;left:-60px;}
+#c1 .bg-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--green);top:72px;right:72px;}
+#c1 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;}
 #c1 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;letter-spacing:-0.5px;}
 #c1 .logo-name em{color:#1A7A4A;font-style:normal;}
 #c1 .body{position:absolute;bottom:0;left:0;right:0;padding:0 44px 44px;}
 #c1 .eyebrow{font-family:'IBM Plex Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:16px;}
 #c1 .headline{font-family:'Syne',sans-serif;font-weight:800;font-size:46px;line-height:1.05;color:#fff;margin-bottom:20px;}
-#c1 .headline em{color:var(--accent);font-style:normal;}
+#c1 .headline em{color:#1A7A4A;font-style:normal;}
 #c1 .tag-line{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;max-width:340px;}
-#c1 .url{
-  position:absolute;top:44px;right:44px;
-  font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.2);
-  letter-spacing:.05em;
-}
+#c1 .url{position:absolute;top:44px;right:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:.05em;}
 
 /* ── CARD 2 : HOW IT WORKS ── */
 #c2{background:#0F0E0C;}
-#c2 .accent-bar{
-  position:absolute;top:0;left:44px;width:40px;height:3px;background:var(--accent);
-}
-#c2 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c2 .accent-bar{position:absolute;top:0;left:44px;width:40px;height:3px;background:var(--accent);}
+#c2 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;}
 #c2 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.5px;}
 #c2 .logo-name em{color:#1A7A4A;font-style:normal;}
 #c2 .title{position:absolute;top:108px;left:44px;right:44px;}
 #c2 .title h2{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#fff;line-height:1.15;}
-#c2 .title h2 span{color:var(--accent);}
+#c2 .title h2 span{color:#1A7A4A;}
 #c2 .steps-grid{position:absolute;bottom:44px;left:44px;right:44px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 #c2 .step{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 16px;}
-#c2 .step-n{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:10px;font-weight:500;}
+#c2 .step-n{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#1A7A4A;margin-bottom:10px;font-weight:500;}
 #c2 .step-ico{font-size:22px;margin-bottom:10px;}
 #c2 .step-t{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:4px;line-height:1.3;}
 #c2 .step-d{font-family:'IBM Plex Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);line-height:1.5;}
 
 /* ── CARD 3 : MILESTONE ── */
 #c3{background:#0F0E0C;}
-#c3 .glow{
-  position:absolute;width:500px;height:500px;border-radius:50%;
-  background:radial-gradient(circle,rgba(26,63,255,0.15) 0%,transparent 70%);
-  top:50%;left:50%;transform:translate(-50%,-50%);
-}
-#c3 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c3 .glow{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(26,122,74,0.18) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
+#c3 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;}
 #c3 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.5px;}
 #c3 .logo-name em{color:#1A7A4A;font-style:normal;}
 #c3 .center{position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);text-align:center;width:100%;}
@@ -106,20 +94,13 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c3 .congrats{position:absolute;bottom:44px;left:0;right:0;text-align:center;}
 #c3 .congrats-txt{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:#fff;margin-bottom:6px;}
 #c3 .congrats-sub{font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.35);}
-#c3 .badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(26,63,255,0.15);border:1px solid rgba(26,63,255,0.3);
-  border-radius:99px;padding:4px 12px;
-  font-family:'IBM Plex Sans',sans-serif;font-size:10px;font-weight:600;
-  color:var(--accent);letter-spacing:.05em;
-  position:absolute;top:44px;right:44px;
-}
-#c3 .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block;}
+#c3 .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,122,74,0.15);border:1px solid rgba(26,122,74,0.3);border-radius:99px;padding:4px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:10px;font-weight:600;color:#1A7A4A;letter-spacing:.05em;position:absolute;top:44px;right:44px;}
+#c3 .badge::before{content:'';width:5px;height:5px;border-radius:50%;background:#1A7A4A;display:inline-block;}
 
 /* ── CARD 4 : SCORE DÉBLOQUÉ ── */
 #c4{background:#0F0E0C;}
 #c4 .top-bar{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),#7C3AED);}
-#c4 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c4 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;}
 #c4 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.5px;}
 #c4 .logo-name em{color:#1A7A4A;font-style:normal;}
 #c4 .content{position:absolute;top:50%;left:44px;right:44px;transform:translateY(-50%);}
@@ -127,7 +108,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c4 .inst-name{font-family:'Syne',sans-serif;font-weight:800;font-size:36px;color:#fff;line-height:1.1;margin-bottom:12px;}
 #c4 .inst-sub{font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:28px;line-height:1.6;}
 #c4 .score-row{display:flex;align-items:center;gap:20px;}
-#c4 .score-box{background:rgba(26,63,255,0.12);border:1px solid rgba(26,63,255,0.25);border-radius:12px;padding:14px 20px;text-align:center;}
+#c4 .score-box{background:rgba(26,77,46,0.15);border:1px solid rgba(26,77,46,0.3);border-radius:12px;padding:14px 20px;text-align:center;}
 #c4 .score-n{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#fff;}
 #c4 .score-l{font-family:'IBM Plex Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;letter-spacing:.05em;text-transform:uppercase;}
 #c4 .divider{width:1px;height:48px;background:rgba(255,255,255,0.08);}
@@ -141,7 +122,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c5 .noise{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
 #c5 .circle1{position:absolute;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);top:-100px;right:-100px;}
 #c5 .circle2{position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);bottom:-50px;left:50px;}
-#c5 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;gap:10px;}
+#c5 .logo{position:absolute;top:44px;left:44px;display:flex;align-items:center;}
 #c5 .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;letter-spacing:-0.5px;}
 #c5 .logo-name em{color:rgba(255,255,255,0.6);font-style:normal;}
 #c5 .body{position:absolute;bottom:44px;left:44px;right:44px;}
@@ -151,20 +132,86 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
 #c5 .pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:99px;padding:5px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:500;color:#fff;}
 #c5 .url{position:absolute;top:44px;right:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:.05em;}
 
+/* ══════════════════════════════════════════════
+   THÈME CRÈME — overrides globaux
+══════════════════════════════════════════════ */
+.card.cream{background:#F7F4EE !important;}
+
+/* Logo crème */
+.card.cream .logo-name{color:#0F0E0C !important;}
+.card.cream .logo-name em{color:#1A4D2E !important;}
+
+/* URL crème */
+.card.cream .url{color:rgba(15,14,12,0.2) !important;}
+
+/* Card 1 crème */
+#c1.cream .eyebrow{color:rgba(15,14,12,0.4) !important;}
+#c1.cream .headline{color:#0F0E0C !important;}
+#c1.cream .headline em{color:#1A4D2E !important;}
+#c1.cream .tag-line{color:rgba(15,14,12,0.5) !important;}
+#c1.cream .bg-circle{border-color:rgba(26,77,46,0.12) !important;}
+#c1.cream .bg-circle2{border-color:rgba(26,77,46,0.07) !important;}
+#c1.cream .bg-dot{background:#1A4D2E !important;}
+
+/* Card 2 crème */
+#c2.cream .title h2{color:#0F0E0C !important;}
+#c2.cream .title h2 span{color:#1A4D2E !important;}
+#c2.cream .step{background:rgba(15,14,12,0.04) !important;border-color:rgba(15,14,12,0.08) !important;}
+#c2.cream .step-n{color:#1A4D2E !important;}
+#c2.cream .step-t{color:#0F0E0C !important;}
+#c2.cream .step-d{color:rgba(15,14,12,0.45) !important;}
+
+/* Card 3 crème */
+#c3.cream .glow{background:radial-gradient(circle,rgba(26,77,46,0.08) 0%,transparent 70%) !important;}
+#c3.cream .big-num{color:#0F0E0C !important;}
+#c3.cream .big-label{color:rgba(15,14,12,0.45) !important;}
+#c3.cream .congrats-txt{color:#0F0E0C !important;}
+#c3.cream .congrats-sub{color:rgba(15,14,12,0.45) !important;}
+#c3.cream .badge{background:rgba(26,77,46,0.08) !important;border-color:rgba(26,77,46,0.2) !important;color:#1A4D2E !important;}
+#c3.cream .badge::before{background:#1A4D2E !important;}
+
+/* Card 4 crème */
+#c4.cream .inst-name{color:#0F0E0C !important;}
+#c4.cream .inst-sub{color:rgba(15,14,12,0.5) !important;}
+#c4.cream .inst-sub strong{color:#0F0E0C !important;}
+#c4.cream .score-box{background:rgba(26,77,46,0.07) !important;border-color:rgba(26,77,46,0.18) !important;}
+#c4.cream .score-n{color:#0F0E0C !important;}
+#c4.cream .score-l{color:rgba(15,14,12,0.4) !important;}
+#c4.cream .divider{background:rgba(15,14,12,0.1) !important;}
+#c4.cream .fcr-n{color:#1A4D2E !important;}
+#c4.cream .fcr-l{color:rgba(15,14,12,0.4) !important;}
+
+/* Card 5 crème — fond sable clair avec texte sombre */
+#c5.cream{background:#EDE9E0 !important;}
+#c5.cream .logo-name{color:#0F0E0C !important;}
+#c5.cream .logo-name em{color:#1A4D2E !important;}
+#c5.cream .circle1{border-color:rgba(15,14,12,0.08) !important;}
+#c5.cream .circle2{border-color:rgba(15,14,12,0.05) !important;}
+#c5.cream .tag{color:rgba(15,14,12,0.45) !important;}
+#c5.cream .big{color:#0F0E0C !important;}
+#c5.cream .pill{background:rgba(15,14,12,0.06) !important;border-color:rgba(15,14,12,0.12) !important;color:#0F0E0C !important;}
+#c5.cream .url{color:rgba(15,14,12,0.2) !important;}
+
 </style>
 </head>
 <body>
 
 <h1>Kit Réseaux Sociaux — Goxen</h1>
-<p class="subtitle">Visuels 1080×1080 · Cliquez "Télécharger" pour exporter en PNG</p>
+<p class="subtitle">Visuels 1080×1080 · PNG haute qualité · JPEG optimisé réseaux sociaux</p>
 
-<div class="tabs">
-  <button class="tab on" onclick="showAll()">Tous</button>
-  <button class="tab" onclick="showTab('intro')">Présentation</button>
-  <button class="tab" onclick="showTab('how')">Comment ça marche</button>
-  <button class="tab" onclick="showTab('milestone')">Paliers</button>
-  <button class="tab" onclick="showTab('unlock')">Score débloqué</button>
-  <button class="tab" onclick="showTab('cta')">Appel à noter</button>
+<div class="toolbar">
+  <div class="tabs">
+    <button class="tab on" onclick="showAll(event)">Tous</button>
+    <button class="tab" onclick="showTab('intro',event)">Présentation</button>
+    <button class="tab" onclick="showTab('how',event)">Comment ça marche</button>
+    <button class="tab" onclick="showTab('milestone',event)">Paliers</button>
+    <button class="tab" onclick="showTab('unlock',event)">Score débloqué</button>
+    <button class="tab" onclick="showTab('cta',event)">Appel à noter</button>
+  </div>
+  <div class="theme-toggle">
+    <button class="theme-btn on" id="btnDark" onclick="setTheme('dark')">🌑 Fond sombre</button>
+    <button class="theme-btn" id="btnCream" onclick="setTheme('cream')">☀️ Fond crème</button>
+  </div>
 </div>
 
 <div class="card-wrap" id="cardWrap">
@@ -188,10 +235,16 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
         </div>
       </div>
     </div>
-    <button class="dl-btn" onclick="download('c1','goxen-intro')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Télécharger PNG
-    </button>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c1','goxen-intro','png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c1','goxen-intro','jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
   </div>
 
   <!-- ── CARD 2 : HOW IT WORKS ── -->
@@ -228,15 +281,21 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
         </div>
       </div>
     </div>
-    <button class="dl-btn" onclick="download('c2','goxen-comment-ca-marche')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Télécharger PNG
-    </button>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c2','goxen-comment-ca-marche','png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c2','goxen-comment-ca-marche','jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
   </div>
 
-  <!-- ── CARD 3 : MILESTONE 100 ── -->
+  <!-- ── CARD 3 : MILESTONE ── -->
   <div class="card-col" data-cat="milestone">
-    <div class="card-label">Palier 100 avis</div>
+    <div class="card-label">Palier — avis collectés</div>
     <div class="card-preview">
       <div class="card" id="c3">
         <div class="glow"></div>
@@ -254,16 +313,22 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
         </div>
       </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;">
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:2px;">
       <span style="font-size:12px;color:rgba(255,255,255,0.4);">Nombre :</span>
       <input type="number" id="milestoneVal" value="100" min="1"
         style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 10px;color:#fff;font-size:13px;width:90px;font-family:'IBM Plex Sans',sans-serif;"
-        oninput="document.getElementById('milestoneNum').textContent=this.value">
+        oninput="document.getElementById('milestoneNum').textContent=this.value;document.getElementById('congrats-sub-txt').textContent=this.value+' voix pour plus de transparence financière en Afrique de l\'Ouest'">
     </div>
-    <button class="dl-btn" onclick="download('c3','goxen-milestone-'+document.getElementById('milestoneVal').value)">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Télécharger PNG
-    </button>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c3','goxen-milestone-'+document.getElementById('milestoneVal').value,'png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c3','goxen-milestone-'+document.getElementById('milestoneVal').value,'jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
   </div>
 
   <!-- ── CARD 4 : SCORE DÉBLOQUÉ ── -->
@@ -294,7 +359,7 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
         <div class="url">goxen.co</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px;">
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:2px;">
       <div style="display:flex;gap:8px;align-items:center;">
         <span style="font-size:12px;color:rgba(255,255,255,0.4);min-width:80px;">Institution :</span>
         <input type="text" id="instInput" value="Wave Sénégal"
@@ -314,10 +379,16 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
           oninput="document.getElementById('fcrNum').textContent=this.value">
       </div>
     </div>
-    <button class="dl-btn" onclick="download('c4','goxen-score-'+document.getElementById('instInput').value.toLowerCase().replace(/\s/g,'-'))">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Télécharger PNG
-    </button>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c4','goxen-score-'+document.getElementById('instInput').value.toLowerCase().replace(/\s/g,'-'),'png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c4','goxen-score-'+document.getElementById('instInput').value.toLowerCase().replace(/\s/g,'-'),'jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
   </div>
 
   <!-- ── CARD 5 : CTA ── -->
@@ -343,37 +414,58 @@ h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6p
         </div>
       </div>
     </div>
-    <button class="dl-btn" onclick="download('c5','goxen-cta')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Télécharger PNG
-    </button>
+    <div class="dl-row">
+      <button class="dl-btn" onclick="download('c5','goxen-cta','png')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        PNG
+      </button>
+      <button class="dl-btn jpg" onclick="download('c5','goxen-cta','jpg')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        JPEG
+      </button>
+    </div>
   </div>
 
 </div>
 
 <script>
-function showAll() {
+/* ── TABS ── */
+function showAll(e) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('[data-cat]').forEach(c=>c.style.display='flex');
-  event.target.classList.add('on');
+  e.target.classList.add('on');
 }
-function showTab(cat) {
+function showTab(cat,e) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  event.target.classList.add('on');
+  e.target.classList.add('on');
   document.querySelectorAll('[data-cat]').forEach(c=>{
     c.style.display = c.dataset.cat === cat ? 'flex' : 'none';
   });
 }
 
-async function download(id, filename) {
+/* ── THEME ── */
+let currentTheme = 'dark';
+function setTheme(theme) {
+  currentTheme = theme;
+  document.querySelectorAll('.card').forEach(c=>{
+    if(theme==='cream') c.classList.add('cream');
+    else c.classList.remove('cream');
+  });
+  document.getElementById('btnDark').classList.toggle('on', theme==='dark');
+  document.getElementById('btnCream').classList.toggle('on', theme==='cream');
+}
+
+/* ── DOWNLOAD ── */
+async function download(id, filename, fmt) {
   const el = document.getElementById(id);
-  const btn = event.target;
-  btn.textContent = 'Export en cours…';
+  // find the button that was clicked
+  const btn = event.target.closest('.dl-btn');
+  const origHTML = btn.innerHTML;
+  btn.textContent = 'Export…';
   btn.disabled = true;
 
-  // Render at 2× for 1080px output (cards are 540px displayed)
   const canvas = await html2canvas(el, {
-    scale: 2,
+    scale: 2,           // 540×2 = 1080px
     useCORS: true,
     allowTaint: true,
     backgroundColor: null,
@@ -383,11 +475,19 @@ async function download(id, filename) {
   });
 
   const link = document.createElement('a');
-  link.download = filename + '.png';
-  link.href = canvas.toDataURL('image/png');
+  const suffix = currentTheme === 'cream' ? '-creme' : '';
+
+  if (fmt === 'jpg') {
+    // JPEG qualité 0.93 — haute qualité, fichier léger pour réseaux sociaux
+    link.download = filename + suffix + '.jpg';
+    link.href = canvas.toDataURL('image/jpeg', 0.93);
+  } else {
+    link.download = filename + suffix + '.png';
+    link.href = canvas.toDataURL('image/png');
+  }
   link.click();
 
-  btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Télécharger PNG';
+  btn.innerHTML = origHTML;
   btn.disabled = false;
 }
 </script>
