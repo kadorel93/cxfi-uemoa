@@ -524,20 +524,7 @@ tr:hover td{background:rgba(15,14,12,.02);}
           </div>
         </div>
 
-        <!-- Ligne 3 : catégorie -->
-        <div class="filter-row">
-          <span class="filter-label">Catégorie</span>
-          <div class="fpill-group" id="fpCat">
-            <button class="fpill on" data-val="" onclick="toggleFpill(this,'cat')">Tous</button>
-            <button class="fpill" data-val="banque" onclick="toggleFpill(this,'cat')">🏦 Banque</button>
-            <button class="fpill" data-val="fintech" onclick="toggleFpill(this,'cat')">⚡ Fintech</button>
-            <button class="fpill" data-val="mobile" onclick="toggleFpill(this,'cat')">📱 Mobile Money</button>
-            <button class="fpill" data-val="imf" onclick="toggleFpill(this,'cat')">🤝 IMF</button>
-            <button class="fpill" data-val="ep" onclick="toggleFpill(this,'cat')">🔄 Étab. Paiement</button>
-          </div>
-        </div>
-
-        <!-- Ligne 4 : canal -->
+        <!-- Ligne 3 : canal -->
         <div class="filter-row">
           <span class="filter-label">Canal</span>
           <div class="fpill-group" id="fpCanal">
@@ -907,7 +894,7 @@ let sbClient, charts = {}, currentPeriod = '7d', userData = null, globalData = [
 let loginAttempts = 0, lockUntil = 0;
 
 // ── FILTRE COMPLET ─────────────────────────────────────────────────
-let activeFilters = { from: null, to: null, pays: '', cat: '', canal: '', profil: '' };
+let activeFilters = { from: null, to: null, pays: '', canal: '', profil: '' };
 
 function getFilteredData() {
   return globalData.filter(d => {
@@ -917,7 +904,6 @@ function getFilteredData() {
       if (activeFilters.to   && dt > activeFilters.to)   return false;
     }
     if (activeFilters.pays   && d.pays   !== activeFilters.pays)   return false;
-    if (activeFilters.cat    && d.cat    !== activeFilters.cat)    return false;
     if (activeFilters.canal  && d.canal  !== activeFilters.canal)  return false;
     if (activeFilters.profil && d.profil !== activeFilters.profil) return false;
     return true;
@@ -925,17 +911,15 @@ function getFilteredData() {
 }
 
 function toggleFpill(btn, key) {
-  // Désélectionne tous les pills du groupe
   btn.closest('.fpill-group').querySelectorAll('.fpill').forEach(p => p.classList.remove('on'));
   btn.classList.add('on');
   activeFilters[key] = btn.dataset.val;
+  _syncFilterUI();
+  updateDashboard();
 }
 
 function onFilterChange() {
-  // Highlight visuel si une date est renseignée
-  const from = document.getElementById('dfFrom').value;
-  const to   = document.getElementById('dfTo').value;
-  document.querySelector('.btn-filter').style.opacity = (from || to) ? '1' : '.75';
+  // pas de apply automatique sur date — attend le bouton
 }
 
 function applyFilters() {
@@ -943,16 +927,19 @@ function applyFilters() {
   const to   = document.getElementById('dfTo').value;
   activeFilters.from = from ? new Date(from + 'T00:00:00') : null;
   activeFilters.to   = to   ? new Date(to   + 'T23:59:59') : null;
+  _syncFilterUI();
+  updateDashboard();
+}
 
-  // Badge résumé
+function _syncFilterUI() {
+  const from = document.getElementById('dfFrom').value;
+  const to   = document.getElementById('dfTo').value;
   const parts = [];
   if (from || to) parts.push([from ? `Du ${from}` : '', to ? `Au ${to}` : ''].filter(Boolean).join(' '));
   if (activeFilters.pays)   parts.push(activeFilters.pays);
-  if (activeFilters.cat)    parts.push(activeFilters.cat);
   if (activeFilters.canal)  parts.push(activeFilters.canal);
   if (activeFilters.profil) parts.push(activeFilters.profil);
-
-  const badge   = document.getElementById('filterBadge');
+  const badge    = document.getElementById('filterBadge');
   const resetBtn = document.getElementById('btnResetAll');
   if (parts.length) {
     badge.textContent = parts.join(' · ');
@@ -962,17 +949,16 @@ function applyFilters() {
     badge.style.display = 'none';
     resetBtn.style.display = 'none';
   }
-  updateDashboard();
 }
 
 function resetAllFilters() {
   document.getElementById('dfFrom').value = '';
   document.getElementById('dfTo').value   = '';
-  activeFilters = { from: null, to: null, pays: '', cat: '', canal: '', profil: '' };
-  // Remet tous les pills sur "Tous"
+  activeFilters = { from: null, to: null, pays: '', canal: '', profil: '' };
   document.querySelectorAll('.fpill-group').forEach(grp => {
     grp.querySelectorAll('.fpill').forEach(p => p.classList.remove('on'));
-    grp.querySelector('.fpill[data-val=""]').classList.add('on');
+    const allBtn = grp.querySelector('.fpill[data-val=""]');
+    if (allBtn) allBtn.classList.add('on');
   });
   document.getElementById('filterBadge').style.display = 'none';
   document.getElementById('btnResetAll').style.display = 'none';
@@ -1572,12 +1558,12 @@ function closeShare() {
 
 function shareLinkedIn() {
   const url = encodeURIComponent(CFG.siteUrl);
-  const text = encodeURIComponent('📊 Rapport CXFI: ' + document.getElementById('wCXFI').textContent + '/100 score composite naxari');
+  const text = encodeURIComponent('📊 Rapport Goxen: ' + document.getElementById('wCXFI').textContent + '/100 score composite naxari');
   window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
 }
 
 function shareWhatsApp() {
-  const text = encodeURIComponent('📊 Rapport CXFI naxari\nScore: ' + document.getElementById('wCXFI').textContent + '/100\nFCR: ' + document.getElementById('wFCR').textContent);
+  const text = encodeURIComponent('📊 Rapport Goxen naxari\nScore: ' + document.getElementById('wCXFI').textContent + '/100\nFCR: ' + document.getElementById('wFCR').textContent);
   window.open(`https://wa.me/?text=${text}`, '_blank');
 }
 
