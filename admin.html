@@ -1221,6 +1221,7 @@ const CHART_DEFAULTS = {
 function updateCharts(data) {
   data = data || getFilteredData();
   // ── 1. Évolution (line) ─────────────────────────────────────────
+  try {
   const lineData = buildLineData(data, currentPeriod);
   if (charts.line) charts.line.destroy();
   const lineCtx = document.getElementById('lineChart').getContext('2d');
@@ -1255,8 +1256,10 @@ function updateCharts(data) {
       }
     }
   });
+  } catch(e) { console.warn('lineChart error:', e); }
 
   // ── 2. Pays (doughnut) ──────────────────────────────────────────
+  try {
   const countryData = {};
   data.forEach(d => { countryData[d.pays] = (countryData[d.pays] || 0) + 1; });
   const sorted = Object.entries(countryData).sort((a,b) => b[1]-a[1]);
@@ -1285,8 +1288,10 @@ function updateCharts(data) {
       }
     }
   });
+  } catch(e) { console.warn('doughnutChart error:', e); }
 
   // ── 3. Score par critère (horizontal bar) ───────────────────────
+  try {
   const starFields = ['star_rapidite','star_facilite','star_frais','star_support','star_confiance'];
   const criteriaLabels = ['Rapidité','Facilité','Frais','Support','Confiance'];
   const criteriaData = starFields.map(f => {
@@ -1315,8 +1320,10 @@ function updateCharts(data) {
       }
     }
   });
+  } catch(e) { console.warn('criteriaChart error:', e); }
 
   // ── 4. NPS Distribution (bar avec zones colorées) ───────────────
+  try {
   const npsData = data.filter(d => !isNaN(parseInt(d.nps)));
   const npsCount = Array(11).fill(0);
   npsData.forEach(d => npsCount[parseInt(d.nps)]++);
@@ -1344,48 +1351,70 @@ function updateCharts(data) {
       }
     }
   });
+  } catch(e) { console.warn('npsChart error:', e); }
 
   // ── 5. FCR par institution (horizontal bar, top 10 trié) ─────────
-  const instMetrics = {};
-  data.forEach(d => {
-    if (!instMetrics[d.institution]) instMetrics[d.institution] = {fcr:0, tot:0};
-    if (d.fcr === 'oui') instMetrics[d.institution].fcr++;
-    instMetrics[d.institution].tot++;
-  });
-  const instEntries = Object.entries(instMetrics)
-    .map(([name, m]) => ({ name, pct: Math.round(100 * m.fcr / m.tot), n: m.tot }))
-    .sort((a,b) => b.pct - a.pct)
-    .slice(0, 10);
-  if (charts.fcr) charts.fcr.destroy();
-  const fcrCtx = document.getElementById('fcrChart').getContext('2d');
-  charts.fcr = new Chart(fcrCtx, {
-    type: 'bar',
-    data: {
-      labels: instEntries.map(e => e.name),
-      datasets: [{
-        label: 'FCR %',
-        data: instEntries.map(e => e.pct),
-        backgroundColor: instEntries.map(e => e.pct >= 75 ? 'rgba(26,122,74,0.85)' : e.pct >= 50 ? 'rgba(196,122,26,0.85)' : 'rgba(200,53,42,0.85)'),
-        borderRadius: 8,
-        barThickness: 18
-      }]
-    },
-    options: {
-      ...CHART_DEFAULTS,
-      indexAxis: 'y',
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
-          label: ctx => ` FCR ${ctx.parsed.x}%`,
-          afterLabel: ctx => ` (${instEntries[ctx.dataIndex].n} avis)`
-        }}
-      },
-      scales: {
-        x: { max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
-        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
-      }
+  try {
+    const instMetrics = {};
+    data.forEach(d => {
+      const inst = (d.institution || '').trim();
+      if (!inst) return; // ignorer les entrées sans institution
+      if (!instMetrics[inst]) instMetrics[inst] = {fcr:0, tot:0};
+      if (d.fcr === 'oui') instMetrics[inst].fcr++;
+      instMetrics[inst].tot++;
+    });
+    const instEntries = Object.entries(instMetrics)
+      .filter(([, m]) => m.tot > 0)
+      .map(([name, m]) => ({ name, pct: Math.round(100 * m.fcr / m.tot), n: m.tot }))
+      .sort((a,b) => b.pct - a.pct)
+      .slice(0, 10);
+    if (charts.fcr) { charts.fcr.destroy(); charts.fcr = null; }
+    const fcrWrap = document.getElementById('fcrChart').parentElement;
+    // Retirer l'éventuel état vide précédent
+    const prevEmpty = fcrWrap.querySelector('.chart-empty');
+    if (prevEmpty) prevEmpty.remove();
+    if (instEntries.length === 0) {
+      document.getElementById('fcrChart').style.display = 'none';
+      const empty = document.createElement('div');
+      empty.className = 'chart-empty';
+      empty.style.cssText = 'height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);';
+      empty.textContent = 'Pas encore assez de données par institution';
+      fcrWrap.appendChild(empty);
+    } else {
+      document.getElementById('fcrChart').style.display = '';
+      const fcrCtx = document.getElementById('fcrChart').getContext('2d');
+      const canvasH = Math.max(180, instEntries.length * 32);
+      document.getElementById('fcrChart').parentElement.style.height = canvasH + 'px';
+      charts.fcr = new Chart(fcrCtx, {
+        type: 'bar',
+        data: {
+          labels: instEntries.map(e => e.name),
+          datasets: [{
+            label: 'FCR %',
+            data: instEntries.map(e => e.pct),
+            backgroundColor: instEntries.map(e => e.pct >= 75 ? 'rgba(26,122,74,0.85)' : e.pct >= 50 ? 'rgba(196,122,26,0.85)' : 'rgba(200,53,42,0.85)'),
+            borderRadius: 6,
+            barThickness: 20
+          }]
+        },
+        options: {
+          ...CHART_DEFAULTS,
+          indexAxis: 'y',
+          plugins: {
+            ...CHART_DEFAULTS.plugins,
+            tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+              label: ctx => ` FCR ${ctx.parsed.x}%`,
+              afterLabel: ctx => ` (${instEntries[ctx.dataIndex].n} avis)`
+            }}
+          },
+          scales: {
+            x: { max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+            y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
     }
-  });
+  } catch(e) { console.warn('fcrChart error:', e); }
 
   // ── 6. Top frictions (horizontal bar) ───────────────────────────
   const frictionMap = {};
@@ -1417,6 +1446,7 @@ function updateCharts(data) {
       }
     }
   });
+  } catch(e) { console.warn('frictionChart error:', e); }
 }
 
 function buildLineData(data, period) {
