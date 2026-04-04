@@ -423,6 +423,27 @@ tr:hover td{background:rgba(15,14,12,.02);}
 @media(max-width:540px){
   .kpi-row,.kpi-row-secondary{grid-template-columns:1fr;}
 }
+
+/* ── ANIMATIONS DASHBOARD ── */
+@keyframes gxFadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes gxShimmer {
+  0%   { background-position:-600px 0; }
+  100% { background-position: 600px 0; }
+}
+.gx-anim { opacity:0; transform:translateY(16px); }
+.gx-anim.in { animation:gxFadeUp .5s cubic-bezier(.22,1,.36,1) forwards; }
+
+.gx-sk {
+  display:inline-block;border-radius:5px;
+  background:linear-gradient(90deg,var(--sand) 25%,var(--cream) 50%,var(--sand) 75%);
+  background-size:1200px 100%;
+  animation:gxShimmer 1.4s infinite linear;
+  color:transparent !important;min-width:56px;height:.85em;
+  vertical-align:middle;
+}
 </style>
 </head>
 <body>
@@ -1204,6 +1225,7 @@ function initRealtime() {
 }
 
 async function loadData() {
+  if (_firstLoad) showSkeletons();
   const banner = document.getElementById('dbBanner');
   if (banner) { banner.style.display='none'; }
 
@@ -1238,6 +1260,57 @@ async function loadData() {
 // ═══════════════════════════════════════════════════════════════════
 // DASHBOARD
 // ═══════════════════════════════════════════════════════════════════
+
+// ── ANIMATION HELPERS ─────────────────────────────────────────────
+let _firstLoad = true;
+
+function showSkeletons() {
+  const ids = ['wTot','wFCR','wCXFI','wNPS','wViews','wSat','wResol','wInst','wCanal'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.innerHTML = '<span class="gx-sk">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'; }
+  });
+}
+
+function countUp(el, target, suffix, duration) {
+  if (!el || isNaN(target)) return;
+  const sign = (suffix === '' && target > 0) ? '+' : '';
+  const t0 = performance.now();
+  function tick(ts) {
+    const p = Math.min((ts - t0) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(ease * target);
+    el.textContent = (val > 0 ? sign : (val < 0 ? '' : '')) + val + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = (target > 0 ? sign : '') + target + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+
+function animateDashboard(metrics) {
+  // Stagger cards in groups
+  const allCards = [
+    ...document.querySelectorAll('.kpi-w'),
+    ...document.querySelectorAll('.kpi-w-secondary'),
+    ...document.querySelectorAll('.chart-box'),
+    ...document.querySelectorAll('.table-box'),
+  ];
+  allCards.forEach((el, i) => {
+    el.classList.add('gx-anim');
+    setTimeout(() => el.classList.add('in'), i * 55);
+  });
+
+  // Count-up on numeric KPIs (after a short delay so skeleton is gone)
+  setTimeout(() => {
+    const dur = 900;
+    countUp(document.getElementById('wTot'),  metrics.total,     '',  dur);
+    countUp(document.getElementById('wFCR'),  metrics.fcrRate,   '%', dur);
+    countUp(document.getElementById('wCXFI'), metrics.cxfiScore, '',  dur);
+    countUp(document.getElementById('wNPS'),  metrics.npsScore,  '',  dur);
+    countUp(document.getElementById('wSat'),  metrics.satScore,  '',  dur);
+    countUp(document.getElementById('wResol'),metrics.resolRate, '%', dur);
+  }, 120);
+}
 
 function updateDashboard() {
   const data = getFilteredData();
@@ -1279,6 +1352,11 @@ function updateDashboard() {
 
   updateCharts(data);
   updateShareCard(metrics);
+
+  if (_firstLoad) {
+    _firstLoad = false;
+    animateDashboard(metrics);
+  }
 }
 
 const CHART_DEFAULTS = {
