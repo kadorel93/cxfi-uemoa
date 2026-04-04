@@ -973,6 +973,19 @@ function resetAllFilters() {
 const COUNTRY_FLAGS = {BJ:'🇧🇯',TG:'🇹🇬',CI:'🇨🇮',SN:'🇸🇳',ML:'🇲🇱',BF:'🇧🇫',NE:'🇳🇪',GW:'🇬🇼'};
 
 // ═══════════════════════════════════════════════════════════════════
+// SECURITY — XSS SANITIZATION
+// ═══════════════════════════════════════════════════════════════════
+
+function htmlEscape(s) {
+  if (s == null) return '—';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // DATA SCIENCE FORMULAS
 // ═══════════════════════════════════════════════════════════════════
 
@@ -1531,17 +1544,17 @@ function buildAvisPage() {
   const tbody = document.getElementById('avisTable');
   tbody.innerHTML = globalData.map(d => `
     <tr>
-      <td>${d.institution}</td>
-      <td>${COUNTRY_FLAGS[d.pays]} ${d.pays}</td>
-      <td>${d.profil}</td>
-      <td>${d.canal}</td>
-      <td>${d.operation || '—'}</td>
+      <td>${htmlEscape(d.institution)}</td>
+      <td>${COUNTRY_FLAGS[d.pays]} ${htmlEscape(d.pays)}</td>
+      <td>${htmlEscape(d.profil)}</td>
+      <td>${htmlEscape(d.canal)}</td>
+      <td>${htmlEscape(d.operation)}</td>
       <td>${d.fcr === 'oui' ? '✓' : '✗'}</td>
       <td>${d.resolu === 'oui' ? '✓' : '✗'}</td>
       <td>${getAvgStars(d)}</td>
-      <td>${d.nps || '—'}</td>
+      <td>${d.nps != null ? parseInt(d.nps) : '—'}</td>
       <td><span class="badge ${getSentiment(d).class}">${getSentiment(d).text}</span></td>
-      <td>${(d.verbatim || '').substring(0,40)}...</td>
+      <td>${htmlEscape((d.verbatim || '').substring(0,40))}…</td>
       <td>${new Date(d.created_at).toLocaleDateString('fr-FR')}</td>
     </tr>
   `).join('') || '<tr><td colspan="12" style="text-align:center;color:var(--muted);">Aucun avis.</td></tr>';
@@ -1592,14 +1605,14 @@ function buildInstitutionsPage() {
     return `
       <tr>
         <td style="font-weight:700;color:var(--muted);text-align:center;">${rank}</td>
-        <td class="td-inst"><span style="font-weight:600;">${inst}</span></td>
+        <td class="td-inst"><span style="font-weight:600;">${htmlEscape(inst)}</span></td>
         <td style="font-variant-numeric:tabular-nums;">${avis.length}</td>
         <td><span class="badge badge-${m.fcrRate >= 75 ? 'green' : m.fcrRate >= 50 ? 'amber' : 'red'}">${m.fcrRate}%</span></td>
         <td><span class="badge badge-${satColor}">${Math.round(satAvg)}</span></td>
         <td style="font-variant-numeric:tabular-nums;font-weight:600;color:${m.npsScore>=0?'var(--green)':'var(--red)'};">${m.npsScore > 0 ? '+' : ''}${m.npsScore}</td>
         <td><span class="badge badge-${cxfiColor}" style="font-size:13px;font-weight:700;">${m.cxfiScore}</span></td>
-        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${topFriction}">${topFriction}</td>
-        <td>${canalDom}</td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${htmlEscape(topFriction)}">${htmlEscape(topFriction)}</td>
+        <td>${htmlEscape(canalDom)}</td>
         <td style="color:${trend>0?'var(--green)':trend<0?'var(--red)':'var(--muted)'};font-weight:600;">${trend>0?'+':''}${trend}</td>
       </tr>
     `;
