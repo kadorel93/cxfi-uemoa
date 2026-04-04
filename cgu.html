@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conditions Générales d'Utilisation — Goxen</title>
+<meta name="description" content="Conditions Générales d'Utilisation de la plateforme Goxen. Version 1.0 — Avril 2025.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0F0E0C;--paper:#F7F4EE;--cream:#EDE9E0;--sand:#D9D3C5;
+  --muted:#6B6560;--accent:#1A4D2E;--border:rgba(15,14,12,0.1);
+  --card:#FFFFFF;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;font-size:15px;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 32px;
+  background:rgba(247,244,238,0.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:8px;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;text-decoration:none;color:var(--ink);}
+.logo-box{width:30px;height:30px;background:var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800;}
+.nav-back{font-size:13px;color:var(--muted);}
+.nav-back:hover{color:var(--ink);}
+
+/* ── LAYOUT ── */
+.page-wrap{max-width:780px;margin:0 auto;padding:60px 24px 100px;}
+
+/* ── HEADER ── */
+.doc-header{margin-bottom:52px;padding-bottom:32px;border-bottom:2px solid var(--accent);}
+.doc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+.doc-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,4vw,42px);line-height:1.1;margin-bottom:16px;}
+.doc-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);}
+.doc-meta span{display:flex;align-items:center;gap:5px;}
+
+/* ── TOC ── */
+.toc{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:48px;}
+.toc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:14px;color:var(--ink);}
+.toc-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;}
+.toc-list li a{font-size:13px;color:var(--muted);}
+.toc-list li a:hover{color:var(--accent);}
+@media(max-width:540px){.toc-list{grid-template-columns:1fr;}}
+
+/* ── ARTICLES ── */
+.article{margin-bottom:48px;}
+.article-title{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;
+  color:var(--ink);margin-bottom:18px;padding-bottom:10px;
+  border-bottom:1.5px solid var(--border);
+  display:flex;align-items:baseline;gap:12px;}
+.article-num{font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--accent);flex-shrink:0;}
+.article h3{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;
+  color:var(--ink);margin:20px 0 10px;}
+.article p{margin-bottom:14px;color:var(--ink);}
+.article ul{margin:10px 0 18px 0;padding-left:0;list-style:none;}
+.article ul li{position:relative;padding-left:18px;margin-bottom:8px;font-size:14px;color:var(--ink);}
+.article ul li::before{content:"–";position:absolute;left:0;color:var(--accent);}
+
+/* ── DEFINITION BOX ── */
+.def-grid{display:grid;gap:10px;margin-bottom:14px;}
+.def-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;}
+.def-term{font-weight:600;font-size:13px;color:var(--accent);margin-bottom:4px;}
+.def-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* ── IMPORTANT BOX ── */
+.important-box{background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;
+  padding:16px 20px;margin:18px 0;display:flex;gap:12px;align-items:flex-start;}
+.important-box .ico{font-size:18px;flex-shrink:0;margin-top:1px;}
+.important-box p{font-size:13px;color:#92400E;margin:0;}
+
+/* ── FOOTER DOC ── */
+.doc-footer{border-top:1px solid var(--border);padding-top:32px;margin-top:64px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="logo-box">GX</div>
+    Goxen
+  </a>
+  <a class="nav-back" href="/">← Retour au site</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="doc-header">
+    <div class="doc-eyebrow">Document légal</div>
+    <h1 class="doc-title">Conditions Générales<br>d'Utilisation</h1>
+    <div class="doc-meta">
+      <span>📄 Version 1.0</span>
+      <span>📅 Avril 2025</span>
+      <span>🌍 Espace UEMOA</span>
+      <span>⚖️ Éditeur : Naxari</span>
+    </div>
+  </div>
+
+  <!-- TABLE DES MATIÈRES -->
+  <div class="toc">
+    <div class="toc-title">Table des matières</div>
+    <ul class="toc-list">
+      <li><a href="#art0">Préambule</a></li>
+      <li><a href="#art1">1. Objet du service</a></li>
+      <li><a href="#art2">2. Définitions</a></li>
+      <li><a href="#art3">3. Accès et utilisation</a></li>
+      <li><a href="#art4">4. Collecte et publication des avis</a></li>
+      <li><a href="#art5">5. Fonctionnement du Goxen Score</a></li>
+      <li><a href="#art6">6. Conditions du Badge Goxen</a></li>
+      <li><a href="#art7">7. Responsabilité des utilisateurs</a></li>
+      <li><a href="#art8">8. Lutte contre la fraude</a></li>
+      <li><a href="#art9">9. Suspension et résiliation</a></li>
+      <li><a href="#art10">10. Limitation de responsabilité</a></li>
+      <li><a href="#art11">11. Propriété intellectuelle</a></li>
+      <li><a href="#art12">12. Données personnelles</a></li>
+      <li><a href="#art13">13. Rôle de Naxari</a></li>
+      <li><a href="#art14">14. Droit applicable</a></li>
+      <li><a href="#art15">15. Modifications des CGU</a></li>
+    </ul>
+  </div>
+
+  <!-- PRÉAMBULE -->
+  <div class="article" id="art0">
+    <div class="article-title"><span class="article-num">Préambule</span></div>
+    <p>Les présentes Conditions Générales d'Utilisation (ci-après « CGU ») régissent l'accès et l'utilisation de la plateforme Goxen, accessible à l'adresse <a href="https://goxen.co">goxen.co</a>, éditée et exploitée par Naxari (ci-après « l'Éditeur »).</p>
+    <p>Goxen est un service indépendant de collecte, de publication et d'analyse d'avis clients sur les institutions financières opérant dans l'espace UEMOA. <strong>Goxen n'est ni un organisme de certification accrédité, ni une agence de notation financière au sens réglementaire du terme.</strong></p>
+    <p>L'utilisation de la Plateforme implique l'acceptation pleine et entière des présentes CGU.</p>
+  </div>
+
+  <!-- ART 1 -->
+  <div class="article" id="art1">
+    <div class="article-title"><span class="article-num">Article 1</span>Objet du service</div>
+    <p>Goxen permet à tout utilisateur d'exprimer, de manière anonyme et volontaire, son expérience en qualité de client d'une institution financière (banque, établissement de paiement, fintech, opérateur de Mobile Money, institution de microfinance) active dans l'espace UEMOA.</p>
+    <p>La Plateforme agrège les avis collectés afin de calculer un indicateur synthétique dénommé <strong>« Goxen Score »</strong>, lequel est rendu public à partir d'un seuil minimum de <strong>30 avis vérifiés</strong> par institution.</p>
+    <p>La Plateforme propose également aux institutions financières la possibilité d'afficher un badge visuel basé sur ce score, dans les conditions définies à l'Article 6.</p>
+  </div>
+
+  <!-- ART 2 -->
+  <div class="article" id="art2">
+    <div class="article-title"><span class="article-num">Article 2</span>Définitions</div>
+    <div class="def-grid">
+      <div class="def-item">
+        <div class="def-term">« Plateforme »</div>
+        <div class="def-desc">Le site web et l'ensemble des services accessibles à l'adresse goxen.co, opérés par Naxari.</div>
+      </div>
+      <div class="def-item">
+        <div class="def-term">« Utilisateur »</div>
+        <div class="def-desc">Toute personne physique accédant à la Plateforme, qu'elle soumette un avis ou consulte les données publiées, sans obligation d'inscription.</div>
+      </div>
+      <div class="def-item">
+        <div class="def-term">« Entreprise »</div>
+        <div class="def-desc">Toute institution financière active dans l'espace UEMOA et référencée sur la Plateforme.</div>
+      </div>
+      <div class="def-item">
+        <div class="def-term">« Avis »</div>
+        <div class="def-desc">Évaluation structurée soumise par un Utilisateur portant sur son expérience personnelle avec une Entreprise, comprenant une notation multicritère et un commentaire libre.</div>
+      </div>
+      <div class="def-item">
+        <div class="def-term">« Goxen Score »</div>
+        <div class="def-desc">Indicateur synthétique calculé algorithmiquement à partir des avis collectés. <strong>Il ne constitue pas une certification, une note financière ou une recommandation d'investissement.</strong></div>
+      </div>
+      <div class="def-item">
+        <div class="def-term">« Badge Goxen »</div>
+        <div class="def-desc">Élément graphique mis à la disposition des Entreprises pour valoriser leur Goxen Score sur leurs supports de communication.</div>
+      </div>
+      <div class="def-item">
+        <div class="def-term">« Éditeur »</div>
+        <div class="def-desc">La société Naxari, responsable de l'édition technique et opérationnelle de la Plateforme Goxen.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ART 3 -->
+  <div class="article" id="art3">
+    <div class="article-title"><span class="article-num">Article 3</span>Accès et utilisation de la Plateforme</div>
+    <h3>3.1 Accès</h3>
+    <p>L'accès à la Plateforme est libre, gratuit et ne requiert aucune création de compte pour les Utilisateurs souhaitant consulter les données publiées ou soumettre un avis.</p>
+    <h3>3.2 Utilisations interdites</h3>
+    <ul>
+      <li>Soumettre un avis sans avoir bénéficié personnellement du service évalué ;</li>
+      <li>Soumettre plusieurs avis pour la même institution dans le cadre d'une même relation commerciale ;</li>
+      <li>Utiliser la Plateforme à des fins de dénigrement organisé ou de manipulation des scores ;</li>
+      <li>Introduire des contenus illicites, diffamatoires, injurieux ou discriminatoires ;</li>
+      <li>Recourir à tout procédé automatisé (robots, scripts, crawlers) pour accéder à la Plateforme.</li>
+    </ul>
+  </div>
+
+  <!-- ART 4 -->
+  <div class="article" id="art4">
+    <div class="article-title"><span class="article-num">Article 4</span>Collecte et publication des avis</div>
+    <h3>4.1 Anonymat</h3>
+    <p>La Plateforme ne collecte aucune donnée permettant l'identification personnelle de l'Utilisateur lors de la soumission d'un avis. Aucun compte, adresse email ou numéro de téléphone n'est requis.</p>
+    <h3>4.2 Seuil de publication</h3>
+    <p>Les avis font l'objet de contrôles algorithmiques anti-fraude. Le Goxen Score et les données agrégées d'une Entreprise ne sont rendus publics que lorsque le seuil de <strong>30 avis vérifiés</strong> est atteint.</p>
+    <h3>4.3 Responsabilité des contenus</h3>
+    <p>Goxen agit en qualité d'hébergeur des avis au sens des législations applicables. L'Éditeur n'est pas responsable des avis publiés mais dispose de la faculté de les modérer ou supprimer en cas de manquement aux présentes CGU.</p>
+  </div>
+
+  <!-- ART 5 -->
+  <div class="article" id="art5">
+    <div class="article-title"><span class="article-num">Article 5</span>Fonctionnement du Goxen Score</div>
+    <div class="important-box">
+      <span class="ico">⚠️</span>
+      <p><strong>Disclaimer :</strong> Le Goxen Score est un indicateur d'opinion basé sur des avis clients. Il ne constitue en aucun cas une notation financière réglementée, une certification officielle ou une recommandation d'investissement ou de souscription à un produit financier.</p>
+    </div>
+    <p>Le Goxen Score est calculé algorithmiquement à partir des critères suivants : accessibilité, qualité de service, résolution des problèmes, tarification perçue, recommandation NPS. La méthodologie est déterminée souverainement par l'Éditeur et peut évoluer.</p>
+    <p>Le score peut varier dans le temps en fonction du volume et de la nature des avis reçus. Goxen ne garantit pas la stabilité du score d'une Entreprise.</p>
+  </div>
+
+  <!-- ART 6 -->
+  <div class="article" id="art6">
+    <div class="article-title"><span class="article-num">Article 6</span>Conditions d'utilisation du Badge Goxen</div>
+    <p>Le Badge Goxen est accessible aux Entreprises ayant atteint 30 avis vérifiés. Son utilisation est soumise aux conditions suivantes :</p>
+    <ul>
+      <li>Le Badge doit refléter le Goxen Score en vigueur et être mis à jour en cas d'évolution significative ;</li>
+      <li>Il ne peut pas être présenté comme une certification officielle ou une notation financière ;</li>
+      <li>Toute communication publique incluant le Badge doit mentionner : <em>« Le Goxen Score est un indicateur basé sur des avis clients et ne constitue pas une certification officielle. »</em></li>
+      <li>Le Badge doit mentionner la source : goxen.co.</li>
+    </ul>
+    <p>Goxen se réserve le droit de retirer l'autorisation d'utiliser le Badge en cas de manquement ou de comportement contraire à l'éthique de la Plateforme.</p>
+  </div>
+
+  <!-- ART 7 -->
+  <div class="article" id="art7">
+    <div class="article-title"><span class="article-num">Article 7</span>Responsabilité des utilisateurs et des entreprises</div>
+    <p>L'Utilisateur est seul responsable des contenus qu'il soumet. Il garantit que les avis correspondent à une expérience personnelle authentique et ne portent pas atteinte aux droits de tiers.</p>
+    <p>L'Entreprise reconnaît que la publication du Goxen Score résulte d'un processus indépendant et ne peut en demander le retrait au seul motif que le score lui serait défavorable, sauf à démontrer une fraude manifeste ou une violation des présentes CGU.</p>
+  </div>
+
+  <!-- ART 8 -->
+  <div class="article" id="art8">
+    <div class="article-title"><span class="article-num">Article 8</span>Lutte contre la fraude et la manipulation</div>
+    <p>Goxen met en œuvre des mécanismes de détection automatisée visant à identifier :</p>
+    <ul>
+      <li>Les campagnes d'avis coordonnées visant à manipuler le Goxen Score ;</li>
+      <li>Les soumissions automatisées par scripts ou robots ;</li>
+      <li>Les comportements anormaux en volume, rapidité ou cohérence.</li>
+    </ul>
+    <p>Les avis identifiés comme frauduleux peuvent être supprimés sans préavis. Toute tentative de manipulation par une Entreprise constitue un motif de suspension immédiate et de retrait du Badge.</p>
+  </div>
+
+  <!-- ART 9 -->
+  <div class="article" id="art9">
+    <div class="article-title"><span class="article-num">Article 9</span>Suspension et résiliation</div>
+    <p>Goxen se réserve le droit, sans préavis ni indemnité, de suspendre l'accès à la Plateforme pour tout Utilisateur ou Entreprise en violation des présentes CGU, de supprimer tout contenu non conforme ou de retirer le Badge Goxen.</p>
+  </div>
+
+  <!-- ART 10 -->
+  <div class="article" id="art10">
+    <div class="article-title"><span class="article-num">Article 10</span>Limitation de responsabilité</div>
+    <p>La Plateforme est fournie « en l'état ». L'Éditeur ne saurait être tenu responsable :</p>
+    <ul>
+      <li>Des décisions prises par des tiers sur la base du Goxen Score ou des avis publiés ;</li>
+      <li>Des erreurs, inexactitudes ou omissions dans les avis soumis ;</li>
+      <li>Des pertes commerciales, préjudices réputationnels ou dommages indirects subis par une Entreprise du fait de la publication de son score.</li>
+    </ul>
+    <p>La responsabilité de l'Éditeur est strictement limitée aux dommages directs et certifiés, à l'exclusion de tout dommage indirect.</p>
+  </div>
+
+  <!-- ART 11 -->
+  <div class="article" id="art11">
+    <div class="article-title"><span class="article-num">Article 11</span>Propriété intellectuelle</div>
+    <p>La Plateforme Goxen, son nom, sa marque, son logo, ses algorithmes et l'ensemble des contenus éditoriaux sont la propriété exclusive de Naxari et protégés par les droits de propriété intellectuelle applicables.</p>
+    <p>Les avis soumis par les Utilisateurs restent leur propriété. En les publiant, les Utilisateurs concèdent à Goxen une licence mondiale, non exclusive, gratuite et irrévocable d'utilisation à des fins d'exploitation du service.</p>
+  </div>
+
+  <!-- ART 12 -->
+  <div class="article" id="art12">
+    <div class="article-title"><span class="article-num">Article 12</span>Données personnelles</div>
+    <p>La Plateforme Goxen est conçue selon un principe de <strong>minimisation des données</strong> : aucune donnée permettant l'identification personnelle des Utilisateurs n'est collectée lors de la soumission d'un avis.</p>
+    <p>Des données techniques non identifiantes peuvent être collectées à des fins de sécurité (horodatage, type d'appareil), dans le respect des réglementations applicables dans l'espace UEMOA.</p>
+    <p>Contact : <a href="mailto:privacy@goxen.co">privacy@goxen.co</a></p>
+  </div>
+
+  <!-- ART 13 -->
+  <div class="article" id="art13">
+    <div class="article-title"><span class="article-num">Article 13</span>Rôle de Naxari</div>
+    <p>Naxari est l'éditeur et opérateur technique de la Plateforme Goxen. Naxari agit en qualité d'éditeur <strong>indépendant</strong>, sans lien capitalistique ou de subordination avec les Entreprises référencées. L'indépendance éditoriale est un principe fondateur du service.</p>
+  </div>
+
+  <!-- ART 14 -->
+  <div class="article" id="art14">
+    <div class="article-title"><span class="article-num">Article 14</span>Droit applicable et règlement des litiges</div>
+    <h3>14.1 Droit applicable</h3>
+    <p>Les présentes CGU sont régies par le droit applicable dans l'espace UEMOA et, à titre supplétif, par les actes uniformes de l'<strong>OHADA</strong> (Organisation pour l'Harmonisation en Afrique du Droit des Affaires).</p>
+    <h3>14.2 Règlement amiable</h3>
+    <p>En cas de litige, les parties s'engagent à rechercher une solution amiable dans un délai de 30 jours à compter d'une mise en demeure adressée à <a href="mailto:contact@goxen.co">contact@goxen.co</a>.</p>
+    <h3>14.3 Juridiction</h3>
+    <p>À défaut de règlement amiable, tout litige sera soumis aux juridictions compétentes du pays d'établissement de Naxari.</p>
+  </div>
+
+  <!-- ART 15 -->
+  <div class="article" id="art15">
+    <div class="article-title"><span class="article-num">Article 15</span>Modifications des CGU</div>
+    <p>L'Éditeur se réserve le droit de modifier les présentes CGU à tout moment. Les modifications prennent effet à compter de leur publication sur la Plateforme. L'utilisation continue de la Plateforme après modification vaut acceptation des nouvelles conditions.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="article">
+    <div class="article-title"><span class="article-num">Contact</span></div>
+    <p>Éditeur : <strong>Naxari</strong> — Plateforme : <a href="https://goxen.co">goxen.co</a></p>
+    <p>Contact général : <a href="mailto:contact@goxen.co">contact@goxen.co</a></p>
+    <p>Protection des données : <a href="mailto:privacy@goxen.co">privacy@goxen.co</a></p>
+  </div>
+
+  <div class="doc-footer">
+    <span>Goxen — CGU Version 1.0 · Avril 2025</span>
+    <span>Un service <a href="https://naxari.netlify.app/" target="_blank">Naxari</a> · Espace UEMOA</span>
+  </div>
+
+</div>
+</body>
+</html>
