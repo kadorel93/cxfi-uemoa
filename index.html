@@ -239,6 +239,7 @@ footer a:hover{color:var(--accent);}
 .conf-badge{display:inline-flex;align-items:center;gap:6px;background:var(--cream);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;margin-bottom:18px;}
 .conf-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;}
 .btn-wa{background:#25D366;color:#fff;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;}
+.btn-ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;}
 .btn-li{background:#0A66C2;color:#fff;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;}
 .btn-rate-again{background:var(--cream);color:var(--ink);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;}
 .btn-see-rank{background:transparent;border:1.5px solid var(--border);color:var(--ink);border-radius:8px;padding:9px 18px;font-size:12px;font-weight:600;cursor:pointer;}
@@ -682,17 +683,20 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
   <div class="step" id="sOK">
     <div class="conf">
       <div class="conf-ico">🎉</div>
-      <div class="conf-h">Merci !</div>
-      <div class="conf-sub">Votre expérience est enregistrée dans le Baromètre Goxen 2026.</div>
-      <div class="conf-micro" id="confMicro"></div>
-      <div class="conf-msg" id="confMsg"></div>
+      <div class="conf-h" id="confH">Votre avis est dans le Baromètre !</div>
+      <div class="conf-sub" id="confMicro"></div>
       <div class="conf-badge">🏆 Contributeur Baromètre Goxen 2026</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px;">Partagez avec votre réseau</div>
+      <div class="conf-msg" id="confMsg"></div>
       <div class="conf-btns">
-        <button class="btn-wa" id="confWA">📱 WhatsApp</button>
-        <button class="btn-li" onclick="shareLI()">💼 LinkedIn</button>
-        <button class="btn-rate-again" onclick="openForm()">↩ Noter une autre</button>
+        <button class="btn-wa" id="confWA">WhatsApp</button>
+        <button class="btn-ig" id="confIG">Instagram</button>
+        <button class="btn-li" id="confLI">LinkedIn</button>
       </div>
-      <button class="btn-see-rank" onclick="closeForm();document.getElementById('resultats').scrollIntoView({behavior:'smooth'})">Voir le classement →</button>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px;">
+        <button class="btn-rate-again" onclick="openForm()">↩ Noter une autre</button>
+        <button class="btn-see-rank" onclick="closeForm();document.getElementById('resultats').scrollIntoView({behavior:'smooth'})">Voir le classement →</button>
+      </div>
     </div>
   </div>
 
@@ -1161,14 +1165,30 @@ async function sendForm() {
   if (instData) instData.rv = (instData.rv||0) + 1;
   const instName = fd.inst || 'ce service';
   const micros = [
-    `Vous venez de contribuer au score de ${instName}.`,
-    `Votre expérience avec ${instName} est dans le Baromètre 2026.`,
-    `Merci. En décembre 2026, votre contribution sera dans le rapport officiel Goxen.`
+    `Votre expérience avec ${instName} contribue au classement 2026.`,
+    `En décembre 2026, votre contribution fera partie du rapport officiel Goxen.`,
+    `${instName} et ses futurs clients vous remercient de votre transparence.`
   ];
   document.getElementById('confMicro').textContent = micros[Math.floor(Math.random() * micros.length)];
-  const shareMsg = `Je viens de noter ${instName} sur le Baromètre Goxen 2026 📊 Votre avis aussi compte 👉 ${CFG.siteUrl}`;
+  // Emojis via Unicode explicite pour garantir l'affichage sur toutes plateformes
+  const chart  = '\uD83D\uDCCA'; // 📊
+  const point  = '\uD83D\uDC49'; // 👉
+  const shareMsg = `J'ai not\u00e9 ${instName} sur Goxen \u2014 le barom\u00e8tre des banques & fintechs d'Afrique de l'Ouest ${chart} Ton avis compte aussi ${point} ${CFG.siteUrl}`;
   document.getElementById('confMsg').textContent = shareMsg;
-  document.getElementById('confWA').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(shareMsg)}`, '_blank');
+  // Boutons de partage
+  document.getElementById('confWA').onclick = () =>
+    window.open('https://wa.me/?text=' + encodeURIComponent(shareMsg), '_blank');
+  document.getElementById('confIG').onclick = () => {
+    if (navigator.share) {
+      navigator.share({ text: shareMsg }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(shareMsg).then(() =>
+        alert('Message copié \u2714 — Colle-le dans ta story ou bio Instagram !')
+      ).catch(() => alert('Copie manuelle : ' + shareMsg));
+    }
+  };
+  document.getElementById('confLI').onclick = () =>
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(CFG.siteUrl) + '&summary=' + encodeURIComponent(shareMsg), '_blank');
   goStep('OK');
   renderLB();
   sbFetch('avis', {method:'POST', body:JSON.stringify(payload)}).catch(e => console.warn('Goxen err:', e));
