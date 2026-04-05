@@ -146,6 +146,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;
 .tag-edp{background:#D1FAE5;color:#065F46;}
 .tag-bank{background:#DBEAFE;color:#1E40AF;}
 .tag-pispi{background:#FEF3C7;color:#92400E;display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;}
+/* ── Phase 1 — Realtime pulse + contrib badge ─────────────── */
+@keyframes gx-pulse{0%,100%{background:transparent}40%{background:rgba(0,255,136,.09)}}
+.lb-row.gx-new{animation:gx-pulse 2.2s ease;}
+.lb-contrib{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:700;color:var(--accent);background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);border-radius:4px;padding:1px 5px;margin-top:3px;line-height:1.4;}
+#rtDot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:4px;vertical-align:middle;}
+@keyframes rtBlink{0%,100%{opacity:1}50%{opacity:.25}}
+#rtDot.active{animation:rtBlink 1.8s ease infinite;}
 @media(max-width:700px){
   .lb-head,.lb-head+div,.lb-row{grid-template-columns:36px 1fr 50px 1fr 48px !important;}
   .lb-head>*:nth-child(6),.lb-row>*:nth-child(6),
@@ -450,7 +457,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
 <div class="rank-sec" id="resultats">
   <div class="rank-inner">
     <div class="sec-eyebrow reveal">Données live</div>
-    <div class="sec-h reveal reveal-d1" style="margin-bottom:8px">Classement des institutions</div>
+    <div class="sec-h reveal reveal-d1" style="margin-bottom:8px">Classement des institutions <span id="rtDot" title="Mises à jour en temps réel"></span></div>
     <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Un score se débloque à 30 avis. Chaque contribution compte.</p>
     <div style="display:flex;align-items:flex-start;gap:10px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:12px;color:#166534;line-height:1.6;">
       <span style="flex-shrink:0;font-size:15px;">ℹ️</span>
@@ -1213,6 +1220,8 @@ async function sendForm() {
     setCount(newCount);
     const instData = INSTS.find(i => i.n === fd.inst);
     if (instData) instData.rv = (instData.rv||0) + 1;
+    addContrib(fd.inst); // localStorage
+    renderLB();
     const instName = fd.inst || 'ce service';
     const micros = [
       `Votre expérience avec ${instName} contribue au classement 2026.`,
@@ -1274,7 +1283,7 @@ async function sendSug() {
 /* ── LEADERBOARD ─────────────────────────────────────────────── */
 function getFiltered() {
   return INSTS
-    .filter(i => (filters.pays==='tous' || i.pays.includes(filters.pays)) && (filters.cat==='tous' || i.cat===filters.cat) && (!searchQ || i.n.toLowerCase().includes(searchQ)))
+    .filter(i => i.rv >= 1 && (filters.pays==='tous' || i.pays.includes(filters.pays)) && (filters.cat==='tous' || i.cat===filters.cat) && (!searchQ || i.n.toLowerCase().includes(searchQ)))
     .sort((a,b) => {
       if (a.rv>=30 && b.rv<30) return -1;
       if (b.rv>=30 && a.rv<30) return 1;
@@ -1299,7 +1308,7 @@ function renderLB() {
   const emptyEl = document.getElementById('searchEmpty');
   if (searchQ && data.length===0) { emptyEl.style.display='block'; body.innerHTML=''; return; }
   emptyEl.style.display = 'none';
-  if (data.length===0) { body.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Aucune institution — <a href="#" onclick="openSug()" style="color:var(--accent)">Suggérer →</a></div>'; return; }
+  if (data.length===0) { body.innerHTML=`<div style="padding:28px;text-align:center;color:var(--muted);font-size:13px">${searchQ ? 'Aucun résultat — <a href="#" onclick="openSug()" style="color:var(--accent)">Suggérer cette institution →</a>' : 'Pas encore d\'avis pour ce filtre — <a href="#" onclick="openForm();return false" style="color:var(--accent)">Soyez le premier →</a>'}</div>`; return; }
   const anyScored = data.some(i => i.rv>=30 && i.fcr!==null);
   const dimBanner = !anyScored ? `<div class="dim-banner"><span><svg class="ic" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg></span><span>Les scores se débloquent après 30 avis vérifiés. Votre avis contribue au classement.</span><button class="dim-banner-btn" onclick="openForm()">Donner mon avis</button></div>` : '';
   let rank = 0;
@@ -1316,10 +1325,11 @@ function renderLB() {
     const fcrHTML = unranked ? `<div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-txt">${inst.rv||0}/30</span></div>` : `<div class="fcr-bar"><div class="fcr-track"><div class="fcr-fill ${fcrClass}" style="width:${inst.fcr}%"></div></div><span class="fcr-txt">${inst.fcr}%</span></div>`;
     const cxClass = inst.cxfi>=75 ? 'cx-h' : inst.cxfi>=55 ? 'cx-m' : 'cx-l';
     const cxHTML = unranked ? '<span class="cx cx-n">—</span>' : `<span class="cx ${cxClass}">${inst.cxfi}/100</span>`;
-    return `<div class="lb-row${unranked?' dim':''}">
+    const myContrib = hasContrib(inst.n) ? '<span class="lb-contrib">✓ Vous avez contribué</span>' : '';
+    return `<div class="lb-row${unranked?' dim':''}" data-inst="${inst.n.replace(/"/g,'&quot;')}">
       <div class="lb-rk">${rk}</div>
       <div class="lb-ii"><div class="lb-logo" style="background:${inst.bg}">${inst.ico}${inst.agr_type==='EDP'?'<span class="lb-agr">✓</span>':''}</div>
-        <div><div class="lb-name">${inst.n}</div><div class="lb-meta"><span class="tag ${TAG_CSS[inst.cat]||'tag-ft'}">${TAG_LABELS[inst.cat]||inst.cat}</span></div></div></div>
+        <div><div class="lb-name">${inst.n}</div><div class="lb-meta"><span class="tag ${TAG_CSS[inst.cat]||'tag-ft'}">${TAG_LABELS[inst.cat]||inst.cat}</span>${myContrib}</div></div></div>
       <div style="text-align:center;font-size:14px">${flagDisplay}</div>
       <div>${fcrHTML}</div>
       <div class="lb-rv">${inst.rv>=30?inst.rv:inst.rv+'/30'}</div>
@@ -1338,6 +1348,78 @@ function downloadDataCTA() {
   const subject = encodeURIComponent('Goxen 2026 — Demande d\'accès aux données · [Institution]');
   const body = encodeURIComponent(`Bonjour,\n\nJe représente [NOM DE L'INSTITUTION] et je souhaite accéder aux données Goxen nous concernant concernant.\n\nCe qui m'intéresse :\n— Score FCR réel\n— Verbatims clients collectés\n— Points de friction par canal\n— Notre position dans le benchmark sectoriel\n\nCordialement,\n[Nom · Titre · Institution]`);
   window.open(`mailto:mrkpatinde@gmail.com?subject=${subject}&body=${body}`, '_blank');
+}
+
+/* ── CONTRIBUTIONS LOCALES ───────────────────────────────────── */
+function getContribs() {
+  try { return JSON.parse(localStorage.getItem('gx_contribs') || '[]'); } catch { return []; }
+}
+function addContrib(instName) {
+  const c = getContribs();
+  if (!c.find(x => x.n === instName)) {
+    c.push({ n: instName, ts: Date.now() });
+    localStorage.setItem('gx_contribs', JSON.stringify(c));
+  }
+}
+function hasContrib(instName) {
+  return getContribs().some(x => x.n === instName);
+}
+
+/* ── SUPABASE REALTIME ───────────────────────────────────────── */
+function initRealtime() {
+  const wsUrl = CFG.supabaseUrl.replace('https://', 'wss://') + '/realtime/v1/websocket?vsn=1.0.0&apikey=' + CFG.supabaseKey;
+  let ws, hbTimer, ref = 0;
+
+  function connect() {
+    try { ws = new WebSocket(wsUrl); } catch(e) { return; }
+
+    ws.onopen = () => {
+      ref++;
+      ws.send(JSON.stringify({
+        topic: 'realtime:public:avis',
+        event: 'phx_join',
+        payload: {
+          config: {
+            broadcast: { self: false },
+            presence: { key: '' },
+            postgres_changes: [{ event: 'INSERT', schema: 'public', table: 'avis' }]
+          }
+        },
+        ref: String(ref)
+      }));
+      hbTimer = setInterval(() => {
+        ref++;
+        if (ws.readyState === 1) ws.send(JSON.stringify({ topic: 'phoenix', event: 'heartbeat', payload: {}, ref: String(ref) }));
+      }, 30000);
+      const dot = document.getElementById('rtDot');
+      if (dot) dot.classList.add('active');
+    };
+
+    ws.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.event !== 'postgres_changes') return;
+        const rec = msg.payload?.data?.record;
+        if (!rec) return;
+        const nom = (rec.institution || '').trim();
+        const inst = INSTS.find(i => i.n === nom);
+        if (inst) {
+          inst.rv = (inst.rv || 0) + 1;
+          renderLB();
+          // Pulse sur la ligne
+          const row = document.querySelector(`#lbBody .lb-row[data-inst="${nom.replace(/"/g,'&quot;')}"]`);
+          if (row) { row.classList.add('gx-new'); setTimeout(() => row.classList.remove('gx-new'), 2500); }
+        }
+        // Incrémente le compteur global
+        const el = document.getElementById('statCount');
+        if (el) { const n = parseInt(el.textContent.replace(/\s/g,''))||0; animCount(n + 1); }
+      } catch(_) {}
+    };
+
+    ws.onclose = () => { clearInterval(hbTimer); setTimeout(connect, 6000); };
+    ws.onerror = () => ws.close();
+  }
+  connect();
 }
 
 /* ── STATS LIVE ──────────────────────────────────────────────── */
@@ -1432,6 +1514,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavScroll();
   renderLB();
   loadStats();
+  initRealtime();
 
   /* ── PRELOADER ──────────────────────────────────────────── */
   const pre = document.getElementById('gxPre');
