@@ -1420,6 +1420,11 @@ function initRealtime() {
     ws.onerror = () => ws.close();
   }
   connect();
+  // Fallback polling toutes les 60s si WS indisponible
+  setInterval(() => {
+    const dot = document.getElementById('rtDot');
+    if (!dot || !dot.classList.contains('active')) loadStats();
+  }, 60000);
 }
 
 /* ── STATS LIVE ──────────────────────────────────────────────── */
