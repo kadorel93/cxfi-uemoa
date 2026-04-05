@@ -454,7 +454,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
     <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Un score se débloque à 30 avis. Chaque contribution compte.</p>
     <div style="display:flex;align-items:flex-start;gap:10px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:12px;color:#166534;line-height:1.6;">
       <span style="flex-shrink:0;font-size:15px;">ℹ️</span>
-      <span><strong>Note :</strong> Le Goxen Score reflète des expériences volontairement partagées par des utilisateurs. Il n'est pas une notation financière officielle, n'est pas régulé par la BCEAO et ne constitue pas un conseil en investissement. Goxen et Naxari ne sont affiliés à aucune institution notée. <a href="/cgu.html" style="color:#166534;text-decoration:underline;">En savoir plus →</a></span>
+      <span><strong>Note :</strong> Le Goxen Score reflète des expériences volontairement partagées par des utilisateurs. Il n'est pas une notation financière officielle, n'est pas régulé par la BCEAO et ne constitue pas un conseil en investissement. Goxen n'est affilié à aucune institution notée. <a href="/cgu.html" style="color:#166534;text-decoration:underline;">En savoir plus →</a></span>
     </div>
 
     <div class="rank-controls">
@@ -502,10 +502,14 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
     <p style="color:var(--muted);font-size:15px;margin-top:14px;line-height:1.7">
       FCR, friction par canal, verbatims clients — les données que vos enquêtes internes ne vous montrent pas. Disponibles pour les institutions qui veulent vraiment comprendre.
     </p>
-    <a class="biz-cta" href="mailto:contact@naxari.co">
-      Demander l'accès à vos données →
-    </a>
-    <p style="font-size:11px;color:var(--muted);margin-top:12px">Réponse sous 48h · <a href="mailto:contact@naxari.co" style="color:var(--accent);">contact@naxari.co</a></p>
+    <div class="biz-form" id="bizForm">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Les données de votre institution seront bientôt disponibles.<br>Laissez votre email — vous serez contacté en premier.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="email" id="bizEmail" placeholder="votre@institution.com" style="flex:1;min-width:200px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:var(--surface);color:var(--ink);outline:none"/>
+        <button onclick="submitBizLead()" style="padding:10px 20px;background:var(--ink);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap">Me prévenir →</button>
+      </div>
+      <div id="bizConfirm" style="display:none;margin-top:10px;font-size:13px;color:var(--green);font-weight:600">Reçu. Vous serez parmi les premiers informés.</div>
+    </div>
   </div>
   <div class="biz-visual reveal reveal-d2">
     <p style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Exemples de données disponibles</p>
@@ -546,7 +550,7 @@ body.loaded .hero-proof{animation:heroFadeUp .6s ease .7s forwards;}
   <div class="footer-left">
     <div style="display:flex;align-items:center;gap:8px">
       <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.5px;color:var(--ink)"><em style="color:var(--green);font-style:normal">Go</em>xen</span>
-      <span>· <a href="https://naxari.netlify.app/" target="_blank" style="color:var(--accent);font-weight:600">Naxari</a> — baromètre citoyen des institutions financières de l'UEMOA.<br>Non affilié à la BCEAO ni à aucune institution notée.</span>
+      <span>— baromètre citoyen des institutions financières de l'UEMOA.<br><span style="font-size:11px;color:var(--muted)">Non affilié à la BCEAO ni à aucune institution notée.</span></span>
     </div>
     <div class="footer-links">
       <a href="#resultats">Classement</a>
@@ -1386,6 +1390,24 @@ function initNavScroll() {
     if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
     if (topBtn) topBtn.classList.toggle('show', window.scrollY > 400);
   }, { passive: true });
+}
+
+async function submitBizLead() {
+  const email = document.getElementById('bizEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('bizEmail').style.borderColor = '#EF4444';
+    return;
+  }
+  document.getElementById('bizEmail').style.borderColor = 'var(--border)';
+  try {
+    await sbFetch('leads', {
+      method: 'POST',
+      body: JSON.stringify({ email, source: 'biz_form', created_at: new Date().toISOString() })
+    });
+  } catch(e) { /* silencieux */ }
+  document.getElementById('bizEmail').style.display = 'none';
+  document.querySelector('#bizForm button').style.display = 'none';
+  document.getElementById('bizConfirm').style.display = 'block';
 }
 
 /* ── INIT ────────────────────────────────────────────────────── */
