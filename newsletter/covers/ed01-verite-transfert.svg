@@ -2,14 +2,9 @@
 <!--
   Pulse CX · Édition 01 · Avril 2026
   Sujet : PI-SPI, transfert Banque → Mobile Money échoué, silence client UEMOA
-  Concept : billet 10 000 FCFA en chute libre, à moitié déchiré (pastiche Pink)
+  Concept : billet 10 000 FCFA en chute libre, moitié droite déchirée (pastiche Pink)
 
-  Pour finaliser :
-    1. Déposer la photo détourée dans newsletter/assets/photo-ed01-billet.png
-       (PNG transparent, idéalement 880×940 pour @2x)
-    2. Dans ce fichier, supprimer le bloc <g id="photo-placeholder"> ci-dessous
-    3. Dé-commenter la ligne <image href="../assets/photo-ed01-billet.png" .../>
-    4. Ouvrir dans Chrome, DevTools → More tools → Capture full-size screenshot
+  Export PNG : ouvrir dans Chrome → DevTools → More tools → Capture full-size screenshot
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
@@ -26,6 +21,10 @@
       <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
       <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
+    <!-- Bord déchiqueté (moitié droite du billet arrachée) -->
+    <clipPath id="tear-edge" clipPathUnits="objectBoundingBox">
+      <polygon points="0,0 0.60,0 0.66,0.07 0.55,0.15 0.68,0.24 0.57,0.32 0.64,0.41 0.52,0.50 0.67,0.58 0.56,0.68 0.63,0.76 0.54,0.85 0.62,0.93 0.55,1.0 0,1.0"/>
+    </clipPath>
   </defs>
 
   <rect class="bg" width="1200" height="630"/>
@@ -38,13 +37,12 @@
 
   <text x="60" y="448" class="subtitle">Ce qu'un virement Banque → Mobile Money avorté révèle du CX en UEMOA</text>
 
-  <!-- <image href="../assets/photo-ed01-billet.png" x="700" y="70" width="440" height="470"
-         preserveAspectRatio="xMidYMid meet" filter="url(#photo-shadow)"/> -->
-
-  <g id="photo-placeholder" opacity="0.4">
-    <rect x="700" y="70" width="440" height="470" fill="none" stroke="#0F0E0C" stroke-width="2" stroke-dasharray="10 8"/>
-    <text x="920" y="295" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="20" fill="#0F0E0C">billet 10 000 FCFA</text>
-    <text x="920" y="322" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="15" font-style="italic" fill="#0F0E0C">photo détourée à coller ici</text>
+  <!-- Billet 10 000 FCFA, rotation -12° (chute libre), clip bord déchiqueté, ombre portée -->
+  <g transform="rotate(-12 920 304)" filter="url(#photo-shadow)">
+    <image href="../assets/photo-ed01-billet.png"
+           x="770" y="178" width="500" height="253"
+           preserveAspectRatio="xMidYMid meet"
+           clip-path="url(#tear-edge)"/>
   </g>
 
   <g transform="translate(475, 545) scale(0.50)" fill="#0F0E0C">

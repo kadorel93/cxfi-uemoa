@@ -47,24 +47,19 @@ Utile si vous voulez un fichier SVG qui se suffit à lui-même.
 
 ## Exporter en PNG 1200×630
 
-**Chrome (le plus fidèle, polices Google Fonts OK)**
-1. Ouvrir le SVG dans Chrome.
-2. `Cmd+Shift+P` (macOS) / `Ctrl+Shift+P` (Linux) dans DevTools → `Capture full-size screenshot`.
-
-**Inkscape CLI (export @2x)**
+**Script render.py (recommandé)**
 ```bash
-inkscape covers/ed01-verite-transfert.svg \
-  --export-type=png \
-  --export-width=2400 \
-  --export-filename=covers/ed01-verite-transfert.png
+pip install cairosvg Pillow
+python3 newsletter/render.py newsletter/covers/ed01-verite-transfert.svg
+# → produit ed01-verite-transfert.png (1200×630) + @2x.png (2400×1260)
 ```
-Note : les polices Google Fonts (Anton, Playfair Display, Montserrat) doivent être
-installées localement, sinon Inkscape tombe sur les fallbacks.
+Les fontes Google Fonts (Anton, Archivo, Playfair Display) doivent être
+installées localement. Sous Linux : télécharger les `.ttf` depuis Google Fonts,
+les copier dans `/usr/local/share/fonts/`, puis `fc-cache -f`.
 
-**rsvg-convert**
-```bash
-rsvg-convert -w 2400 covers/ed01-verite-transfert.svg -o ed01.png
-```
+**Chrome (fallback sans installation de fontes locales)**
+1. Ouvrir le SVG dans Chrome (les `@import` Google Fonts se chargent automatiquement).
+2. DevTools → `Cmd/Ctrl+Shift+P` → `Capture full-size screenshot`.
 
 ## Charte figée
 
@@ -80,5 +75,7 @@ changent d'une édition à l'autre.
 ## Édition 01
 
 `covers/ed01-verite-transfert.svg` — PI-SPI, transfert Banque → Mobile Money
-échoué, silence client UEMOA. Visuel : billet 10 000 FCFA en chute libre, à
-moitié déchiré. **Photo détourée à fournir** dans `assets/photo-ed01-billet.png`.
+échoué, silence client UEMOA. Visuel : billet 10 000 FCFA en chute libre,
+moitié droite arrachée par un clipPath à bord déchiqueté. Photo source :
+`assets/photo-ed01-billet.png`. PNGs exportés : `covers/ed01-verite-transfert.png`
+(@1x) et `covers/ed01-verite-transfert@2x.png` (@2x).
