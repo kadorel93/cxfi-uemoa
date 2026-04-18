@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 150" role="img" aria-label="Pulse CX">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" role="img" aria-label="Pulse CX">
   <defs>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;900&amp;display=swap');</style>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Archivo:wght@300&amp;display=swap');</style>
   </defs>
   <g id="logo" fill="#0F0E0C">
-    <text x="0" y="82" font-family="Montserrat, 'Arial Black', sans-serif" font-weight="900" font-size="92" letter-spacing="-3">PULSE</text>
-    <text x="285" y="82" font-family="Montserrat, Arial, sans-serif" font-weight="300" font-size="68" letter-spacing="0">CX</text>
-    <path d="M 10 108 C 120 150 320 150 440 110" stroke="#0F0E0C" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-    <circle cx="440" cy="110" r="8.5" fill="#0F0E0C"/>
+    <text x="0" y="82" font-family="'Archivo Black', 'Arial Black', Helvetica, sans-serif" font-size="94" letter-spacing="-2">PULSE</text>
+    <text x="310" y="82" font-family="'Archivo', Arial, Helvetica, sans-serif" font-weight="300" font-size="72" letter-spacing="0">CX</text>
+    <path d="M 8 106 C 130 152 330 152 458 112" stroke="#0F0E0C" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="458" cy="112" r="9"/>
   </g>
 </svg>
