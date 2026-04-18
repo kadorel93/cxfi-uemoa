@@ -47,8 +47,8 @@
 
   <g transform="translate(475, 545) scale(0.50)" fill="#0F0E0C">
     <text x="0" y="82" font-family="'Archivo Black', 'Arial Black', Helvetica, sans-serif" font-size="94" letter-spacing="-2">PULSE</text>
-    <text x="310" y="82" font-family="'Archivo', Arial, Helvetica, sans-serif" font-weight="300" font-size="72" letter-spacing="0">CX</text>
-    <path d="M 8 106 C 130 152 330 152 458 112" stroke="#0F0E0C" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <circle cx="458" cy="112" r="9"/>
+    <text x="340" y="82" font-family="'Archivo', Arial, Helvetica, sans-serif" font-weight="300" font-size="72" letter-spacing="0">CX</text>
+    <path d="M 8 106 C 130 152 330 152 468 112" stroke="#0F0E0C" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="468" cy="112" r="9"/>
   </g>
 </svg>
