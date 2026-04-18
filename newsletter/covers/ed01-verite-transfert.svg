@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pulse CX · Édition 01 · Avril 2026
+  Sujet : PI-SPI, transfert Banque → Mobile Money échoué, silence client UEMOA
+  Concept : billet 10 000 FCFA en chute libre, à moitié déchiré (pastiche Pink)
+
+  Pour finaliser :
+    1. Déposer la photo détourée dans newsletter/assets/photo-ed01-billet.png
+       (PNG transparent, idéalement 880×940 pour @2x)
+    2. Dans ce fichier, supprimer le bloc <g id="photo-placeholder"> ci-dessous
+    3. Dé-commenter la ligne <image href="../assets/photo-ed01-billet.png" .../>
+    4. Ouvrir dans Chrome, DevTools → More tools → Capture full-size screenshot
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Anton&amp;family=Playfair+Display:ital,wght@0,500;1,500&amp;family=Montserrat:wght@300;900&amp;display=swap');
+      .bg       { fill: #FADA00; }
+      .meta     { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; fill: #0F0E0C; letter-spacing: 0.08em; }
+      .title    { font-family: 'Anton', 'Arial Narrow', 'Arial Black', sans-serif; font-size: 96px; fill: #FFFFFF; letter-spacing: -1px; }
+      .subtitle { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 22px; fill: #0F0E0C; }
+    </style>
+    <filter id="photo-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="14"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect class="bg" width="1200" height="630"/>
+
+  <text x="1140" y="60" text-anchor="end" class="meta">PULSE CX · ÉDITION 01 · AVRIL 2026</text>
+
+  <text x="60" y="210" class="title">LA VÉRITÉ</text>
+  <text x="60" y="306" class="title">SUR UN TRANSFERT</text>
+  <text x="60" y="402" class="title">QUI N'ARRIVE JAMAIS</text>
+
+  <text x="60" y="448" class="subtitle">Ce qu'un virement Banque → Mobile Money avorté révèle du CX en UEMOA</text>
+
+  <!-- <image href="../assets/photo-ed01-billet.png" x="700" y="70" width="440" height="470"
+         preserveAspectRatio="xMidYMid meet" filter="url(#photo-shadow)"/> -->
+
+  <g id="photo-placeholder" opacity="0.4">
+    <rect x="700" y="70" width="440" height="470" fill="none" stroke="#0F0E0C" stroke-width="2" stroke-dasharray="10 8"/>
+    <text x="920" y="295" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="20" fill="#0F0E0C">billet 10 000 FCFA</text>
+    <text x="920" y="322" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="15" font-style="italic" fill="#0F0E0C">photo détourée à coller ici</text>
+  </g>
+
+  <g transform="translate(500, 555) scale(0.42)" fill="#0F0E0C">
+    <text x="0" y="82" font-family="Montserrat, 'Arial Black', sans-serif" font-weight="900" font-size="92" letter-spacing="-3">PULSE</text>
+    <text x="285" y="82" font-family="Montserrat, Arial, sans-serif" font-weight="300" font-size="68" letter-spacing="0">CX</text>
+    <path d="M 10 108 C 120 150 320 150 440 110" stroke="#0F0E0C" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <circle cx="440" cy="110" r="8.5"/>
+  </g>
+</svg>

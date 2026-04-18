@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pulse CX — Couverture newsletter (template réutilisable)
+  Format : 1200×630 (OpenGraph / paysage)
+  Charte : fond jaune canari Clés des Champs, titre blanc Anton caps,
+           sous-titre Playfair italic, logo Pulse CX en bas centre.
+
+  Pour créer une nouvelle édition :
+    1. Copier ce fichier dans covers/edNN-slug.svg
+    2. Remplacer chaque {{PLACEHOLDER}} ci-dessous
+    3. Coller la photo détourée (PNG transparent) en base64 dans PHOTO_HREF
+    4. Supprimer les lignes TITRE_Lx non utilisées si le titre fait <4 lignes
+    5. Ouvrir dans Chrome, DevTools → Capture full-size screenshot
+
+  Placeholders :
+    {{EDITION_META}}   ex. "PULSE CX · ÉDITION 01 · AVRIL 2026"
+    {{TITRE_L1..L4}}   lignes du titre, caps, ~12 car max à 96px
+    {{SOUS_TITRE}}     sous-titre serif italique, 1 ligne ~90 car max
+    {{PHOTO_HREF}}     "data:image/png;base64,iVBOR..." ou chemin relatif
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Anton&amp;family=Playfair+Display:ital,wght@0,500;1,500&amp;family=Montserrat:wght@300;900&amp;display=swap');
+      .bg       { fill: #FADA00; }
+      .meta     { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; fill: #0F0E0C; letter-spacing: 0.08em; }
+      .title    { font-family: 'Anton', 'Arial Narrow', 'Arial Black', sans-serif; font-size: 96px; fill: #FFFFFF; letter-spacing: -1px; }
+      .subtitle { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 22px; fill: #0F0E0C; }
+    </style>
+    <filter id="photo-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="14"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fond jaune Gladwell (figé, ne pas changer sans re-calibration) -->
+  <rect class="bg" width="1200" height="630"/>
+
+  <!-- Ligne éditoriale haut-droite -->
+  <text x="1140" y="60" text-anchor="end" class="meta">{{EDITION_META}}</text>
+
+  <!-- Titre principal (gauche, 4 lignes max) -->
+  <text x="60" y="190" class="title">{{TITRE_L1}}</text>
+  <text x="60" y="286" class="title">{{TITRE_L2}}</text>
+  <text x="60" y="382" class="title">{{TITRE_L3}}</text>
+  <text x="60" y="478" class="title">{{TITRE_L4}}</text>
+
+  <!-- Sous-titre -->
+  <text x="60" y="518" class="subtitle">{{SOUS_TITRE}}</text>
+
+  <!-- Photo détourée (zone droite) -->
+  <image href="{{PHOTO_HREF}}" x="700" y="70" width="440" height="470"
+         preserveAspectRatio="xMidYMid meet" filter="url(#photo-shadow)"/>
+
+  <!-- Logo Pulse CX (bas centre, ~200×63 après scale) -->
+  <g transform="translate(500, 555) scale(0.42)" fill="#0F0E0C">
+    <text x="0" y="82" font-family="Montserrat, 'Arial Black', sans-serif" font-weight="900" font-size="92" letter-spacing="-3">PULSE</text>
+    <text x="285" y="82" font-family="Montserrat, Arial, sans-serif" font-weight="300" font-size="68" letter-spacing="0">CX</text>
+    <path d="M 10 108 C 120 150 320 150 440 110" stroke="#0F0E0C" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <circle cx="440" cy="110" r="8.5"/>
+  </g>
+</svg>
